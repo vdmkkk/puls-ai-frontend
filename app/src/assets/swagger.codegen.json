@@ -1,0 +1,364 @@
+{
+  "components": {
+    "schemas": {
+      "BadRequest": {
+        "properties": {
+          "error": {
+            "description": "Код ошибки",
+            "example": "AUTH_INVALID_EMAIL_ADDRESS",
+            "type": "string"
+          },
+          "user_message": {
+            "description": "Сообщение для пользователя",
+            "example": "Переданный email адрес невалиден",
+            "type": "string"
+          }
+        },
+        "required": ["user_message", "error"],
+        "type": "object"
+      },
+      "ChangePasswordRequest": {
+        "properties": {
+          "password": { "example": "newpassword123", "type": "string" },
+          "token": { "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", "type": "string" }
+        },
+        "required": ["token", "password"],
+        "type": "object"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": { "example": "user@example.com", "format": "email", "type": "string" },
+          "password": { "example": "password123", "type": "string" }
+        },
+        "required": ["email", "password"],
+        "type": "object"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "email": { "example": "user@example.com", "format": "email", "type": "string" },
+          "first_name": { "example": "Иван", "type": "string" },
+          "last_name": { "example": "Иванов", "type": "string" },
+          "password": { "example": "password123", "type": "string" },
+          "verification_code": { "example": 123456, "format": "int64", "type": "integer" }
+        },
+        "required": ["first_name", "last_name", "email", "password", "verification_code"],
+        "type": "object"
+      },
+      "SendEmailCodeRequest": {
+        "properties": {
+          "email": { "example": "user@example.com", "format": "email", "type": "string" }
+        },
+        "required": ["email"],
+        "type": "object"
+      },
+      "SendLinkRequest": {
+        "properties": {
+          "email": { "example": "user@example.com", "format": "email", "type": "string" }
+        },
+        "required": ["email"],
+        "type": "object"
+      },
+      "UsePromoRequest": {
+        "properties": { "promocode": { "example": "SUMMER2023", "type": "string" } },
+        "required": ["promocode"],
+        "type": "object"
+      }
+    }
+  },
+  "info": { "description": "API Puls", "title": "PulsBackend", "version": "1.0.0" },
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/change_password": {
+      "post": {
+        "description": "Роут принимает токен и новый пароль, проверяет токен и изменяет пароль пользователя.\nЕсли токен невалиден или пароль не соответствует требованиям, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostAuthChangePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePasswordRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Пароль успешно изменен" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидный токен или пароль"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Изменение пароля пользователя",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/get_user_id": {
+      "get": {
+        "description": "Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает user_id пользователя.\nЕсли токены невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetAuthGetUserId",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_id": {
+                      "description": "Идентификатор пользователя",
+                      "example": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Успешное получение user_id"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные токены"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение user_id по токенам",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "description": "Роут принимает email и пароль пользователя, проверяет их и возвращает токен для аутентификации.\nЕсли email или пароль неверны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostAuthLogin",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "token": { "description": "JWT токен для аутентификации", "type": "string" }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Успешный вход в систему"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Неверный email или пароль"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Вход в систему",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "description": "Роут принимает данные для регистрации, проверяет код подтверждения и возвращает токен.\nЕсли данные невалидны или код подтверждения неверен, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostAuthRegister",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/RegisterRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "token": { "description": "JWT токен для аутентификации", "type": "string" }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Успешная регистрация"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные или неверный код подтверждения"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Регистрация нового пользователя",
+        "tags": ["auth"]
+      }
+    },
+    "/auth/send_link": {
+      "post": {
+        "description": "Роут принимает email адрес и отправляет на него ссылку для восстановления пароля.\nЕсли email невалиден или пользователь с таким email не найден, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostAuthSendLink",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SendLinkRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Ссылка для восстановления пароля успешно отправлена" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидный email адрес или пользователь не найден"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Отправка ссылки для восстановления пароля",
+        "tags": ["auth"]
+      }
+    },
+    "/payment/use_promo": {
+      "post": {
+        "description": "Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках.\nЕсли промокод валиден, он применяется к текущему заказу пользователя.\nЕсли промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostPaymentUsePromo",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UsePromoRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "discount": {
+                      "description": "Размер скидки в процентах",
+                      "example": 10,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Промокод успешно применен"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидный промокод или токены"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Использование промокода",
+        "tags": ["payment"]
+      }
+    },
+    "/send_email_code": {
+      "post": {
+        "description": "Роут принимает email адрес, валидирует его и отправляет код подтверждения.\nЕсли email невалиден, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostSendEmailCode",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendEmailCodeRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Код подтверждения успешно отправлен" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидный email адрес"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Отправить код подтверждения на email",
+        "tags": ["auth"]
+      }
+    }
+  }
+}
