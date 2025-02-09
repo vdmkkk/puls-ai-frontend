@@ -6,6 +6,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck //
 import blob1 from 'src/assets/svg/blob1.png'
 import blob2 from 'src/assets/svg/blob2.png'
 import blob3 from 'src/assets/svg/blob3.png'

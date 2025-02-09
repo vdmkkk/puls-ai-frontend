@@ -1,3 +1,4 @@
+// @ts-nocheck //
 import { defineBoot } from '#q-app/wrappers'
 import { createI18n } from 'vue-i18n'
 

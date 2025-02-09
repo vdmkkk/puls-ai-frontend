@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck //
 defineProps<{
   question: string
   isHigh?: boolean

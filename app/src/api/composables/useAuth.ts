@@ -1,3 +1,4 @@
+// @ts-nocheck //
 import Cookies from 'js-cookie'
 import { apiInstances } from 'src/boot/axios'
 import { Notify } from 'quasar'

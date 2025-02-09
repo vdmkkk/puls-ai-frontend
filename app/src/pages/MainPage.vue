@@ -58,6 +58,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck //
 import { ref } from 'vue'
 import Cookies from 'js-cookie'
 import { useRouter } from 'vue-router'

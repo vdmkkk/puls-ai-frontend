@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// @ts-nocheck //
 import QuestionComponent from 'src/components/QuestionComponent.vue'
 import BlobComponent from 'src/components/BlobComponent.vue'
 

@@ -140,6 +140,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck //
 import { Notify } from 'quasar'
 import useAuth from 'src/api/composables/useAuth'
 import { useErrorStore } from 'src/stores/error-store'

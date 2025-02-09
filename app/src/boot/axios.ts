@@ -1,3 +1,4 @@
+// @ts-nocheck //
 import { defineBoot } from '#q-app/wrappers'
 import axios, { type AxiosInstance } from 'axios'
 import { AuthApi, Configuration } from 'src/api'

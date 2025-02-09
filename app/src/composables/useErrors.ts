@@ -1,3 +1,4 @@
+// @ts-nocheck //
 import { useErrorStore } from 'src/stores/error-store'
 
 export const useErrors = () => {

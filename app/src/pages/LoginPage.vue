@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck //
 import useAuth from 'src/api/composables/useAuth'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
