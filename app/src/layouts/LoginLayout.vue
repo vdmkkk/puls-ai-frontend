@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck //
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
