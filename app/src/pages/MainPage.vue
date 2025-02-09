@@ -1,4 +1,5 @@
 <template>
+  <BlobComponent />
   <q-page style="color: white" class="column justify-between">
     <div class="column no-wrap app">
       <a class="title">Привет, Артем! 👋</a>
@@ -60,6 +61,7 @@
 import { ref } from 'vue'
 import Cookies from 'js-cookie'
 import { useRouter } from 'vue-router'
+import BlobComponent from 'src/components/BlobComponent.vue'
 
 const router = useRouter()
 

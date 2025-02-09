@@ -1,4 +1,8 @@
 <template>
+  <div class="blobs">
+    <img src="../assets/svg/blob1.png" class="blob1" />
+    <img src="../assets/svg/blob2.png" class="blob2" />
+  </div>
   <q-btn class="check" icon="chevron_left" @click="handlerBack" size="md" color="grey-1" outline>
     <q-tooltip>
       <a>{{ $t('back') }}</a>
@@ -8,24 +12,23 @@
     <div class="row title-container">
       <a class="title">Восстановление пароля</a>
     </div>
-    <q-input
-      v-model="login"
-      :label="$t('email')"
-      style="width: 500px"
-      type="email"
-      color="deep-purple-8"
-      label-color="grey-1"
-      rounded
-      outlined
-    />
-    <q-btn
-      :label="$t('sendLink')"
-      class="login"
-      @click="handlerSendLink"
-      flat
-      text-color="grey-1"
-      no-caps
-    />
+    <q-form @submit="handlerSendLink" class="q-gutter-md items-center column">
+      <q-input
+        v-model="login"
+        :label="$t('email')"
+        style="width: 500px"
+        type="email"
+        color="deep-purple-8"
+        label-color="grey-1"
+        rounded
+        outlined
+        lazy-rules
+        :error="errorStore.errors.login"
+        :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
+        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+      />
+      <q-btn :label="$t('sendLink')" class="login" type="submit" flat text-color="grey-1" no-caps />
+    </q-form>
   </div>
 </template>
 
@@ -35,11 +38,13 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
+import { useErrorStore } from 'src/stores/error-store'
 
 const { t } = useI18n()
 
 const { apiSendLink } = useAuth()
 const router = useRouter()
+const errorStore = useErrorStore()
 
 const login = ref<string>('')
 
@@ -61,9 +66,37 @@ const handlerSendLink = () => {
 const handlerBack = () => {
   router.back()
 }
+
+const blob1Rotation = Math.random() * 360
+const blob2Rotation = Math.random() * 360
 </script>
 
 <style lang="scss" scoped>
+.blobs {
+  position: absolute;
+  width: 100vw;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow: hidden;
+  height: 100vh;
+
+  img {
+    width: 45vw;
+  }
+
+  .blob1 {
+    transform: rotate(calc(v-bind(blob1Rotation) * 1deg));
+  }
+
+  .blob2 {
+    transform: rotate(calc(v-bind(blob2Rotation) * 1deg));
+    margin-top: 20vh;
+  }
+}
 .app {
   background-color: #12121b;
   padding-left: 10%;

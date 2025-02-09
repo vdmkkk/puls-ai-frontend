@@ -9,7 +9,7 @@
 
         <q-toolbar-title>puls.</q-toolbar-title>
         <div class="actions"><q-icon name="bolt" style="scale: 1.3" /> 10</div>
-        <q-btn flat round dense icon="person" />
+        <q-btn @click="navigateTo('profile')" flat round dense icon="person" />
       </q-toolbar>
     </q-header>
     <q-drawer v-model="leftDrawerOpen" show-if-above style="background-color: #2d2d37">
@@ -51,7 +51,7 @@ const leftDrawerOpen = ref(false)
 const links = [
   {
     name: 'Главная',
-    to: '',
+    to: '/',
     icon: 'school',
   },
   {

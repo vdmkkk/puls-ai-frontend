@@ -27,7 +27,7 @@
       },
       "LoginRequest": {
         "properties": {
-          "email": { "example": "user@example.com", "format": "email", "type": "string" },
+          "email": { "example": "user@example.com", "type": "string" },
           "password": { "example": "password123", "type": "string" }
         },
         "required": ["email", "password"],
@@ -35,7 +35,7 @@
       },
       "RegisterRequest": {
         "properties": {
-          "email": { "example": "user@example.com", "format": "email", "type": "string" },
+          "email": { "example": "user@example.com", "type": "string" },
           "first_name": { "example": "Иван", "type": "string" },
           "last_name": { "example": "Иванов", "type": "string" },
           "password": { "example": "password123", "type": "string" },
@@ -45,16 +45,12 @@
         "type": "object"
       },
       "SendEmailCodeRequest": {
-        "properties": {
-          "email": { "example": "user@example.com", "format": "email", "type": "string" }
-        },
+        "properties": { "email": { "example": "user@example.com", "type": "string" } },
         "required": ["email"],
         "type": "object"
       },
       "SendLinkRequest": {
-        "properties": {
-          "email": { "example": "user@example.com", "format": "email", "type": "string" }
-        },
+        "properties": { "email": { "example": "user@example.com", "type": "string" } },
         "required": ["email"],
         "type": "object"
       },

@@ -1,55 +1,62 @@
 <template>
+  <div class="blobs">
+    <img src="../assets/svg/blob1.png" class="blob1" />
+    <img src="../assets/svg/blob2.png" class="blob2" />
+  </div>
   <div class="column app items-center">
     <div class="row title-container">
       <a class="title">Восстановление пароля</a>
     </div>
-    <q-input
-      v-model="password"
-      :type="!showPassword ? 'password' : 'text'"
-      :label="$t('password')"
-      style="width: 500px"
-      color="deep-purple-8"
-      label-color="grey-1"
-      rounded
-      outlined
-    >
-      <template v-slot:append>
-        <q-icon
-          :name="!showPassword ? 'visibility_off' : 'visibility'"
-          class="cursor-pointer"
-          color="grey-1"
-          size="xs"
-          @click="showPassword = !showPassword"
-        />
-      </template>
-    </q-input>
-    <q-input
-      v-model="againPassword"
-      :type="!showPasswordAgain ? 'password' : 'text'"
-      :label="$t('passwordAgain')"
-      style="width: 500px"
-      color="deep-purple-8"
-      label-color="grey-1"
-      rounded
-      outlined
-    >
-      <template v-slot:append>
-        <q-icon
-          :name="!showPasswordAgain ? 'visibility_off' : 'visibility'"
-          class="cursor-pointer"
-          color="grey-1"
-          size="xs"
-          @click="showPasswordAgain = !showPasswordAgain"
-        /> </template
-    ></q-input>
-    <q-btn
-      :label="$t('sendLink')"
-      class="login"
-      @click="handlerSubmit"
-      flat
-      text-color="grey-1"
-      no-caps
-    />
+    <q-form @submit="handlerSubmit" class="q-gutter-md column items-center">
+      <q-input
+        v-model="password"
+        :type="!showPassword ? 'password' : 'text'"
+        :label="$t('password')"
+        style="width: 500px"
+        color="deep-purple-8"
+        label-color="grey-1"
+        rounded
+        outlined
+        lazy-rules
+        :error="errorStore.errors.password"
+        :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
+        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="!showPassword ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            color="grey-1"
+            size="xs"
+            @click="showPassword = !showPassword"
+          />
+        </template>
+      </q-input>
+      <q-input
+        v-model="againPassword"
+        :type="!showPasswordAgain ? 'password' : 'text'"
+        :label="$t('passwordAgain')"
+        style="width: 500px"
+        color="deep-purple-8"
+        label-color="grey-1"
+        rounded
+        outlined
+        lazy-rules
+        :error="errorStore.errors.againPassword"
+        :error-message="errorStore.errors.againPassword ? errorStore.errorMessage : undefined"
+        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+      >
+        <template v-slot:append>
+          <q-icon
+            :name="!showPasswordAgain ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            color="grey-1"
+            size="xs"
+            @click="showPasswordAgain = !showPasswordAgain"
+          /> </template
+      ></q-input>
+      <q-btn :label="$t('sendLink')" class="login" type="submit" flat text-color="grey-1" no-caps />
+    </q-form>
   </div>
 </template>
 
@@ -60,6 +67,7 @@ import { ref } from 'vue'
 import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { useErrorStore } from 'src/stores/error-store'
 
 const route = useRoute()
 const accessToken = route.params.access_token as string
@@ -68,6 +76,7 @@ const { t } = useI18n()
 
 const { apiChangePassword } = useAuth()
 const router = useRouter()
+const errorStore = useErrorStore()
 
 const password = ref<string>('')
 const againPassword = ref<string>('')
@@ -110,9 +119,37 @@ const handlerSubmit = () => {
     }
   })
 }
+
+const blob1Rotation = Math.random() * 360
+const blob2Rotation = Math.random() * 360
 </script>
 
 <style lang="scss" scoped>
+.blobs {
+  position: absolute;
+  width: 100vw;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow: hidden;
+  height: 100vh;
+
+  img {
+    width: 45vw;
+  }
+
+  .blob1 {
+    transform: rotate(calc(v-bind(blob1Rotation) * 1deg));
+  }
+
+  .blob2 {
+    transform: rotate(calc(v-bind(blob2Rotation) * 1deg));
+    margin-top: 20vh;
+  }
+}
 .app {
   background-color: #12121b;
   padding-left: 10%;

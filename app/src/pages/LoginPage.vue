@@ -1,61 +1,68 @@
 <template>
+  <div class="blobs">
+    <img src="../assets/svg/blob1.png" class="blob1" />
+    <img src="../assets/svg/blob2.png" class="blob2" />
+  </div>
   <div class="column app items-center">
     <div class="row title-container">
       <a class="title">Вход в</a><img src="/src/assets/svg/logo.svg" /><a class="title">puls.</a>
     </div>
-    <q-input
-      v-model="login"
-      :label="$t('email')"
-      style="width: 500px"
-      type="email"
-      color="deep-purple-8"
-      label-color="grey-1"
-      rounded
-      outlined
-    />
-    <div class="row">
+    <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
       <q-input
-        v-model="password"
-        :type="!showPassword ? 'password' : 'text'"
-        :label="$t('password')"
-        style="width: 436px"
+        v-model="login"
+        :label="$t('email')"
+        style="width: 500px"
+        type="email"
         color="deep-purple-8"
         label-color="grey-1"
         rounded
         outlined
-        @keydown.enter.prevent="handlerLogin"
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="!showPassword ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            color="grey-1"
-            size="xs"
-            @click="showPassword = !showPassword"
-          />
-        </template>
-      </q-input>
-      <q-btn
-        class="check"
-        icon="question_mark"
-        @click="handlerChangePassword"
-        size="sm"
-        color="grey-1"
-        outline
-      >
-        <q-tooltip>
-          <a>{{ $t('forgotPassword') }}</a>
-        </q-tooltip>
-      </q-btn>
-    </div>
-    <q-btn
-      :label="$t('login')"
-      class="login"
-      @click="handlerLogin"
-      flat
-      text-color="grey-1"
-      no-caps
-    />
+        lazy-rules
+        :error="errorStore.errors.login"
+        :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
+        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+      />
+      <div class="row">
+        <q-input
+          v-model="password"
+          :type="!showPassword ? 'password' : 'text'"
+          :label="$t('password')"
+          style="width: 436px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+          lazy-rules
+          :error="errorStore.errors.password"
+          :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
+          @keydown.enter.prevent="handlerLogin"
+          :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="!showPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              color="grey-1"
+              size="xs"
+              @click="showPassword = !showPassword"
+            />
+          </template>
+        </q-input>
+        <q-btn
+          class="check"
+          icon="question_mark"
+          @click="handlerChangePassword"
+          size="sm"
+          color="grey-1"
+          outline
+        >
+          <q-tooltip>
+            <a>{{ $t('forgotPassword') }}</a>
+          </q-tooltip>
+        </q-btn>
+      </div>
+      <q-btn :label="$t('login')" class="login" type="submit" flat text-color="grey-1" no-caps />
+    </q-form>
 
     <q-btn
       :label="$t('dontHaveAccount')"
@@ -74,8 +81,11 @@ import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
+import { useErrorStore } from 'src/stores/error-store'
 
 const { t } = useI18n()
+
+const errorStore = useErrorStore()
 
 const { apiLogin } = useAuth()
 const router = useRouter()
@@ -113,9 +123,36 @@ const handlerChangePassword = () => {
 const handlerRedirect = () => {
   router.push('/register')
 }
+const blob1Rotation = Math.random() * 360
+const blob2Rotation = Math.random() * 360
 </script>
 
 <style lang="scss" scoped>
+.blobs {
+  position: absolute;
+  width: 100vw;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  overflow: hidden;
+  height: 100vh;
+
+  img {
+    width: 45vw;
+  }
+
+  .blob1 {
+    transform: rotate(calc(v-bind(blob1Rotation) * 1deg));
+  }
+
+  .blob2 {
+    transform: rotate(calc(v-bind(blob2Rotation) * 1deg));
+    margin-top: 20vh;
+  }
+}
 .app {
   background-color: #12121b;
   padding-left: 10%;
