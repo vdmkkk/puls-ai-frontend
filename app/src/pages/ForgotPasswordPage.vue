@@ -1,8 +1,4 @@
 <template>
-  <div class="blobs">
-    <img src="../assets/svg/blob1.png" class="blob1" />
-    <img src="../assets/svg/blob2.png" class="blob2" />
-  </div>
   <q-btn class="check" icon="chevron_left" @click="handlerBack" size="md" color="grey-1" outline>
     <q-tooltip>
       <a>{{ $t('back') }}</a>
@@ -67,37 +63,9 @@ const handlerSendLink = () => {
 const handlerBack = () => {
   router.back()
 }
-
-const blob1Rotation = Math.random() * 360
-const blob2Rotation = Math.random() * 360
 </script>
 
 <style lang="scss" scoped>
-.blobs {
-  position: absolute;
-  width: 100vw;
-  margin-top: auto;
-  margin-bottom: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  overflow: hidden;
-  height: 100vh;
-
-  img {
-    width: 45vw;
-  }
-
-  .blob1 {
-    transform: rotate(calc(v-bind(blob1Rotation) * 1deg));
-  }
-
-  .blob2 {
-    transform: rotate(calc(v-bind(blob2Rotation) * 1deg));
-    margin-top: 20vh;
-  }
-}
 .app {
   background-color: #12121b;
   padding-left: 10%;
@@ -108,7 +76,7 @@ const blob2Rotation = Math.random() * 360
 
   .title-container {
     .title {
-      font-size: 40px;
+      font-size: var(--font-size-title);
       font-weight: 600;
       color: white;
     }
@@ -155,7 +123,7 @@ const blob2Rotation = Math.random() * 360
 
 .already-have-account {
   color: white;
-  font-size: 12px;
+  font-size: var(--font-size-xxs);
 }
 
 .check {

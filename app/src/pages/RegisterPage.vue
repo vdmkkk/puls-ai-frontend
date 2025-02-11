@@ -1,9 +1,5 @@
 <template class="overflow-hidden">
-  <div class="blobs">
-    <img src="../assets/svg/blob1.png" class="blob1" />
-    <img src="../assets/svg/blob2.png" class="blob2" />
-  </div>
-  <div class="column app items-center">
+  <div class="column app items-center no-wrap">
     <div class="row title-container">
       <a class="title">Регистрация в</a><img src="/src/assets/svg/logo.svg" /><a class="title"
         >puls.</a
@@ -160,9 +156,6 @@ const password = ref<string>('')
 const againPassword = ref<string>('')
 const verificationCode = ref<string>('')
 
-const blob1Rotation = Math.random() * 360
-const blob2Rotation = Math.random() * 360
-
 const errorStore = useErrorStore()
 
 const showPassword = ref<boolean>(false)
@@ -242,50 +235,25 @@ const handlerRedirect = () => {
 </script>
 
 <style lang="scss" scoped>
-.blobs {
-  position: absolute;
-  width: 100vw;
-  margin-top: auto;
-  margin-bottom: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  overflow: hidden;
-  height: 100vh;
-
-  img {
-    width: 45vw;
-  }
-
-  .blob1 {
-    transform: rotate(calc(v-bind(blob1Rotation) * 1deg));
-  }
-
-  .blob2 {
-    transform: rotate(calc(v-bind(blob2Rotation) * 1deg));
-    margin-top: 20vh;
-  }
-}
 .app {
   background-color: #12121b;
   padding-left: 10%;
   padding-right: 10%;
   padding-top: 80px;
-  height: 100vh;
+  // height: 100%;
   gap: 20px;
 
   .title-container {
+    line-height: var(--font-size-title);
     .title {
-      font-size: 40px;
+      font-size: var(--font-size-title);
       font-weight: 600;
       color: white;
     }
     img {
       margin-left: 16px;
-      margin-right: 6px;
-      height: 36px;
-      margin-top: 14px;
+      margin-right: calc(var(--spacing-xxs) / 2px);
+      height: calc(var(--font-size-title) - 4px);
     }
     margin-bottom: 50px;
   }
@@ -324,7 +292,7 @@ const handlerRedirect = () => {
 
 .already-have-account {
   color: white;
-  font-size: 12px;
+  font-size: var(--font-size-xxs);
 }
 
 .check {
