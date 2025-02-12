@@ -4,6 +4,30 @@ import QuestionComponent from 'src/components/QuestionComponent.vue'
 import BlobComponent from 'src/components/BlobComponent.vue'
 
 import { ref } from 'vue'
+import QuestionDialog from 'src/dialogs/QuestionDialog.vue'
+import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
+import DefaultButton from 'src/components/DefaultButton.vue'
+
+const questions = ref({
+  'Как вас зовут?': 'answer1',
+  'Какая ваша целевая аудитория?': 'answer2',
+  'Напишите три проблемы или "боли" вашего потенциального клиента': 'answer3',
+  'Засчет чего достигается успех ваших клиентов?': 'answer4',
+  'Какая у вас специальность?': 'answer5',
+  'Напишите главные факты о себе как о специалисте\nПочему к вам стоит прислушаться?': 'answer6',
+})
+
+const dialog = ref<{
+  isOpen: boolean
+  question: string
+  answerKey: string
+  isHigh: boolean
+}>({
+  isOpen: false,
+  question: null,
+  answerKey: null,
+  isHigh: false,
+})
 
 const answers = ref<{
   link: string
@@ -28,16 +52,53 @@ const answers = ref<{
 const onSave = () => {
   console.log(answers.value)
 }
+
+const handlerOpenDialog = (question: string, answerKey: string, isHigh = false): void => {
+  dialog.value = {
+    isOpen: true,
+    question,
+    isHigh,
+    answerKey,
+  }
+}
+
+const handlerCloseDialog = () => {
+  dialog.value = {
+    isOpen: false,
+    question: null,
+    answerKey: null,
+    isHigh: false,
+  }
+}
+
+const handlerSaveDialog = (answer: string) => {
+  answers.value[dialog.value.answerKey] = answer
+  handlerCloseDialog()
+}
 </script>
 
 <template>
   <BlobComponent />
   <q-page style="color: white" class="column justify-between">
     <div class="app">
+      <QuestionDialog
+        :is-open="dialog.isOpen"
+        :question="dialog.question"
+        :is-high="dialog.isHigh"
+        :model-value="answers[dialog.answerKey]"
+        @close="handlerCloseDialog"
+        @save="handlerSaveDialog"
+      />
       <div class="column header">
-        <p class="title">Вопросы, на которые надо ответить</p>
+        <p class="title">Информация о вас</p>
         <p class="description">Это необходимо для написания качественного контента</p>
-        <div class="question row">
+        <FancyButtonComponent
+          label="Проанализировать мою деятельность"
+          style="align-self: center !important; margin-top: 30px; margin-bottom: 30px"
+          @click="handlerOpenDialog('Ссылка на VK/TG', 'link')"
+        />
+        <p class="description" style="align-self: center">Или ответить на вопросы самостоятельно</p>
+        <!-- <div class="question row">
           <p>Ссылка на VK/TG:</p>
           <q-input
             type="text"
@@ -47,30 +108,27 @@ const onSave = () => {
             color="primary"
             style="width: -webkit-fill-available"
           />
-        </div>
+        </div> -->
       </div>
       <div class="survey">
         <div class="questions">
-          <QuestionComponent question="Какой вас зовут?" v-model="answers.answer1" />
-          <QuestionComponent question="Какая ваша целевая аудитория?" v-model="answers.answer2" />
           <QuestionComponent
-            question='Напишите три проблемы или "боли" вашего потенциального клиента'
-            v-model="answers.answer3"
-          />
-          <QuestionComponent
-            question="Засчет чего достигается успех ваших клиентов?"
-            v-model="answers.answer4"
-          />
-          <QuestionComponent question="Какая у вас специальность?" v-model="answers.answer5" />
-          <QuestionComponent
-            :question="'Напишите главные факты о себе как о специалисте\nПочему к вам стоит прислушаться?'"
-            v-model="answers.answer6"
+            v-for="[question, answerKey] in Object.entries(questions)"
+            :question="question"
+            v-model="answers[answerKey]"
+            @click="handlerOpenDialog(question, answerKey)"
           />
         </div>
-        <QuestionComponent class="text" question="Шаблон поста" v-model="answers.answer7" isHigh />
+        <QuestionComponent
+          class="text"
+          question="Шаблон поста"
+          v-model="answers.answer7"
+          isHigh
+          @click="handlerOpenDialog('Шаблон поста', 'answer7', true)"
+        />
       </div>
     </div>
-    <q-btn label="Сохранить" flat no-caps class="save-btn" @click="onSave" />
+    <DefaultButton label="Сохранить" @click="onSave" />
   </q-page>
 </template>
 
@@ -80,17 +138,6 @@ const onSave = () => {
   flex-direction: column;
   width: 100%;
   height: 100%;
-
-  .save-btn {
-    border: 2px solid #fff;
-    color: #fff;
-    width: fit-content;
-    border-radius: 10px;
-    align-self: flex-end;
-    margin-top: 30px;
-    margin-right: 2.5%;
-    margin-bottom: 30px;
-  }
 
   .header {
     margin-left: 20%;
@@ -123,19 +170,6 @@ const onSave = () => {
         margin-right: 10%;
         white-space: nowrap;
       }
-    }
-    :global(.q-field__control) {
-      border-radius: 20px !important;
-      background-color: rgba(133, 157, 184, 0.281) !important;
-    }
-
-    :global(.q-field__native) {
-      resize: none !important;
-      color: white !important;
-    }
-
-    :global(.standout-class) {
-      background-color: rgba(144, 169, 197, 0.459) !important;
     }
   }
 
