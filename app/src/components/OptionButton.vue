@@ -1,28 +1,32 @@
 <template>
   <q-btn
     :label="label"
-    flat
-    no-caps
-    class="fancy-btn"
-    style="align-self: center"
+    :class="{ selected: optionValue, default: !optionValue }"
     @click="emits('click')"
+    flat
   />
 </template>
 
 <script setup lang="ts">
 defineProps<{
   label: string
+  optionValue: boolean
 }>()
 
 const emits = defineEmits(['click'])
 </script>
 
 <style lang="scss" scoped>
-.fancy-btn {
-  border: 3px solid #6836b8;
-  color: #fff;
-  width: fit-content;
+.default,
+.selected {
   border-radius: 10px;
-  font-size: var(--font-size-sm);
+}
+.selected {
+  background-color: white;
+  color: black;
+}
+
+.default {
+  background-color: rgba(133, 157, 184, 0.281) !important;
 }
 </style>

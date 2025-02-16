@@ -3,10 +3,11 @@
 import QuestionComponent from 'src/components/QuestionComponent.vue'
 import BlobComponent from 'src/components/BlobComponent.vue'
 
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import QuestionDialog from 'src/dialogs/QuestionDialog.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
+import useCustomize from 'src/api/composables/useCustomize'
 
 const questions = ref({
   'Как вас зовут?': 'answer1',
@@ -49,6 +50,8 @@ const answers = ref<{
   answer7: '',
 })
 
+const { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers } = useCustomize()
+
 const onSave = () => {
   console.log(answers.value)
 }
@@ -75,6 +78,10 @@ const handlerSaveDialog = (answer: string) => {
   answers.value[dialog.value.answerKey] = answer
   handlerCloseDialog()
 }
+
+onMounted(() => {
+  // apiGetUserAnswers()
+})
 </script>
 
 <template>

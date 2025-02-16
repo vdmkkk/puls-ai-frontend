@@ -25,6 +25,143 @@
         "required": ["token", "password"],
         "type": "object"
       },
+      "CreatePostImageRequest": {
+        "properties": {
+          "post": {
+            "description": "Описание изображения",
+            "example": "Красивый закат над горами",
+            "type": "string"
+          },
+          "size": {
+            "description": "Размер изображения",
+            "example": "ASPECT_16_9",
+            "type": "string"
+          }
+        },
+        "required": ["post", "size"],
+        "type": "object"
+      },
+      "CreatePostRequest": {
+        "properties": {
+          "additions": {
+            "description": "Дополнительные примечания",
+            "example": "Добавить статистику",
+            "type": "string"
+          },
+          "length": { "description": "Длина поста", "example": 200, "type": "integer" },
+          "post_sample": {
+            "description": "Пример поста",
+            "example": "Как увеличить продажи с помощью SMM?",
+            "type": "string"
+          },
+          "post_topic": {
+            "description": "Тема поста",
+            "example": "Продвижение бизнеса в Instagram",
+            "type": "string"
+          },
+          "q1": {
+            "description": "Ответ на вопрос 1",
+            "example": "Эксперт в области маркетинга",
+            "type": "string"
+          },
+          "q2": {
+            "description": "Ответ на вопрос 2",
+            "example": "Малый и средний бизнес",
+            "type": "string"
+          },
+          "q3": {
+            "description": "Ответ на вопрос 3",
+            "example": "Нет клиентов, низкий охват, высокая конкуренция",
+            "type": "string"
+          },
+          "q4": {
+            "description": "Ответ на вопрос 4",
+            "example": "Увеличение продаж на 20%",
+            "type": "string"
+          },
+          "q5": {
+            "description": "Ответ на вопрос 5",
+            "example": "Маркетинг, SMM, Копирайтинг",
+            "type": "string"
+          },
+          "q6": {
+            "description": "Ответ на вопрос 6",
+            "example": "Работал с крупными брендами",
+            "type": "string"
+          },
+          "type": { "description": "Тип поста", "example": "Фоновый", "type": "string" }
+        },
+        "required": ["q1", "q2", "q3", "q4", "q5", "q6", "length", "post_topic"],
+        "type": "object"
+      },
+      "CreatePromptImageRequest": {
+        "properties": {
+          "prompt": {
+            "description": "Описание изображения",
+            "example": "Красивый закат над горами",
+            "type": "string"
+          },
+          "size": {
+            "description": "Размер изображения",
+            "example": "ASPECT_16_9",
+            "type": "string"
+          }
+        },
+        "required": ["prompt", "size"],
+        "type": "object"
+      },
+      "GetProfileFromAnswersRequest": {
+        "properties": {
+          "post_sample": {
+            "description": "Пример поста",
+            "example": "Как увеличить продажи с помощью SMM?",
+            "type": "string"
+          },
+          "q1": {
+            "description": "Ответ на вопрос 1",
+            "example": "Эксперт в области маркетинга",
+            "type": "string"
+          },
+          "q2": {
+            "description": "Ответ на вопрос 2",
+            "example": "Малый и средний бизнес",
+            "type": "string"
+          },
+          "q3": {
+            "description": "Ответ на вопрос 3",
+            "example": "Нет клиентов, низкий охват, высокая конкуренция",
+            "type": "string"
+          },
+          "q4": {
+            "description": "Ответ на вопрос 4",
+            "example": "Увеличение продаж на 20%",
+            "type": "string"
+          },
+          "q5": {
+            "description": "Ответ на вопрос 5",
+            "example": "Маркетинг, SMM, Копирайтинг",
+            "type": "string"
+          },
+          "q6": {
+            "description": "Ответ на вопрос 6",
+            "example": "Работал с крупными брендами",
+            "type": "string"
+          }
+        },
+        "required": ["q1", "q2", "q3", "q4", "q5", "q6", "post_sample"],
+        "type": "object"
+      },
+      "GetProfileFromUrlRequest": {
+        "properties": {
+          "link": {
+            "description": "Ссылка на профиль",
+            "example": "https://example.com/profile",
+            "type": "string"
+          }
+        },
+        "required": ["link"],
+        "type": "object"
+      },
       "LoginRequest": {
         "properties": {
           "email": { "example": "user@example.com", "type": "string" },
@@ -270,6 +407,267 @@
         "tags": ["auth"]
       }
     },
+    "/content/create_image_post/": {
+      "post": {
+        "description": "Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostContentCreateImagePost",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePostImageRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "image_url": {
+                      "description": "URL сгенерированного изображения",
+                      "example": "https://example.com/generated_image.png",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Изображение успешно создано"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Создание изображения на основе описания",
+        "tags": ["content"]
+      }
+    },
+    "/content/create_image_prompt/": {
+      "post": {
+        "description": "Роут принимает описание изображения (prompt) и его размер. На основе этих данных генерируется изображение.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostContentCreateImagePrompt",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePromptImageRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "image_url": {
+                      "description": "URL сгенерированного изображения",
+                      "example": "https://example.com/generated_image.png",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Изображение успешно создано"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Создание изображения на основе описания",
+        "tags": ["content"]
+      }
+    },
+    "/content/create_post/": {
+      "post": {
+        "description": "Роут принимает ответы на вопросы, параметры длины, тему поста, дополнительные примечания и тип поста.\nНа основе этих данных генерируется текст поста. Если данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostContentCreatePost",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/CreatePostRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "post_text": {
+                      "description": "Текст сгенерированного поста",
+                      "example": "Это пример сгенерированного поста.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Пост успешно создан"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Создание поста на основе ответов",
+        "tags": ["content"]
+      }
+    },
+    "/customize/get_profile_from_answers": {
+      "post": {
+        "description": "Роут принимает ответы на вопросы и возвращает сгенерированный профиль.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostCustomizeGetProfileFromAnswers",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GetProfileFromAnswersRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Данные о профиле успешно сохранены" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получить профиль на основе ответов",
+        "tags": ["customize"]
+      }
+    },
+    "/customize/get_profile_from_url": {
+      "post": {
+        "description": "Роут принимает ссылку на профиль и возвращает данные профиля.\nЕсли ссылка невалидна или профиль не найден, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostCustomizeGetProfileFromUrl",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GetProfileFromUrlRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Данные о профиле успешно сохранены" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидная ссылка или профиль не найден"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получить профиль по ссылке",
+        "tags": ["customize"]
+      }
+    },
+    "/customize/get_user_answers": {
+      "get": {
+        "description": "Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает ответы пользователя на вопросы.\nЕсли токены невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetCustomizeGetUserAnswers",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetProfileFromAnswersRequest" }
+              }
+            },
+            "description": "Успешное получение ответов на вопросы"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные токены"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение ответов пользователя на вопросы",
+        "tags": ["customize"]
+      }
+    },
     "/payment/use_promo": {
       "post": {
         "description": "Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках.\nЕсли промокод валиден, он применяется к текущему заказу пользователя.\nЕсли промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`.\n",
@@ -318,6 +716,34 @@
         },
         "summary": "Использование промокода",
         "tags": ["payment"]
+      }
+    },
+    "/profile/get_all_user_info": {
+      "get": {
+        "description": "Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает всю информацию о пользователе.\nЕсли токены невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetProfileGetAllUserInfo",
+        "responses": {
+          "200": { "description": "Успешное получение информации о профиле" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные токены"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение ответов пользователя на вопросы",
+        "tags": ["profile"]
       }
     },
     "/send_email_code": {

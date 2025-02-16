@@ -64,6 +64,117 @@ export interface ChangePasswordRequest {
 /**
  * 
  * @export
+ * @interface CreatePostImageRequest
+ */
+export interface CreatePostImageRequest {
+    /**
+     * Описание изображения
+     * @type {string}
+     * @memberof CreatePostImageRequest
+     */
+    'post': string;
+    /**
+     * Размер изображения
+     * @type {string}
+     * @memberof CreatePostImageRequest
+     */
+    'size': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreatePostRequest
+ */
+export interface CreatePostRequest {
+    /**
+     * Дополнительные примечания
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'additions'?: string;
+    /**
+     * Длина поста
+     * @type {number}
+     * @memberof CreatePostRequest
+     */
+    'length': number;
+    /**
+     * Пример поста
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'post_sample'?: string;
+    /**
+     * Тема поста
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'post_topic': string;
+    /**
+     * Ответ на вопрос 1
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'q1': string;
+    /**
+     * Ответ на вопрос 2
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'q2': string;
+    /**
+     * Ответ на вопрос 3
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'q3': string;
+    /**
+     * Ответ на вопрос 4
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'q4': string;
+    /**
+     * Ответ на вопрос 5
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'q5': string;
+    /**
+     * Ответ на вопрос 6
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'q6': string;
+    /**
+     * Тип поста
+     * @type {string}
+     * @memberof CreatePostRequest
+     */
+    'type'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CreatePromptImageRequest
+ */
+export interface CreatePromptImageRequest {
+    /**
+     * Описание изображения
+     * @type {string}
+     * @memberof CreatePromptImageRequest
+     */
+    'prompt': string;
+    /**
+     * Размер изображения
+     * @type {string}
+     * @memberof CreatePromptImageRequest
+     */
+    'size': string;
+}
+/**
+ * 
+ * @export
  * @interface GetAuthGetUserId200Response
  */
 export interface GetAuthGetUserId200Response {
@@ -73,6 +184,68 @@ export interface GetAuthGetUserId200Response {
      * @memberof GetAuthGetUserId200Response
      */
     'user_id'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface GetProfileFromAnswersRequest
+ */
+export interface GetProfileFromAnswersRequest {
+    /**
+     * Пример поста
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'post_sample': string;
+    /**
+     * Ответ на вопрос 1
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'q1': string;
+    /**
+     * Ответ на вопрос 2
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'q2': string;
+    /**
+     * Ответ на вопрос 3
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'q3': string;
+    /**
+     * Ответ на вопрос 4
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'q4': string;
+    /**
+     * Ответ на вопрос 5
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'q5': string;
+    /**
+     * Ответ на вопрос 6
+     * @type {string}
+     * @memberof GetProfileFromAnswersRequest
+     */
+    'q6': string;
+}
+/**
+ * 
+ * @export
+ * @interface GetProfileFromUrlRequest
+ */
+export interface GetProfileFromUrlRequest {
+    /**
+     * Ссылка на профиль
+     * @type {string}
+     * @memberof GetProfileFromUrlRequest
+     */
+    'link': string;
 }
 /**
  * 
@@ -118,6 +291,32 @@ export interface PostAuthLogin200Response {
      * @memberof PostAuthLogin200Response
      */
     'token'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PostContentCreateImagePost200Response
+ */
+export interface PostContentCreateImagePost200Response {
+    /**
+     * URL сгенерированного изображения
+     * @type {string}
+     * @memberof PostContentCreateImagePost200Response
+     */
+    'image_url'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PostContentCreatePost200Response
+ */
+export interface PostContentCreatePost200Response {
+    /**
+     * Текст сгенерированного поста
+     * @type {string}
+     * @memberof PostContentCreatePost200Response
+     */
+    'post_text'?: string;
 }
 /**
  * 
@@ -666,6 +865,501 @@ export class AuthApi extends BaseAPI {
 
 
 /**
+ * ContentApi - axios parameter creator
+ * @export
+ */
+export const ContentApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание изображения на основе описания
+         * @param {CreatePostImageRequest} createPostImageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreateImagePost: async (createPostImageRequest: CreatePostImageRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createPostImageRequest' is not null or undefined
+            assertParamExists('postContentCreateImagePost', 'createPostImageRequest', createPostImageRequest)
+            const localVarPath = `/content/create_image_post/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createPostImageRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает описание изображения (prompt) и его размер. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание изображения на основе описания
+         * @param {CreatePromptImageRequest} createPromptImageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreateImagePrompt: async (createPromptImageRequest: CreatePromptImageRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createPromptImageRequest' is not null or undefined
+            assertParamExists('postContentCreateImagePrompt', 'createPromptImageRequest', createPromptImageRequest)
+            const localVarPath = `/content/create_image_prompt/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createPromptImageRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает ответы на вопросы, параметры длины, тему поста, дополнительные примечания и тип поста. На основе этих данных генерируется текст поста. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание поста на основе ответов
+         * @param {CreatePostRequest} createPostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreatePost: async (createPostRequest: CreatePostRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createPostRequest' is not null or undefined
+            assertParamExists('postContentCreatePost', 'createPostRequest', createPostRequest)
+            const localVarPath = `/content/create_post/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createPostRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ContentApi - functional programming interface
+ * @export
+ */
+export const ContentApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ContentApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание изображения на основе описания
+         * @param {CreatePostImageRequest} createPostImageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentCreateImagePost(createPostImageRequest: CreatePostImageRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostContentCreateImagePost200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentCreateImagePost(createPostImageRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentCreateImagePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает описание изображения (prompt) и его размер. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание изображения на основе описания
+         * @param {CreatePromptImageRequest} createPromptImageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentCreateImagePrompt(createPromptImageRequest: CreatePromptImageRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostContentCreateImagePost200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentCreateImagePrompt(createPromptImageRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentCreateImagePrompt']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает ответы на вопросы, параметры длины, тему поста, дополнительные примечания и тип поста. На основе этих данных генерируется текст поста. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание поста на основе ответов
+         * @param {CreatePostRequest} createPostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentCreatePost(createPostRequest: CreatePostRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostContentCreatePost200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentCreatePost(createPostRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentCreatePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ContentApi - factory interface
+ * @export
+ */
+export const ContentApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ContentApiFp(configuration)
+    return {
+        /**
+         * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание изображения на основе описания
+         * @param {CreatePostImageRequest} createPostImageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreateImagePost(createPostImageRequest: CreatePostImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostContentCreateImagePost200Response> {
+            return localVarFp.postContentCreateImagePost(createPostImageRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает описание изображения (prompt) и его размер. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание изображения на основе описания
+         * @param {CreatePromptImageRequest} createPromptImageRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreateImagePrompt(createPromptImageRequest: CreatePromptImageRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostContentCreateImagePost200Response> {
+            return localVarFp.postContentCreateImagePrompt(createPromptImageRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает ответы на вопросы, параметры длины, тему поста, дополнительные примечания и тип поста. На основе этих данных генерируется текст поста. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание поста на основе ответов
+         * @param {CreatePostRequest} createPostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreatePost(createPostRequest: CreatePostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostContentCreatePost200Response> {
+            return localVarFp.postContentCreatePost(createPostRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ContentApi - object-oriented interface
+ * @export
+ * @class ContentApi
+ * @extends {BaseAPI}
+ */
+export class ContentApi extends BaseAPI {
+    /**
+     * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Создание изображения на основе описания
+     * @param {CreatePostImageRequest} createPostImageRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentCreateImagePost(createPostImageRequest: CreatePostImageRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentCreateImagePost(createPostImageRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает описание изображения (prompt) и его размер. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Создание изображения на основе описания
+     * @param {CreatePromptImageRequest} createPromptImageRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentCreateImagePrompt(createPromptImageRequest: CreatePromptImageRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentCreateImagePrompt(createPromptImageRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает ответы на вопросы, параметры длины, тему поста, дополнительные примечания и тип поста. На основе этих данных генерируется текст поста. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Создание поста на основе ответов
+     * @param {CreatePostRequest} createPostRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentCreatePost(createPostRequest: CreatePostRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentCreatePost(createPostRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * CustomizeApi - axios parameter creator
+ * @export
+ */
+export const CustomizeApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает ответы пользователя на вопросы. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение ответов пользователя на вопросы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCustomizeGetUserAnswers: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/customize/get_user_answers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получить профиль на основе ответов
+         * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCustomizeGetProfileFromAnswers: async (getProfileFromAnswersRequest: GetProfileFromAnswersRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getProfileFromAnswersRequest' is not null or undefined
+            assertParamExists('postCustomizeGetProfileFromAnswers', 'getProfileFromAnswersRequest', getProfileFromAnswersRequest)
+            const localVarPath = `/customize/get_profile_from_answers`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getProfileFromAnswersRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает ссылку на профиль и возвращает данные профиля. Если ссылка невалидна или профиль не найден, возвращается ошибка `400 Bad Request`. 
+         * @summary Получить профиль по ссылке
+         * @param {GetProfileFromUrlRequest} getProfileFromUrlRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCustomizeGetProfileFromUrl: async (getProfileFromUrlRequest: GetProfileFromUrlRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getProfileFromUrlRequest' is not null or undefined
+            assertParamExists('postCustomizeGetProfileFromUrl', 'getProfileFromUrlRequest', getProfileFromUrlRequest)
+            const localVarPath = `/customize/get_profile_from_url`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getProfileFromUrlRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CustomizeApi - functional programming interface
+ * @export
+ */
+export const CustomizeApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CustomizeApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает ответы пользователя на вопросы. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение ответов пользователя на вопросы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCustomizeGetUserAnswers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetProfileFromAnswersRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCustomizeGetUserAnswers(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomizeApi.getCustomizeGetUserAnswers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получить профиль на основе ответов
+         * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postCustomizeGetProfileFromAnswers(getProfileFromAnswersRequest: GetProfileFromAnswersRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCustomizeGetProfileFromAnswers(getProfileFromAnswersRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomizeApi.postCustomizeGetProfileFromAnswers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает ссылку на профиль и возвращает данные профиля. Если ссылка невалидна или профиль не найден, возвращается ошибка `400 Bad Request`. 
+         * @summary Получить профиль по ссылке
+         * @param {GetProfileFromUrlRequest} getProfileFromUrlRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postCustomizeGetProfileFromUrl(getProfileFromUrlRequest: GetProfileFromUrlRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCustomizeGetProfileFromUrl(getProfileFromUrlRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomizeApi.postCustomizeGetProfileFromUrl']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CustomizeApi - factory interface
+ * @export
+ */
+export const CustomizeApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CustomizeApiFp(configuration)
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает ответы пользователя на вопросы. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение ответов пользователя на вопросы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCustomizeGetUserAnswers(options?: RawAxiosRequestConfig): AxiosPromise<GetProfileFromAnswersRequest> {
+            return localVarFp.getCustomizeGetUserAnswers(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получить профиль на основе ответов
+         * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCustomizeGetProfileFromAnswers(getProfileFromAnswersRequest: GetProfileFromAnswersRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postCustomizeGetProfileFromAnswers(getProfileFromAnswersRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает ссылку на профиль и возвращает данные профиля. Если ссылка невалидна или профиль не найден, возвращается ошибка `400 Bad Request`. 
+         * @summary Получить профиль по ссылке
+         * @param {GetProfileFromUrlRequest} getProfileFromUrlRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCustomizeGetProfileFromUrl(getProfileFromUrlRequest: GetProfileFromUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postCustomizeGetProfileFromUrl(getProfileFromUrlRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CustomizeApi - object-oriented interface
+ * @export
+ * @class CustomizeApi
+ * @extends {BaseAPI}
+ */
+export class CustomizeApi extends BaseAPI {
+    /**
+     * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает ответы пользователя на вопросы. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Получение ответов пользователя на вопросы
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomizeApi
+     */
+    public getCustomizeGetUserAnswers(options?: RawAxiosRequestConfig) {
+        return CustomizeApiFp(this.configuration).getCustomizeGetUserAnswers(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Получить профиль на основе ответов
+     * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomizeApi
+     */
+    public postCustomizeGetProfileFromAnswers(getProfileFromAnswersRequest: GetProfileFromAnswersRequest, options?: RawAxiosRequestConfig) {
+        return CustomizeApiFp(this.configuration).postCustomizeGetProfileFromAnswers(getProfileFromAnswersRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает ссылку на профиль и возвращает данные профиля. Если ссылка невалидна или профиль не найден, возвращается ошибка `400 Bad Request`. 
+     * @summary Получить профиль по ссылке
+     * @param {GetProfileFromUrlRequest} getProfileFromUrlRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomizeApi
+     */
+    public postCustomizeGetProfileFromUrl(getProfileFromUrlRequest: GetProfileFromUrlRequest, options?: RawAxiosRequestConfig) {
+        return CustomizeApiFp(this.configuration).postCustomizeGetProfileFromUrl(getProfileFromUrlRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * PaymentApi - axios parameter creator
  * @export
  */
@@ -770,6 +1464,107 @@ export class PaymentApi extends BaseAPI {
      */
     public postPaymentUsePromo(usePromoRequest: UsePromoRequest, options?: RawAxiosRequestConfig) {
         return PaymentApiFp(this.configuration).postPaymentUsePromo(usePromoRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ProfileApi - axios parameter creator
+ * @export
+ */
+export const ProfileApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает всю информацию о пользователе. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение ответов пользователя на вопросы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProfileGetAllUserInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/profile/get_all_user_info`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ProfileApi - functional programming interface
+ * @export
+ */
+export const ProfileApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProfileApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает всю информацию о пользователе. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение ответов пользователя на вопросы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProfileGetAllUserInfo(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProfileGetAllUserInfo(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ProfileApi.getProfileGetAllUserInfo']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ProfileApi - factory interface
+ * @export
+ */
+export const ProfileApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProfileApiFp(configuration)
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает всю информацию о пользователе. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение ответов пользователя на вопросы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProfileGetAllUserInfo(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.getProfileGetAllUserInfo(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ProfileApi - object-oriented interface
+ * @export
+ * @class ProfileApi
+ * @extends {BaseAPI}
+ */
+export class ProfileApi extends BaseAPI {
+    /**
+     * Роут принимает access_token и refresh_token в заголовках, проверяет их и возвращает всю информацию о пользователе. Если токены невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Получение ответов пользователя на вопросы
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ProfileApi
+     */
+    public getProfileGetAllUserInfo(options?: RawAxiosRequestConfig) {
+        return ProfileApiFp(this.configuration).getProfileGetAllUserInfo(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

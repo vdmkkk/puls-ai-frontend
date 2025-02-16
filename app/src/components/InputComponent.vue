@@ -1,6 +1,6 @@
 <template>
   <q-input
-    type="textarea"
+    :type="type"
     :model-value="modelValue"
     rounded
     standout="standout-class"
@@ -12,7 +12,14 @@
     <template v-slot:append>
       <q-btn
         v-if="hasVoice"
-        style="align-self: end; color: white"
+        style="
+          align-self: end;
+          justify-self: end;
+          color: white;
+          position: absolute;
+          right: 10px;
+          top: 10px;
+        "
         round
         icon="mic"
         class="q-mr-sm q-mb-md"
@@ -24,13 +31,17 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
 
-const props = defineProps<{
-  modelValue: string | undefined
-  isHigh?: boolean
-  isWide?: boolean
-  label?: string
-  hasVoice?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | undefined
+    isHigh?: boolean
+    isWide?: boolean
+    label?: string
+    hasVoice?: boolean
+    type?: string
+  }>(),
+  { type: 'textarea' },
+)
 const { modelValue } = toRefs(props)
 
 const emit = defineEmits<{

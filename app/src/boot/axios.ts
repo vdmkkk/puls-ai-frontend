@@ -1,7 +1,7 @@
 // @ts-nocheck //
 import { defineBoot } from '#q-app/wrappers'
 import axios, { type AxiosInstance } from 'axios'
-import { AuthApi, Configuration } from 'src/api'
+import { AuthApi, Configuration, CustomizeApi, ContentApi, ProfileApi } from 'src/api'
 import { PaymentApi } from 'src/api'
 import Cookies from 'js-cookie'
 declare module 'vue' {
@@ -25,6 +25,9 @@ const config = new Configuration({
 const apiInstances = {
   authApi: new AuthApi(config),
   paymentApi: new PaymentApi(config),
+  customizeApi: new CustomizeApi(config),
+  profileApi: new ProfileApi(config),
+  contentApi: new ContentApi(config),
 }
 
 Object.entries(apiInstances).forEach(([_, apiInstance]) => {
