@@ -33,9 +33,13 @@ const apiInstances = {
 Object.entries(apiInstances).forEach(([_, apiInstance]) => {
   apiInstance.axios.interceptors.request.use(
     (config) => {
-      const token = Cookies.get('jwtToken')
+      // config.withCredentials = true
+      const token = Cookies.get('refresh_token')
+      const access_token = Cookies.get('access_token')
       if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        // config.headers['access_token'] = `${access_token}`
+        // config.headers['refresh_token'] = `${token}`
+        // config.headers['Cookie'] = `access_token=${access_token}; refresh_token=${token}`
       }
       return config
     },
@@ -43,18 +47,18 @@ Object.entries(apiInstances).forEach(([_, apiInstance]) => {
   )
 
   // Response interceptor to handle 401 errors
-  apiInstance.axios.interceptors.response.use(
-    // бля метод protected но один хуй работает. Люблю TS
-    (response) => response,
-    async (error) => {
-      if (error.response && error.response.status === 401) {
-        Cookies.remove('jwtToken')
-        window.location.replace('/login') // через useRouter не работает :)
-      }
+  // apiInstance.axios.interceptors.response.use(
+  //   // бля метод protected но один хуй работает. Люблю TS
+  //   (response) => response,
+  //   async (error) => {
+  //     if (error.response && error.response.status === 401) {
+  //       Cookies.remove('refresh_token')
+  //       window.location.replace('/login') // через useRouter не работает :)
+  //     }
 
-      return Promise.reject(error)
-    },
-  )
+  //     return Promise.reject(error)
+  //   },
+  // )
 })
 
 export default defineBoot(({ app }) => {

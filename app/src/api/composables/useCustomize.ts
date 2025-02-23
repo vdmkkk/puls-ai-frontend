@@ -11,7 +11,14 @@ export default function useCustomize() {
   const { t } = useI18n()
   const apiGetUserAnswers = async () => {
     return await apiInstances.customizeApi
-      .getCustomizeGetUserAnswers()
+      .getCustomizeGetUserAnswers({
+        headers: {
+          // Cookie: `access_token=${Cookies.get('accessToken')}; refresh_token=${Cookies.get('refresh_token')}`,
+          access_token: Cookies.get('access_token'),
+          refresh_token: Cookies.get('refresh_token'),
+        },
+        // withCredentials: true,
+      })
       .then((res) => {
         return res
       })

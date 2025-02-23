@@ -21,7 +21,7 @@ const navigateTo = (path: string) => {
 }
 
 onMounted(() => {
-  const jwt = Cookies.get('jwtToken')
+  const jwt = Cookies.get('refresh_token')
   if (jwt) {
     router.push('/')
   }

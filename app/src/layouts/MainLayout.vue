@@ -76,8 +76,8 @@ const links = [
     icon: 'schedule_send',
   },
   {
-    name: 'Проекты',
-    to: 'projects',
+    name: 'Архив',
+    to: 'archive',
     icon: 'folder',
   },
 ]
@@ -87,7 +87,7 @@ function toggleLeftDrawer() {
 }
 
 onMounted(() => {
-  const jwt = Cookies.get('jwtToken')
+  const jwt = Cookies.get('refresh_token')
   if (!jwt) {
     router.push('/login')
   }

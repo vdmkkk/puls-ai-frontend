@@ -5,7 +5,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/MainPage.vue') },
+      { path: '', component: () => import('pages/ProfilePage.vue') },
       {
         path: 'content-plan',
         name: 'content-plan',
@@ -13,10 +13,10 @@ const routes: RouteRecordRaw[] = [
       },
       { path: 'texts', name: 'texts', component: () => import('pages/TextsPage.vue') },
       { path: 'images', name: 'images', component: () => import('pages/ImagesPage.vue') },
-      { path: 'projects', name: 'projects', component: () => import('pages/ProjectsPage.vue') },
+      { path: 'archive', name: 'archive', component: () => import('pages/ArchivePage.vue') },
       { path: 'posting', name: 'posting', component: () => import('pages/AutoPostPage.vue') },
 
-      { path: 'profile', name: 'profile', component: () => import('pages/ProfilePage.vue') },
+      { path: 'profile', name: 'profile', component: () => import('pages/MainPage.vue') },
     ],
   },
   {

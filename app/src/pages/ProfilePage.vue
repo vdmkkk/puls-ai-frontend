@@ -3,11 +3,12 @@
 import QuestionComponent from 'src/components/QuestionComponent.vue'
 import BlobComponent from 'src/components/BlobComponent.vue'
 
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import QuestionDialog from 'src/dialogs/QuestionDialog.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import useCustomize from 'src/api/composables/useCustomize'
+import { debounce } from 'quasar'
 
 const questions = ref({
   'Как вас зовут?': 'answer1',
@@ -79,8 +80,22 @@ const handlerSaveDialog = (answer: string) => {
   handlerCloseDialog()
 }
 
+const processAnswers = () => {
+  apiSaveAnswers(answers.value)
+}
+
+const debouncedProcessAnswers = debounce(processAnswers, 1000)
+
+watch(
+  answers,
+  () => {
+    debouncedProcessAnswers()
+  },
+  { deep: true },
+)
+
 onMounted(() => {
-  // apiGetUserAnswers()
+  apiGetUserAnswers()
 })
 </script>
 
@@ -145,9 +160,11 @@ onMounted(() => {
   flex-direction: column;
   width: 100%;
   height: 100%;
+  padding-left: 20vw;
+  padding-right: 20vw;
 
   .header {
-    margin-left: 20%;
+    // margin-left: 20%;
     margin-right: 20%;
     margin-top: 30px;
     margin-bottom: 30px;

@@ -13,8 +13,8 @@ export default function useAuth() {
     return await apiInstances.authApi
       .postAuthLogin({ email, password })
       .then((res) => {
-        console.log(res.headers.toJSON())
-        Cookies.set('jwtToken', res.headers.get('Access_token'))
+        Cookies.set('refresh_token', res.data.Refresh_token)
+        Cookies.set('access_token', res.data.Access_token)
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
@@ -39,7 +39,8 @@ export default function useAuth() {
         verification_code: verificationCode,
       })
       .then((res) => {
-        Cookies.set('jwtToken', res.headers.get('Access_token'))
+        Cookies.set('access_token', res.data.Access_token)
+        Cookies.set('refresh_token', res.data.Refresh_token)
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)

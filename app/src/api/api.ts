@@ -188,6 +188,19 @@ export interface GetAuthGetUserId200Response {
 /**
  * 
  * @export
+ * @interface GetPostByIdRequest
+ */
+export interface GetPostByIdRequest {
+    /**
+     * id поста
+     * @type {number}
+     * @memberof GetPostByIdRequest
+     */
+    'post_id'?: number;
+}
+/**
+ * 
+ * @export
  * @interface GetProfileFromAnswersRequest
  */
 export interface GetProfileFromAnswersRequest {
@@ -321,6 +334,19 @@ export interface PostContentCreatePost200Response {
 /**
  * 
  * @export
+ * @interface PostContentSavePost200Response
+ */
+export interface PostContentSavePost200Response {
+    /**
+     * id сохраненного поста
+     * @type {number}
+     * @memberof PostContentSavePost200Response
+     */
+    'post_id'?: number;
+}
+/**
+ * 
+ * @export
  * @interface PostPaymentUsePromo200Response
  */
 export interface PostPaymentUsePromo200Response {
@@ -367,6 +393,25 @@ export interface RegisterRequest {
      * @memberof RegisterRequest
      */
     'verification_code': number;
+}
+/**
+ * 
+ * @export
+ * @interface SavePostRequest
+ */
+export interface SavePostRequest {
+    /**
+     * массив ссылок на изображения
+     * @type {Array<string>}
+     * @memberof SavePostRequest
+     */
+    'image_urls'?: Array<string>;
+    /**
+     * текст поста
+     * @type {string}
+     * @memberof SavePostRequest
+     */
+    'text'?: string;
 }
 /**
  * 
@@ -871,6 +916,36 @@ export class AuthApi extends BaseAPI {
 export const ContentApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение постов пользователя
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContentGetUsersPosts: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/content/get_users_posts/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Создание изображения на основе описания
          * @param {CreatePostImageRequest} createPostImageRequest 
@@ -978,6 +1053,78 @@ export const ContentApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Роут принимает id поста и возвращает информацию о нем Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение информации о посте по id
+         * @param {GetPostByIdRequest} getPostByIdRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentGetPostById: async (getPostByIdRequest: GetPostByIdRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getPostByIdRequest' is not null or undefined
+            assertParamExists('postContentGetPostById', 'getPostByIdRequest', getPostByIdRequest)
+            const localVarPath = `/content/get_post_by_id/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getPostByIdRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Сохранение поста
+         * @param {SavePostRequest} savePostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentSavePost: async (savePostRequest: SavePostRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'savePostRequest' is not null or undefined
+            assertParamExists('postContentSavePost', 'savePostRequest', savePostRequest)
+            const localVarPath = `/content/save_post/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(savePostRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -988,6 +1135,18 @@ export const ContentApiAxiosParamCreator = function (configuration?: Configurati
 export const ContentApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ContentApiAxiosParamCreator(configuration)
     return {
+        /**
+         * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение постов пользователя
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getContentGetUsersPosts(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getContentGetUsersPosts(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.getContentGetUsersPosts']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Создание изображения на основе описания
@@ -1027,6 +1186,32 @@ export const ContentApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentCreatePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Роут принимает id поста и возвращает информацию о нем Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение информации о посте по id
+         * @param {GetPostByIdRequest} getPostByIdRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentGetPostById(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SavePostRequest>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentGetPostById(getPostByIdRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentGetPostById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Сохранение поста
+         * @param {SavePostRequest} savePostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentSavePost(savePostRequest: SavePostRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostContentSavePost200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentSavePost(savePostRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentSavePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -1037,6 +1222,15 @@ export const ContentApiFp = function(configuration?: Configuration) {
 export const ContentApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = ContentApiFp(configuration)
     return {
+        /**
+         * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение постов пользователя
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContentGetUsersPosts(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.getContentGetUsersPosts(options).then((request) => request(axios, basePath));
+        },
         /**
          * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Создание изображения на основе описания
@@ -1067,6 +1261,26 @@ export const ContentApiFactory = function (configuration?: Configuration, basePa
         postContentCreatePost(createPostRequest: CreatePostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostContentCreatePost200Response> {
             return localVarFp.postContentCreatePost(createPostRequest, options).then((request) => request(axios, basePath));
         },
+        /**
+         * Роут принимает id поста и возвращает информацию о нем Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение информации о посте по id
+         * @param {GetPostByIdRequest} getPostByIdRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentGetPostById(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<SavePostRequest> {
+            return localVarFp.postContentGetPostById(getPostByIdRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Сохранение поста
+         * @param {SavePostRequest} savePostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentSavePost(savePostRequest: SavePostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostContentSavePost200Response> {
+            return localVarFp.postContentSavePost(savePostRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -1077,6 +1291,17 @@ export const ContentApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class ContentApi extends BaseAPI {
+    /**
+     * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Получение постов пользователя
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public getContentGetUsersPosts(options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).getContentGetUsersPosts(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
      * @summary Создание изображения на основе описания
@@ -1111,6 +1336,30 @@ export class ContentApi extends BaseAPI {
      */
     public postContentCreatePost(createPostRequest: CreatePostRequest, options?: RawAxiosRequestConfig) {
         return ContentApiFp(this.configuration).postContentCreatePost(createPostRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает id поста и возвращает информацию о нем Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Получение информации о посте по id
+     * @param {GetPostByIdRequest} getPostByIdRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentGetPostById(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentGetPostById(getPostByIdRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Сохранение поста
+     * @param {SavePostRequest} savePostRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentSavePost(savePostRequest: SavePostRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentSavePost(savePostRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
