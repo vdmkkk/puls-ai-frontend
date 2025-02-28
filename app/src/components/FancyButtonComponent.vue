@@ -19,10 +19,15 @@ const emits = defineEmits(['click'])
 
 <style lang="scss" scoped>
 .fancy-btn {
-  border: 3px solid #6836b8;
   color: #fff;
   width: fit-content;
   border-radius: 10px;
+  background-color: #4e4571;
   font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.fancy-btn:hover {
+  background-color: #625985;
 }
 </style>

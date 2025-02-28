@@ -64,6 +64,98 @@ export interface ChangePasswordRequest {
 /**
  * 
  * @export
+ * @interface ContentTitles
+ */
+export interface ContentTitles {
+    /**
+     * Заголовок для кейса или истории успеха
+     * @type {string}
+     * @memberof ContentTitles
+     */
+    'title1': string;
+    /**
+     * Заголовок для прогнозов или трендов
+     * @type {string}
+     * @memberof ContentTitles
+     */
+    'title2': string;
+    /**
+     * Заголовок для советов или лайфхаков
+     * @type {string}
+     * @memberof ContentTitles
+     */
+    'title3': string;
+    /**
+     * Заголовок для мотивационного контента
+     * @type {string}
+     * @memberof ContentTitles
+     */
+    'title4': string;
+    /**
+     * Заголовок для презентации уникальных методов
+     * @type {string}
+     * @memberof ContentTitles
+     */
+    'title5': string;
+    /**
+     * Заголовок для разоблачений или экспертных мнений
+     * @type {string}
+     * @memberof ContentTitles
+     */
+    'title6': string;
+}
+/**
+ * 
+ * @export
+ * @interface CreateContentPlanRequest
+ */
+export interface CreateContentPlanRequest {
+    /**
+     * Ответ на вопрос 1 (тема для первого квартала)
+     * @type {string}
+     * @memberof CreateContentPlanRequest
+     */
+    'q1': string;
+    /**
+     * Ответ на вопрос 2 (тема для второго квартала)
+     * @type {string}
+     * @memberof CreateContentPlanRequest
+     */
+    'q2': string;
+    /**
+     * Ответ на вопрос 3 (тема для третьего квартала)
+     * @type {string}
+     * @memberof CreateContentPlanRequest
+     */
+    'q3': string;
+    /**
+     * Ответ на вопрос 4 (тема для четвертого квартала)
+     * @type {string}
+     * @memberof CreateContentPlanRequest
+     */
+    'q4': string;
+    /**
+     * Ответ на вопрос 5 (дополнительная тема)
+     * @type {string}
+     * @memberof CreateContentPlanRequest
+     */
+    'q5': string;
+    /**
+     * Ответ на вопрос 6 (дополнительная тема)
+     * @type {string}
+     * @memberof CreateContentPlanRequest
+     */
+    'q6': string;
+    /**
+     * Исторический контекст или предыдущие материалы по теме
+     * @type {Array<string>}
+     * @memberof CreateContentPlanRequest
+     */
+    'topic_history': Array<string>;
+}
+/**
+ * 
+ * @export
  * @interface CreatePostImageRequest
  */
 export interface CreatePostImageRequest {
@@ -407,6 +499,12 @@ export interface SavePostRequest {
      */
     'image_urls'?: Array<string>;
     /**
+     * название поста
+     * @type {string}
+     * @memberof SavePostRequest
+     */
+    'post_topic'?: string;
+    /**
      * текст поста
      * @type {string}
      * @memberof SavePostRequest
@@ -438,6 +536,37 @@ export interface SendLinkRequest {
      * @memberof SendLinkRequest
      */
     'email': string;
+}
+/**
+ * 
+ * @export
+ * @interface UpdatePostRequest
+ */
+export interface UpdatePostRequest {
+    /**
+     * массив ссылок на изображения
+     * @type {Array<string>}
+     * @memberof UpdatePostRequest
+     */
+    'image_urls'?: Array<string>;
+    /**
+     * id поста
+     * @type {number}
+     * @memberof UpdatePostRequest
+     */
+    'post_id'?: number;
+    /**
+     * название поста
+     * @type {string}
+     * @memberof UpdatePostRequest
+     */
+    'post_topic'?: string;
+    /**
+     * текст поста
+     * @type {string}
+     * @memberof UpdatePostRequest
+     */
+    'text'?: string;
 }
 /**
  * 
@@ -946,6 +1075,78 @@ export const ContentApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary обновление
+         * @param {UpdatePostRequest} updatePostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        patchContentUpdatePost: async (updatePostRequest: UpdatePostRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'updatePostRequest' is not null or undefined
+            assertParamExists('patchContentUpdatePost', 'updatePostRequest', updatePostRequest)
+            const localVarPath = `/content/update_post/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(updatePostRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает ответы на вопросы и историю постов. На основе этих данных генерируется контент план. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание контент плана
+         * @param {CreateContentPlanRequest} createContentPlanRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreateContentPlan: async (createContentPlanRequest: CreateContentPlanRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createContentPlanRequest' is not null or undefined
+            assertParamExists('postContentCreateContentPlan', 'createContentPlanRequest', createContentPlanRequest)
+            const localVarPath = `/content/create_content_plan/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createContentPlanRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Создание изображения на основе описания
          * @param {CreatePostImageRequest} createPostImageRequest 
@@ -1148,6 +1349,32 @@ export const ContentApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary обновление
+         * @param {UpdatePostRequest} updatePostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async patchContentUpdatePost(updatePostRequest: UpdatePostRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostContentSavePost200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.patchContentUpdatePost(updatePostRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.patchContentUpdatePost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает ответы на вопросы и историю постов. На основе этих данных генерируется контент план. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание контент плана
+         * @param {CreateContentPlanRequest} createContentPlanRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentCreateContentPlan(createContentPlanRequest: CreateContentPlanRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ContentTitles>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentCreateContentPlan(createContentPlanRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentCreateContentPlan']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Создание изображения на основе описания
          * @param {CreatePostImageRequest} createPostImageRequest 
@@ -1232,6 +1459,26 @@ export const ContentApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getContentGetUsersPosts(options).then((request) => request(axios, basePath));
         },
         /**
+         * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary обновление
+         * @param {UpdatePostRequest} updatePostRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        patchContentUpdatePost(updatePostRequest: UpdatePostRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostContentSavePost200Response> {
+            return localVarFp.patchContentUpdatePost(updatePostRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает ответы на вопросы и историю постов. На основе этих данных генерируется контент план. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Создание контент плана
+         * @param {CreateContentPlanRequest} createContentPlanRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentCreateContentPlan(createContentPlanRequest: CreateContentPlanRequest, options?: RawAxiosRequestConfig): AxiosPromise<ContentTitles> {
+            return localVarFp.postContentCreateContentPlan(createContentPlanRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Роут принимает название поста и размер желаемого изображения. На основе этих данных генерируется изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Создание изображения на основе описания
          * @param {CreatePostImageRequest} createPostImageRequest 
@@ -1300,6 +1547,30 @@ export class ContentApi extends BaseAPI {
      */
     public getContentGetUsersPosts(options?: RawAxiosRequestConfig) {
         return ContentApiFp(this.configuration).getContentGetUsersPosts(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary обновление
+     * @param {UpdatePostRequest} updatePostRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public patchContentUpdatePost(updatePostRequest: UpdatePostRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).patchContentUpdatePost(updatePostRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает ответы на вопросы и историю постов. На основе этих данных генерируется контент план. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Создание контент плана
+     * @param {CreateContentPlanRequest} createContentPlanRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentCreateContentPlan(createContentPlanRequest: CreateContentPlanRequest, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentCreateContentPlan(createContentPlanRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

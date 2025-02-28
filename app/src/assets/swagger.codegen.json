@@ -25,6 +25,87 @@
         "required": ["token", "password"],
         "type": "object"
       },
+      "ContentTitles": {
+        "properties": {
+          "title1": {
+            "description": "Заголовок для кейса или истории успеха",
+            "example": "Как я нашел ключ к string за 24 часа",
+            "type": "string"
+          },
+          "title2": {
+            "description": "Заголовок для прогнозов или трендов",
+            "example": "3 тренда 2025 года, которые изменят ваш подход к string",
+            "type": "string"
+          },
+          "title3": {
+            "description": "Заголовок для советов или лайфхаков",
+            "example": "Секрет, который я использую, чтобы string больше не мешал",
+            "type": "string"
+          },
+          "title4": {
+            "description": "Заголовок для мотивационного контента",
+            "example": "Почему string — это не проблема, а возможность?",
+            "type": "string"
+          },
+          "title5": {
+            "description": "Заголовок для презентации уникальных методов",
+            "example": "Мой метод, который превращает string в преимущество",
+            "type": "string"
+          },
+          "title6": {
+            "description": "Заголовок для разоблачений или экспертных мнений",
+            "example": "Что скрывают эксперты о string? И как это использовать",
+            "type": "string"
+          }
+        },
+        "required": ["title1", "title2", "title3", "title4", "title5", "title6"],
+        "type": "object"
+      },
+      "CreateContentPlanRequest": {
+        "properties": {
+          "q1": {
+            "description": "Ответ на вопрос 1 (тема для первого квартала)",
+            "example": "Основы маркетинга",
+            "type": "string"
+          },
+          "q2": {
+            "description": "Ответ на вопрос 2 (тема для второго квартала)",
+            "example": "Продвижение в социальных сетях",
+            "type": "string"
+          },
+          "q3": {
+            "description": "Ответ на вопрос 3 (тема для третьего квартала)",
+            "example": "SEO-оптимизация",
+            "type": "string"
+          },
+          "q4": {
+            "description": "Ответ на вопрос 4 (тема для четвертого квартала)",
+            "example": "Анализ результатов и стратегии на следующий год",
+            "type": "string"
+          },
+          "q5": {
+            "description": "Ответ на вопрос 5 (дополнительная тема)",
+            "example": "Работа с возражениями клиентов",
+            "type": "string"
+          },
+          "q6": {
+            "description": "Ответ на вопрос 6 (дополнительная тема)",
+            "example": "Автоматизация маркетинга",
+            "type": "string"
+          },
+          "topic_history": {
+            "description": "Исторический контекст или предыдущие материалы по теме",
+            "example": [
+              "В прошлом году мы фокусировались на email-маркетинге.",
+              "Ранее мы изучали контент-стратегии."
+            ],
+            "items": { "type": "string" },
+            "type": "array"
+          }
+        },
+        "required": ["q1", "q2", "q3", "q4", "q5", "q6", "topic_history"],
+        "type": "object"
+      },
       "CreatePostImageRequest": {
         "properties": {
           "post": {
@@ -198,6 +279,11 @@
             "items": { "type": "string" },
             "type": "array"
           },
+          "post_topic": {
+            "description": "название поста",
+            "example": "**\"топ смешных гвоздей",
+            "type": "string"
+          },
           "text": {
             "description": "текст поста",
             "example": "**\"Почему ваш бизнес в Instagram не растет, а конкуренты уже на вершине?\"**  \n\nЗнакомо чувство, когда ...",
@@ -214,6 +300,31 @@
       "SendLinkRequest": {
         "properties": { "email": { "example": "user@example.com", "type": "string" } },
         "required": ["email"],
+        "type": "object"
+      },
+      "UpdatePostRequest": {
+        "properties": {
+          "image_urls": {
+            "description": "массив ссылок на изображения",
+            "example": [
+              "https://images.s3.amazonaws.com/1-9d105248-e44a-47f7-bf91-5e082af2025c",
+              "https://example.com/image2.jpg"
+            ],
+            "items": { "type": "string" },
+            "type": "array"
+          },
+          "post_id": { "description": "id поста", "example": 123, "type": "integer" },
+          "post_topic": {
+            "description": "название поста",
+            "example": "**\"топ смешных гвоздей",
+            "type": "string"
+          },
+          "text": {
+            "description": "текст поста",
+            "example": "**\"Почему ваш бизнес в Instagram не растет, а конкуренты уже на вершине?\"**  \n\nЗнакомо чувство, когда ...",
+            "type": "string"
+          }
+        },
         "type": "object"
       },
       "UsePromoRequest": {
@@ -430,6 +541,47 @@
         },
         "summary": "Отправка ссылки для восстановления пароля",
         "tags": ["auth"]
+      }
+    },
+    "/content/create_content_plan/": {
+      "post": {
+        "description": "Роут принимает ответы на вопросы и историю постов.\nНа основе этих данных генерируется контент план. Если данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostContentCreateContentPlan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateContentPlanRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ContentTitles" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Создание контент плана",
+        "tags": ["content"]
       }
     },
     "/content/create_image_post/": {
@@ -700,6 +852,56 @@
           }
         },
         "summary": "Сохранение поста",
+        "tags": ["content"]
+      }
+    },
+    "/content/update_post/": {
+      "patch": {
+        "description": "Роут принимает id, текст поста и ссылку на изображение.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PatchContentUpdatePost",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdatePostRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "post_id": {
+                      "description": "id сохраненного поста",
+                      "example": 123,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "пост успешно сохранен"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "обновление",
         "tags": ["content"]
       }
     },

@@ -1,30 +1,38 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="lHh lpR fFf">
     <q-header elevated>
-      <q-toolbar style="background-color: #1e1e29">
-        <q-btn flat round dense icon="menu" class="q-mr-sm" @click="toggleLeftDrawer" />
+      <q-toolbar style="background-color: #1e1e29" class="justify-end">
+        <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" @click="toggleLeftDrawer" /> -->
+
+        <div class="actions"><q-icon name="bolt" style="scale: 1.3" /> 10</div>
+        <!-- <q-btn @click="navigateTo('profile')" flat round dense icon="person" /> -->
+      </q-toolbar>
+    </q-header>
+    <q-drawer v-model="leftDrawerOpen" show-if-above style="background-color: #2a2a32">
+      <!-- <a class="drawer-title">Меню</a> -->
+      <div class="row drawer-title">
         <q-avatar square>
           <img src="/src/assets/svg/logo.svg" />
         </q-avatar>
 
-        <q-toolbar-title>puls.</q-toolbar-title>
-        <div class="actions"><q-icon name="bolt" style="scale: 1.3" /> 10</div>
-        <q-btn @click="navigateTo('profile')" flat round dense icon="person" />
-      </q-toolbar>
-    </q-header>
-    <q-drawer v-model="leftDrawerOpen" show-if-above style="background-color: #2d2d37">
-      <!-- <a class="drawer-title">Меню</a> -->
+        <a class="title">puls.</a>
+      </div>
+
       <q-list>
         <template v-for="(menuItem, index) in links" :key="index">
-          <q-item clickable v-ripple class="menu-item" @click="navigateTo(menuItem.to)">
+          <q-item
+            clickable
+            v-ripple
+            :class="{ 'menu-item': true, active: isActive(menuItem.to) }"
+            @click="navigateTo(menuItem.to)"
+          >
             <q-item-section avatar>
-              <q-icon :name="menuItem.icon" />
+              <img :src="menuItem.icon" />
             </q-item-section>
             <q-item-section>
               {{ menuItem.name }}
             </q-item-section>
           </q-item>
-          <q-separator style="height: 2px" v-if="index != links.length - 1" />
         </template>
       </q-list>
     </q-drawer>
@@ -40,6 +48,13 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
+import mane from 'src/assets/icons/mane.svg'
+import plan from 'src/assets/icons/plan.svg'
+import text from 'src/assets/icons/text.svg'
+import image2 from 'src/assets/icons/image2.svg'
+import autoposting from 'src/assets/icons/autoposting.svg'
+import profile from 'src/assets/icons/profile.svg'
+import projects from 'src/assets/icons/projects.svg'
 
 const router = useRouter()
 
@@ -53,32 +68,37 @@ const links = [
   {
     name: 'Главная',
     to: '/',
-    icon: 'school',
+    icon: mane,
   },
   {
     name: 'Контент-план',
-    to: 'content-plan',
-    icon: 'event_available',
+    to: '/content-plan',
+    icon: plan,
   },
   {
-    name: 'Тексты вне контент-плана',
-    to: 'texts',
-    icon: 'edit_note',
+    name: 'Авторские темы',
+    to: '/texts',
+    icon: text,
   },
   {
     name: 'Изображения',
     to: 'images',
-    icon: 'image',
+    icon: image2,
   },
   {
     name: 'Автопостинг',
     to: 'posting',
-    icon: 'schedule_send',
+    icon: autoposting,
   },
   {
     name: 'Архив',
     to: 'archive',
-    icon: 'folder',
+    icon: projects,
+  },
+  {
+    name: 'Профиль',
+    to: 'profile',
+    icon: profile,
   },
 ]
 
@@ -86,8 +106,14 @@ function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
+const isActive = (to: string) => {
+  console.log(router.currentRoute.value.path, to)
+  return router.currentRoute.value.path == to
+}
+
 onMounted(() => {
   const jwt = Cookies.get('refresh_token')
+  // console.log()
   if (!jwt) {
     router.push('/login')
   }
@@ -97,6 +123,10 @@ onMounted(() => {
 <style lang="scss" scoped>
 .app {
   background-color: #12121b;
+}
+
+.active {
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .actions {
@@ -110,17 +140,30 @@ onMounted(() => {
 
 .menu-item {
   color: white;
-  height: 70px;
+  width: 80%;
+  margin-left: 10%;
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-xxs);
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .drawer-title {
-  font-size: 24px;
-  color: white;
-  margin: 0;
-  text-align: center;
-  width: 100%;
-  display: block;
-  padding-top: 10px;
-  padding-bottom: 20px;
+  img {
+    height: var(--font-size-lg) !important;
+    width: var(--font-size-lg) !important;
+  }
+
+  .title {
+    font-size: var(--font-size-md);
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: 400;
+    color: white;
+  }
+
+  margin-left: 10%;
+  padding-top: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
 }
 </style>

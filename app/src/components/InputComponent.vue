@@ -59,7 +59,8 @@ const emit = defineEmits<{
 
 :global(.q-field__control) {
   border-radius: 20px !important;
-  background-color: rgba(133, 157, 184, 0.281) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 :global(.q-field__native) {
@@ -68,6 +69,7 @@ const emit = defineEmits<{
 }
 
 :global(.standout-class) {
-  background-color: rgba(144, 169, 197, 0.459) !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 1);
 }
 </style>

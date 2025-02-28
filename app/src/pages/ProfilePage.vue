@@ -9,6 +9,7 @@ import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import useCustomize from 'src/api/composables/useCustomize'
 import { debounce } from 'quasar'
+import useContent from 'src/api/composables/useContent'
 
 const questions = ref({
   'Как вас зовут?': 'answer1',
@@ -52,6 +53,7 @@ const answers = ref<{
 })
 
 const { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers } = useCustomize()
+const { getUserPosts } = useContent()
 
 const onSave = () => {
   console.log(answers.value)
@@ -95,7 +97,8 @@ watch(
 )
 
 onMounted(() => {
-  apiGetUserAnswers()
+  // apiGetUserAnswers()
+  getUserPosts()
 })
 </script>
 

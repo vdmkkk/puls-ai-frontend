@@ -77,7 +77,17 @@ export default function useContent() {
 
   const getUserPosts = async () => {
     return await apiInstances.contentApi
-      .getContentGetUsersPosts()
+      .getContentGetUsersPosts({
+        headers: {
+          // access_token: Cookies.get('access_token'),
+          // refresh_token: Cookies.get('refresh_token'),
+          access_token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjMsImV4cCI6MTc0MDQwNjc2MX0.6LWpvcfQwtUIMMtqo8SzthmcFS5xxTqG7OXKcDxZLFg',
+          refresh_token:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjMsImV4cCI6MTc0Mjk5ODcwMX0.pOm6D0-QbYeGCZUDRYDv0MmUY72dcv1ep7Pc6eOZCTE',
+          test: 'test123',
+        },
+      })
       .then((res) => {
         return res.data
       })
