@@ -1,9 +1,7 @@
 <template class="overflow-hidden">
   <div class="column app items-center no-wrap">
     <div class="row title-container">
-      <a class="title">Регистрация в</a><img src="/src/assets/svg/logo.svg" /><a class="title"
-        >puls.</a
-      >
+      <a class="title">Регистрация в</a><img :src="logo" /><a class="title">puls.</a>
     </div>
     <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
       <q-input
@@ -143,6 +141,7 @@ import { useErrorStore } from 'src/stores/error-store'
 import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import logo from 'src/assets/svg/logo.svg'
 
 const { t } = useI18n()
 

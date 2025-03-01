@@ -12,7 +12,7 @@
       <!-- <a class="drawer-title">Меню</a> -->
       <div class="row drawer-title">
         <q-avatar square>
-          <img src="/src/assets/svg/logo.svg" />
+          <img :src="logo" />
         </q-avatar>
 
         <a class="title">puls.</a>
@@ -55,6 +55,7 @@ import image2 from 'src/assets/icons/image2.svg'
 import autoposting from 'src/assets/icons/autoposting.svg'
 import profile from 'src/assets/icons/profile.svg'
 import projects from 'src/assets/icons/projects.svg'
+import logo from 'src/assets/svg/logo.svg'
 
 const router = useRouter()
 

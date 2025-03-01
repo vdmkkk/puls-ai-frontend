@@ -1,7 +1,7 @@
 <template>
   <div class="column app items-center">
     <div class="row title-container">
-      <a class="title">Вход в</a><img src="/src/assets/svg/logo.svg" /><a class="title">puls.</a>
+      <a class="title">Вход в</a><img :src="logo" /><a class="title">puls.</a>
     </div>
     <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
       <q-input
@@ -79,6 +79,7 @@ import { ref } from 'vue'
 import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useErrorStore } from 'src/stores/error-store'
+import logo from 'src/assets/svg/logo.svg'
 
 const { t } = useI18n()
 

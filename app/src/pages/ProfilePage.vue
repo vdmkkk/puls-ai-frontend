@@ -166,14 +166,6 @@ onMounted(() => {
             @click="handlerOpenDialog(question, answerKey)"
           />
         </div>
-        <!-- <QuestionComponent
-          class="text"
-          question="Шаблон поста"
-          v-model="answers.answer7"
-          isHigh
-          :isDisabled="isAuto"
-          @click="handlerOpenDialog('Шаблон поста', 'answer7', true)"
-        /> -->
       </div>
     </div>
   </q-page>
