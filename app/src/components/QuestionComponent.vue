@@ -1,5 +1,11 @@
 <template>
-  <div :class="'question column' + (isHigh ? ' no-wrap high' : ' justify-between')">
+  <div
+    :class="
+      'question column' +
+      (isHigh ? ' no-wrap high' : ' justify-between') +
+      (isDisabled ? ' disabled' : '')
+    "
+  >
     <p>{{ question }}</p>
     <slot name="default" />
     <div v-if="!$slots.default">
@@ -15,29 +21,38 @@
 defineProps<{
   question: string
   isHigh?: boolean
+  isDisabled?: boolean
 }>()
 
 const answer = defineModel<string>()
 </script>
 
 <style lang="scss" scoped>
+.disabled {
+  color: #b8b8bb !important;
+}
 .question {
-  border: solid 2px rgba(255, 255, 255, 0.25);
   border-radius: 10px;
   padding: 20px;
   padding-top: 30px;
-  background-color: rgba(58, 58, 67, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+  user-select: none;
 
   p {
-    font-size: 20px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* number of lines to show */
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 
   .answer {
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* number of lines to show */
-    line-clamp: 2;
+    -webkit-line-clamp: 3; /* number of lines to show */
+    line-clamp: 3;
     -webkit-box-orient: vertical;
   }
 }

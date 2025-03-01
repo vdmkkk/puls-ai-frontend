@@ -91,11 +91,6 @@ const links = [
     icon: autoposting,
   },
   {
-    name: 'Архив',
-    to: 'archive',
-    icon: projects,
-  },
-  {
     name: 'Профиль',
     to: 'profile',
     icon: profile,

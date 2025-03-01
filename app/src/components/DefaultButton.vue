@@ -12,13 +12,10 @@ const emits = defineEmits(['click'])
 
 <style lang="scss" scoped>
 .default-btn {
-  border: 2px solid #fff;
+  border: 1px solid #fff !important;
   color: #fff;
-  width: fit-content;
   border-radius: 10px;
-  align-self: flex-end;
-  margin-top: 30px;
-  margin-right: 2.5%;
-  margin-bottom: 30px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
 }
 </style>

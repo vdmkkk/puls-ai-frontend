@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import DefaultButton from 'src/components/DefaultButton.vue'
 import InputComponent from 'src/components/InputComponent.vue'
-import QuestionComponent from 'src/components/QuestionComponent.vue'
-import { ref, toRefs, watch } from 'vue'
+import { ref, watch } from 'vue'
+import close from '../assets/icons/close.svg'
 
 const answer = defineModel<string>()
 const props = defineProps<{
@@ -35,19 +36,17 @@ const onSave = () => {
 <template>
   <q-dialog v-model="isOpenRef">
     <div class="dialog-container" :style="{ height: isHigh ? '60vh' : 'auto' }">
-      <QuestionComponent
-        :question="question"
-        v-model:answer="answer"
+      <q-btn class="close" flat round @click="emits('close')">
+        <img :src="close" />
+      </q-btn>
+      <p class="title">{{ question }}</p>
+      <p class="subtitle">{{ question }}</p>
+      <InputComponent
+        :model-value="answer"
         :is-high="!!isHigh"
-        :style="{ height: isHigh ? '50vh' : 'auto' }"
-      >
-        <InputComponent
-          :model-value="answer"
-          :is-high="!!isHigh"
-          @update:model-value="answer = $event"
-        />
-      </QuestionComponent>
-      <q-btn label="Сохранить" flat no-caps class="save-btn" @click="onSave" />
+        @update:model-value="answer = $event"
+      />
+      <DefaultButton label="Сохранить" @click="onSave" class="save" />
     </div>
   </q-dialog>
 </template>
@@ -55,11 +54,40 @@ const onSave = () => {
 <style lang="scss" scoped>
 .dialog-container {
   width: 90vw;
-  background-color: rgba(58, 58, 67, 1);
+  background-color: #4e4571;
   border-radius: 10px;
-  padding: 20px;
+  padding: var(--spacing-sm);
   padding-top: 30px;
   color: white;
   height: max-content;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  .title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    margin: 0px;
+  }
+
+  .close {
+    position: absolute;
+    right: var(--spacing-xs);
+    top: var(--spacing-xs);
+    width: var(--spacing-xs) !important;
+    height: var(--spacing-xs) !important;
+  }
+
+  .subtitle {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: #b8b8bb;
+    margin-top: var(--spacing-xs);
+  }
+
+  .save {
+    margin-top: var(--spacing-sm);
+    align-self: center;
+  }
 }
 </style>

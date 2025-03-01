@@ -23,8 +23,9 @@ const emits = defineEmits(['click'])
   width: fit-content;
   border-radius: 10px;
   background-color: #4e4571;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-weight: 500;
+  width: var(--spacing-xl) !important;
 }
 
 .fancy-btn:hover {

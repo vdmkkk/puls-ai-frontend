@@ -13,8 +13,8 @@ export default function useAuth() {
     return await apiInstances.authApi
       .postAuthLogin({ email, password })
       .then((res) => {
-        Cookies.set('refresh_token', res.data.Refresh_token)
-        Cookies.set('access_token', res.data.Access_token)
+        Cookies.set('refresh_token', res.data.rtoken)
+        Cookies.set('access_token', res.data.atoken)
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)

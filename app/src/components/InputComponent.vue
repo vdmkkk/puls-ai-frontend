@@ -6,7 +6,8 @@
     standout="standout-class"
     :autogrow="false"
     color="primary"
-    :class="isHigh ? 'high' : ''"
+    :class="{ 'q-input': true, high: isHigh, 'disabled-style': isDisabled }"
+    :disable="isDisabled"
     @update:model-value="emit('update:modelValue', $event as string)"
   >
     <template v-slot:append>
@@ -21,15 +22,18 @@
           top: 10px;
         "
         round
-        icon="mic"
+        flat
         class="q-mr-sm q-mb-md"
-      />
+      >
+        <img :src="micIcon" />
+      </q-btn>
     </template>
   </q-input>
 </template>
 
 <script setup lang="ts">
 import { toRefs } from 'vue'
+import micIcon from '../assets/icons/micro.svg'
 
 const props = withDefaults(
   defineProps<{
@@ -39,6 +43,7 @@ const props = withDefaults(
     label?: string
     hasVoice?: boolean
     type?: string
+    isDisabled?: boolean
   }>(),
   { type: 'textarea' },
 )
@@ -50,25 +55,30 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" scoped>
-:global(.q-field.high) {
+.q-input ::v-deep .q-field.high {
   height: -webkit-fill-available !important;
 }
-:global(.q-field__control) {
+.q-input ::v-deep .q-field__control {
   height: -webkit-fill-available !important;
 }
 
-:global(.q-field__control) {
+.q-input ::v-deep .q-field__control {
   border-radius: 20px !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px !important;
+}
+.disabled-style ::v-deep .q-field__control {
+  background-color: transparent !important;
+  border: 1px solid rgba(107, 114, 128, 0.5);
 }
 
-:global(.q-field__native) {
+.q-input ::v-deep .q-field__native {
   resize: none !important;
   color: white !important;
 }
 
-:global(.standout-class) {
+.q-input ::v-deep .standout-class {
   background-color: rgba(255, 255, 255, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 1);
 }

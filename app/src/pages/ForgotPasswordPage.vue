@@ -90,21 +90,22 @@ const handlerBack = () => {
   }
 }
 
-:global(.q-field__control) {
+.q-input ::v-deep .q-field__control {
   border: 1px solid #2d2d4e;
   border-radius: 14px !important;
 }
 
-:global(.q-field__control) {
+.q-input ::v-deep .q-field__control {
   padding-left: 30px !important;
   padding-right: 30px !important;
 }
 
-:global(.q-field__native) {
+.q-input ::v-deep .q-field__native {
   color: white;
 }
 
-:global(input, select) {
+.q-input ::v-deep input,
+select {
   color: white !important;
   -webkit-text-fill-color: white !important;
   -webkit-background-clip: text !important;

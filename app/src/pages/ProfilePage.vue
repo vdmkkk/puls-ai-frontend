@@ -10,6 +10,8 @@ import DefaultButton from 'src/components/DefaultButton.vue'
 import useCustomize from 'src/api/composables/useCustomize'
 import { debounce } from 'quasar'
 import useContent from 'src/api/composables/useContent'
+import InputComponent from 'src/components/InputComponent.vue'
+import CheckComponent from 'src/components/CheckComponent.vue'
 
 const questions = ref({
   'Как вас зовут?': 'answer1',
@@ -17,7 +19,7 @@ const questions = ref({
   'Напишите три проблемы или "боли" вашего потенциального клиента': 'answer3',
   'Засчет чего достигается успех ваших клиентов?': 'answer4',
   'Какая у вас специальность?': 'answer5',
-  'Напишите главные факты о себе как о специалисте\nПочему к вам стоит прислушаться?': 'answer6',
+  'Напишите главные факты о себе как о специалисте. Почему к вам стоит прислушаться?': 'answer6',
 })
 
 const dialog = ref<{
@@ -31,6 +33,9 @@ const dialog = ref<{
   answerKey: null,
   isHigh: false,
 })
+
+const isAuto = ref(true)
+const check = ref(true)
 
 const answers = ref<{
   link: string
@@ -60,11 +65,13 @@ const onSave = () => {
 }
 
 const handlerOpenDialog = (question: string, answerKey: string, isHigh = false): void => {
-  dialog.value = {
-    isOpen: true,
-    question,
-    isHigh,
-    answerKey,
+  if (!isAuto.value) {
+    dialog.value = {
+      isOpen: true,
+      question,
+      isHigh,
+      answerKey,
+    }
   }
 }
 
@@ -115,45 +122,60 @@ onMounted(() => {
         @save="handlerSaveDialog"
       />
       <div class="column header">
-        <p class="title">Информация о вас</p>
-        <p class="description">Это необходимо для написания качественного контента</p>
-        <FancyButtonComponent
-          label="Проанализировать мою деятельность"
-          style="align-self: center !important; margin-top: 30px; margin-bottom: 30px"
-          @click="handlerOpenDialog('Ссылка на VK/TG', 'link')"
-        />
-        <p class="description" style="align-self: center">Или ответить на вопросы самостоятельно</p>
-        <!-- <div class="question row">
-          <p>Ссылка на VK/TG:</p>
-          <q-input
-            type="text"
-            v-model="answers.link"
-            rounded
-            standout="standout-class"
-            color="primary"
-            style="width: -webkit-fill-available"
-          />
-        </div> -->
+        <p class="title">Вопросы, на которые надо ответить</p>
+        <p class="description">
+          Это необходимо для написания качественного контента. Выберите наиболее удобный вариант:
+          автоматический анализ вашего аккаунта или заполнение анкеты вручную.
+        </p>
       </div>
+      <q-btn-toggle
+        v-model="isAuto"
+        class="btn-group"
+        no-caps
+        rounded
+        unelevated
+        :options="[
+          { label: 'Автоматически', value: true },
+          { label: 'Вручную', value: false },
+        ]"
+      />
+      <p class="link-title" :class="{ grey: !isAuto }">Ссылка на vk/tg:</p>
+      <InputComponent
+        :isDisabled="!isAuto"
+        :modelValue="answers.link"
+        type="text"
+        class="link-input"
+      />
+      <CheckComponent
+        :modelValue="check"
+        :isDisabled="!isAuto"
+        style="user-select: none"
+        label="Использовать стилистику моих постов"
+        @update:modelValue="check = $event"
+      />
+      <p class="survey-title" :class="{ grey: isAuto }">
+        Нажмите на карточку с вопросом, чтобы посмотреть пояснения и ответить
+      </p>
       <div class="survey">
         <div class="questions">
           <QuestionComponent
             v-for="[question, answerKey] in Object.entries(questions)"
             :question="question"
+            :isDisabled="isAuto"
             v-model="answers[answerKey]"
             @click="handlerOpenDialog(question, answerKey)"
           />
         </div>
-        <QuestionComponent
+        <!-- <QuestionComponent
           class="text"
           question="Шаблон поста"
           v-model="answers.answer7"
           isHigh
+          :isDisabled="isAuto"
           @click="handlerOpenDialog('Шаблон поста', 'answer7', true)"
-        />
+        /> -->
       </div>
     </div>
-    <DefaultButton label="Сохранить" @click="onSave" />
   </q-page>
 </template>
 
@@ -163,22 +185,32 @@ onMounted(() => {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding-left: 20vw;
-  padding-right: 20vw;
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
+
+  .link-title {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-m);
+    font-weight: 500;
+  }
+
+  .link-input {
+    width: 50%;
+  }
 
   .header {
-    // margin-left: 20%;
-    margin-right: 20%;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: var(--spacing-sm);
+    margin-right: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
     .title {
-      font-size: 40px;
+      font-size: var(--font-size-title);
       font-weight: 600;
       margin: 0;
     }
     .description {
-      font-size: 20px;
+      font-size: var(--font-size-sm);
       font-weight: 100;
+      color: #b8b8b8;
     }
 
     .question {
@@ -200,13 +232,17 @@ onMounted(() => {
     }
   }
 
+  .survey-title {
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-m);
+    font-weight: 500;
+  }
+
   .survey {
-    width: 95%;
-    margin-left: 2.5%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    gap: 30px;
+    gap: var(--spacing-xs);
 
     .text {
       width: 20%;
@@ -217,8 +253,33 @@ onMounted(() => {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      gap: 20px;
+      gap: var(--spacing-xs);
     }
   }
+}
+
+.q-btn-group ::v-deep .no-outline {
+  border: 1px solid #4e4571 !important;
+  width: var(--spacing-xl) !important;
+  font-size: var(--font-size-xs);
+}
+
+.q-btn-group ::v-deep .bg-primary {
+  background-color: #4e4571 !important;
+  border: 1px solid transparent !important;
+}
+
+.q-btn-group ::v-deep .q-btn-item:last-child {
+  border-top-right-radius: 10px !important;
+  border-bottom-right-radius: 10px !important;
+}
+
+.q-btn-group ::v-deep .q-btn-item:first-child {
+  border-top-left-radius: 10px !important;
+  border-bottom-left-radius: 10px !important;
+}
+
+.grey {
+  color: #b8b8bb !important;
 }
 </style>

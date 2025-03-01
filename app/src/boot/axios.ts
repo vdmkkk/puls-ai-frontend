@@ -37,9 +37,8 @@ Object.entries(apiInstances).forEach(([_, apiInstance]) => {
       const token = Cookies.get('refresh_token')
       const access_token = Cookies.get('access_token')
       if (token) {
-        // config.headers['access_token'] = `${access_token}`
-        // config.headers['refresh_token'] = `${token}`
-        // config.headers['Cookie'] = `access_token=${access_token}; refresh_token=${token}`
+        config.headers['atoken'] = Cookies.get('access_token')
+        config.headers['rtoken'] = Cookies.get('refresh_token')
       }
       return config
     },

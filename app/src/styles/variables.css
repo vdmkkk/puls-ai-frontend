@@ -1,7 +1,4 @@
 :root {
-  --third-family: 'Myriad Pro';
-  --second-family: 'Roboto';
-
   --box-shadow-inset: inset 4px 4px 4px var(--color-bg-2);
 
   --transition-default: all 0.3s ease-in-out;
@@ -24,6 +21,7 @@
   --color-dark-1: #242424;
   --color-bg-2: #0f0f0f;
   --color-bg-2-t40: #0f0f0f;
+  --color-green: #12d776;
 
   --spacing-none: 0px;
   --spacing-xxs: 10px;
@@ -45,21 +43,18 @@
   --font-size-xxl: 60px;
   --font-size-xxxl: 70px;
 
-  --line-height-xxs: 15px;
+  --line-height-xxs: 126%;
   --line-height-xs: 18px;
   --line-height-sm: 22px;
   --line-height-md: 126%;
   --line-height-lg: 36px;
   --line-height-xl: 51px;
   --line-height-xxl: 73px;
-
-  /*--media-lg: 1279px;*/
-  /*--media-md: 767px;*/
-  /*--media-sm: 575px;*/
 }
 
 @media screen and (max-width: 1279px) {
   :root {
+    --font-size-xxs: 10px;
     --font-size-xs: 14px;
     --font-size-m: 17px;
     --font-size-sm: 16px;
@@ -68,11 +63,20 @@
     --font-size-title: 35px;
     --font-size-xxl: 52px;
     --font-size-xxxl: 60px;
+
+    --spacing-xxs: 8px;
+    --spacing-xs: 12px;
+    --spacing-sm: 24px;
+    --spacing-md: 50px;
+    --spacing-lg: 100px;
+    --spacing-xl: 150px;
+    --spacing-xxl: 180px;
   }
 }
 
 @media screen and (max-width: 767px) {
   :root {
+    --font-size-xxs: 10px;
     --font-size-xs: 13px;
     --font-size-m: 15px;
     --font-size-sm: 14px;
@@ -81,12 +85,20 @@
     --font-size-title: 30px;
     --font-size-xxl: 43px;
     --font-size-xxxl: 50px;
+
+    --spacing-xxs: 6px;
+    --spacing-xs: 10px;
+    --spacing-sm: 18px;
+    --spacing-md: 40px;
+    --spacing-lg: 80px;
+    --spacing-xl: 120px;
+    --spacing-xxl: 150px;
   }
 }
 
 @media screen and (max-width: 575px) {
   :root {
-    --font-size-xs: 12px;
+    --font-size-xs: 6px;
     --font-size-m: 13px;
     --font-size-sm: 13px;
     --font-size-md: 15px;
@@ -95,6 +107,12 @@
     --font-size-xxl: 34px;
     --font-size-xxxl: 35px;
 
+    --spacing-xxs: 4px;
+    --spacing-xs: 8px;
     --spacing-sm: 11px;
+    --spacing-md: 25px;
+    --spacing-lg: 50px;
+    --spacing-xl: 90px;
+    --spacing-xxl: 120px;
   }
 }
