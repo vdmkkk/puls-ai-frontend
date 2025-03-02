@@ -14,7 +14,7 @@ export default function useAuth() {
       .postAuthLogin({ email, password })
       .then((res) => {
         Cookies.set('refresh_token', res.data.rtoken)
-        Cookies.set('access_token', res.data.atoken)
+        Cookies.set('atoken', res.data.atoken)
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
@@ -39,7 +39,7 @@ export default function useAuth() {
         verification_code: verificationCode,
       })
       .then((res) => {
-        Cookies.set('access_token', res.data.Access_token)
+        Cookies.set('atoken', res.data.atoken)
         Cookies.set('refresh_token', res.data.Refresh_token)
       })
       .catch((e: AxiosError) => {

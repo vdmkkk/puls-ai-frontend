@@ -5,48 +5,64 @@ import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { AxiosError } from 'axios'
 import { useErrors } from 'src/composables/useErrors'
+import { Ref } from 'vue'
+import { GetProfileFromUrlRequest } from '../api'
 
-export default function useCustomize() {
+export default function useCustomize(loading: Ref<boolean>) {
   const { setError } = useErrors()
   const { t } = useI18n()
   const apiGetUserAnswers = async () => {
+    loading.value = true
     return await apiInstances.customizeApi
       .getCustomizeGetUserAnswers()
       .then((res) => {
-        return res
+        loading.value = false
+        return res.data
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
+      })
+      .finally(() => {
+        loading.value = false
       })
   }
 
   const apiSaveAnswers = async (answers: any) => {
     return await apiInstances.customizeApi
-      .postCustomizeGetProfileFromAnswers({
+      .postCustomizeSaveProfileAnswers({
         q1: answers.answer1,
         q2: answers.answer2,
         q3: answers.answer3,
         q4: answers.answer4,
         q5: answers.answer5,
         q6: answers.answer6,
-        post_sample: answers.answer7,
+        post_sample: answers.post_sample,
+        use_post_sample: answers.check,
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
         return e
+      })
+      .finally(() => {
+        loading.value = false
       })
   }
 
-  const apiGenAnswersFromLink = async (link: string) => {
+  const apiGenAnswersFromLink = async (link: GetProfileFromUrlRequest) => {
+    loading.value = true
     return await apiInstances.customizeApi
       .postCustomizeGetProfileFromUrl(link)
+      .then((res) => {
+        return res.data
+      })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
+      })
+      .finally(() => {
+        loading.value = false
       })
   }
 

@@ -35,9 +35,9 @@ Object.entries(apiInstances).forEach(([_, apiInstance]) => {
     (config) => {
       // config.withCredentials = true
       const token = Cookies.get('refresh_token')
-      const access_token = Cookies.get('access_token')
+      const atoken = Cookies.get('atoken')
       if (token) {
-        config.headers['atoken'] = Cookies.get('access_token')
+        config.headers['atoken'] = Cookies.get('atoken')
         config.headers['rtoken'] = Cookies.get('refresh_token')
       }
       return config

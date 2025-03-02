@@ -76,7 +76,7 @@ const chosenProject = ref(projectOptions[0])
 
 const handlerLogout = () => {
   Cookies.remove('refresh_token')
-  Cookies.remove('access_token')
+  Cookies.remove('atoken')
   router.push('/login')
 }
 </script>

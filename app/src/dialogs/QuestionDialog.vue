@@ -3,6 +3,7 @@ import DefaultButton from 'src/components/DefaultButton.vue'
 import InputComponent from 'src/components/InputComponent.vue'
 import { ref, watch } from 'vue'
 import close from '../assets/icons/close.svg'
+import EditorComponent from 'src/components/EditorComponent.vue'
 
 const answer = defineModel<string>()
 const props = defineProps<{
@@ -41,7 +42,12 @@ const onSave = () => {
       </q-btn>
       <p class="title">{{ question }}</p>
       <p class="subtitle">{{ question }}</p>
-      <InputComponent
+      <!-- <InputComponent
+        :model-value="answer"
+        :is-high="!!isHigh"
+        @update:model-value="answer = $event"
+      /> -->
+      <EditorComponent
         :model-value="answer"
         :is-high="!!isHigh"
         @update:model-value="answer = $event"

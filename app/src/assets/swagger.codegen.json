@@ -61,51 +61,6 @@
         "required": ["title1", "title2", "title3", "title4", "title5", "title6"],
         "type": "object"
       },
-      "CreateContentPlanRequest": {
-        "properties": {
-          "q1": {
-            "description": "Ответ на вопрос 1 (тема для первого квартала)",
-            "example": "Основы маркетинга",
-            "type": "string"
-          },
-          "q2": {
-            "description": "Ответ на вопрос 2 (тема для второго квартала)",
-            "example": "Продвижение в социальных сетях",
-            "type": "string"
-          },
-          "q3": {
-            "description": "Ответ на вопрос 3 (тема для третьего квартала)",
-            "example": "SEO-оптимизация",
-            "type": "string"
-          },
-          "q4": {
-            "description": "Ответ на вопрос 4 (тема для четвертого квартала)",
-            "example": "Анализ результатов и стратегии на следующий год",
-            "type": "string"
-          },
-          "q5": {
-            "description": "Ответ на вопрос 5 (дополнительная тема)",
-            "example": "Работа с возражениями клиентов",
-            "type": "string"
-          },
-          "q6": {
-            "description": "Ответ на вопрос 6 (дополнительная тема)",
-            "example": "Автоматизация маркетинга",
-            "type": "string"
-          },
-          "topic_history": {
-            "description": "Исторический контекст или предыдущие материалы по теме",
-            "example": [
-              "В прошлом году мы фокусировались на email-маркетинге.",
-              "Ранее мы изучали контент-стратегии."
-            ],
-            "items": { "type": "string" },
-            "type": "array"
-          }
-        },
-        "required": ["q1", "q2", "q3", "q4", "q5", "q6", "topic_history"],
-        "type": "object"
-      },
       "CreatePostImageRequest": {
         "properties": {
           "post": {
@@ -129,50 +84,15 @@
             "example": "Добавить статистику",
             "type": "string"
           },
-          "length": { "description": "Длина поста", "example": 200, "type": "integer" },
-          "post_sample": {
-            "description": "Пример поста",
-            "example": "Как увеличить продажи с помощью SMM?",
-            "type": "string"
-          },
+          "length": { "description": "длина поста", "example": 150, "type": "integer" },
           "post_topic": {
             "description": "Тема поста",
             "example": "Продвижение бизнеса в Instagram",
             "type": "string"
           },
-          "q1": {
-            "description": "Ответ на вопрос 1",
-            "example": "Эксперт в области маркетинга",
-            "type": "string"
-          },
-          "q2": {
-            "description": "Ответ на вопрос 2",
-            "example": "Малый и средний бизнес",
-            "type": "string"
-          },
-          "q3": {
-            "description": "Ответ на вопрос 3",
-            "example": "Нет клиентов, низкий охват, высокая конкуренция",
-            "type": "string"
-          },
-          "q4": {
-            "description": "Ответ на вопрос 4",
-            "example": "Увеличение продаж на 20%",
-            "type": "string"
-          },
-          "q5": {
-            "description": "Ответ на вопрос 5",
-            "example": "Маркетинг, SMM, Копирайтинг",
-            "type": "string"
-          },
-          "q6": {
-            "description": "Ответ на вопрос 6",
-            "example": "Работал с крупными брендами",
-            "type": "string"
-          },
           "type": { "description": "Тип поста", "example": "Фоновый", "type": "string" }
         },
-        "required": ["q1", "q2", "q3", "q4", "q5", "q6", "length", "post_topic"],
+        "required": ["length", "post_topic"],
         "type": "object"
       },
       "CreatePromptImageRequest": {
@@ -200,9 +120,14 @@
       "GetProfileFromAnswersRequest": {
         "properties": {
           "post_sample": {
-            "description": "Пример поста",
-            "example": "Как увеличить продажи с помощью SMM?",
-            "type": "string"
+            "description": "Примеры постов",
+            "example": [
+              "Как увеличить продажи с помощью SMM?",
+              "Лучшие стратегии для продвижения в Instagram",
+              "Советы по созданию контента для соцсетей"
+            ],
+            "items": { "type": "string" },
+            "type": "array"
           },
           "q1": {
             "description": "Ответ на вопрос 1",
@@ -233,9 +158,13 @@
             "description": "Ответ на вопрос 6",
             "example": "Работал с крупными брендами",
             "type": "string"
+          },
+          "use_post_sample": {
+            "description": "флаг того что пользователь для генерации бцдет использовать примеры своих постов",
+            "type": "boolean"
           }
         },
-        "required": ["q1", "q2", "q3", "q4", "q5", "q6", "post_sample"],
+        "required": ["q1", "q2", "q3", "q4", "q5", "q6"],
         "type": "object"
       },
       "GetProfileFromUrlRequest": {
@@ -278,6 +207,10 @@
             ],
             "items": { "type": "string" },
             "type": "array"
+          },
+          "in_content_plan": {
+            "description": "флаг того что пост создан в рамках контент плана или нет",
+            "type": "boolean"
           },
           "post_topic": {
             "description": "название поста",
@@ -337,6 +270,34 @@
   "info": { "description": "API Puls", "title": "PulsBackend", "version": "1.0.0" },
   "openapi": "3.0.0",
   "paths": {
+    "/archive/get_all_posts/": {
+      "get": {
+        "description": "Роут принимает id юзера и возвращает его посты.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetArchiveGetAllPosts",
+        "responses": {
+          "200": { "description": "получены посты пользователя" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение всех постов пользователя",
+        "tags": ["archive"]
+      }
+    },
     "/auth/change_password": {
       "post": {
         "description": "Роут принимает токен и новый пароль, проверяет токен и изменяет пароль пользователя.\nЕсли токен невалиден или пароль не соответствует требованиям, возвращается ошибка `400 Bad Request`.\n",
@@ -547,14 +508,6 @@
       "post": {
         "description": "Роут принимает ответы на вопросы и историю постов.\nНа основе этих данных генерируется контент план. Если данные невалидны, возвращается ошибка `400 Bad Request`.\n",
         "operationId": "PostContentCreateContentPlan",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateContentPlanRequest" }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "content": {
@@ -777,10 +730,10 @@
         "tags": ["content"]
       }
     },
-    "/content/get_users_posts/": {
+    "/content/get_posts_not_in_content_plan/": {
       "get": {
         "description": "Роут принимает id юзера и возвращает его посты.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
-        "operationId": "GetContentGetUsersPosts",
+        "operationId": "GetContentGetPostsNotInContentPlan",
         "responses": {
           "200": { "description": "получены посты пользователя" },
           "400": {
@@ -855,6 +808,68 @@
         "tags": ["content"]
       }
     },
+    "/content/transcribe/": {
+      "post": {
+        "description": "Роут принимает аудиофайл и возвращает текст из него.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`\n",
+        "operationId": "PostContentTranscribe",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "description": "Аудиофайл для транскрибации. Должен быть отправлен как бинарный файл (например, MP3, WAV).",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": ["file"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "text": {
+                      "description": "текст полученный из аудио",
+                      "example": "фимозик",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "текст успешно получен"
+          },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "транскрибация и получение текста из аудиофайла",
+        "tags": ["content"]
+      }
+    },
     "/content/update_post/": {
       "patch": {
         "description": "Роут принимает id, текст поста и ссылку на изображение.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
@@ -903,42 +918,6 @@
         },
         "summary": "обновление",
         "tags": ["content"]
-      }
-    },
-    "/customize/get_profile_from_answers": {
-      "post": {
-        "description": "Роут принимает ответы на вопросы и возвращает сгенерированный профиль.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
-        "operationId": "PostCustomizeGetProfileFromAnswers",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/GetProfileFromAnswersRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": { "description": "Данные о профиле успешно сохранены" },
-          "400": {
-            "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
-            },
-            "description": "Невалидные данные"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Внутренняя ошибка сервера"
-          }
-        },
-        "summary": "Получить профиль на основе ответов",
-        "tags": ["customize"]
       }
     },
     "/customize/get_profile_from_url": {
@@ -1009,6 +988,42 @@
           }
         },
         "summary": "Получение ответов пользователя на вопросы",
+        "tags": ["customize"]
+      }
+    },
+    "/customize/save_profile_answers": {
+      "post": {
+        "description": "Роут принимает ответы на вопросы и возвращает сгенерированный профиль.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostCustomizeSaveProfileAnswers",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GetProfileFromAnswersRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Данные о профиле успешно сохранены" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получить профиль на основе ответов",
         "tags": ["customize"]
       }
     },

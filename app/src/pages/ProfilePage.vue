@@ -12,6 +12,7 @@ import { debounce } from 'quasar'
 import useContent from 'src/api/composables/useContent'
 import InputComponent from 'src/components/InputComponent.vue'
 import CheckComponent from 'src/components/CheckComponent.vue'
+import arrow_down from 'src/assets/icons/arrow_down.svg'
 
 const questions = ref({
   'Как вас зовут?': 'answer1',
@@ -35,7 +36,7 @@ const dialog = ref<{
 })
 
 const isAuto = ref(true)
-const check = ref(true)
+const loading = ref(false)
 
 const answers = ref<{
   link: string
@@ -45,7 +46,8 @@ const answers = ref<{
   answer4: string
   answer5: string
   answer6: string
-  answer7: string
+  post_sample: string[]
+  check: boolean
 }>({
   link: '',
   answer1: '',
@@ -54,15 +56,11 @@ const answers = ref<{
   answer4: '',
   answer5: '',
   answer6: '',
-  answer7: '',
+  post_sample: [],
+  check: true,
 })
 
-const { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers } = useCustomize()
-const { getUserPosts } = useContent()
-
-const onSave = () => {
-  console.log(answers.value)
-}
+const { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers } = useCustomize(loading)
 
 const handlerOpenDialog = (question: string, answerKey: string, isHigh = false): void => {
   if (!isAuto.value) {
@@ -93,6 +91,27 @@ const processAnswers = () => {
   apiSaveAnswers(answers.value)
 }
 
+const getFromLink = () => {
+  if (answers.value.link.length > 0) {
+    apiGenAnswersFromLink({ link: answers.value.link }).then((data) => {
+      if (data) {
+        const { q1, q2, q3, q4, q5, q6, post_sample } = data
+        answers.value = {
+          link: answers.value.link,
+          answer1: q1,
+          answer2: q2,
+          answer3: q3,
+          answer4: q4,
+          answer5: q5,
+          answer6: q6,
+          post_sample,
+          check: answers.value.check,
+        }
+      }
+    })
+  }
+}
+
 const debouncedProcessAnswers = debounce(processAnswers, 1000)
 
 watch(
@@ -102,10 +121,26 @@ watch(
   },
   { deep: true },
 )
-
+const loadData = () => {
+  apiGetUserAnswers().then((data) => {
+    if (data) {
+      const { q1, q2, q3, q4, q5, q6, post_sample } = data
+      answers.value = {
+        link: '',
+        answer1: q1,
+        answer2: q2,
+        answer3: q3,
+        answer4: q4,
+        answer5: q5,
+        answer6: q6,
+        post_sample,
+        check: true,
+      }
+    }
+  })
+}
 onMounted(() => {
-  // apiGetUserAnswers()
-  getUserPosts()
+  loadData()
 })
 </script>
 
@@ -140,14 +175,21 @@ onMounted(() => {
         ]"
       />
       <p class="link-title" :class="{ grey: !isAuto }">Ссылка на vk/tg:</p>
-      <InputComponent
-        :isDisabled="!isAuto"
-        :modelValue="answers.link"
-        type="text"
-        class="link-input"
-      />
+      <div class="row" style="gap: var(--spacing-xs)">
+        <InputComponent
+          :isDisabled="!isAuto"
+          :modelValue="answers.link"
+          type="text"
+          class="link-input"
+          @update:model-value="answers.link = $event"
+        />
+        <q-btn round color="primary" @click="getFromLink">
+          <img :src="arrow_down" />
+        </q-btn>
+      </div>
+
       <CheckComponent
-        :modelValue="check"
+        :modelValue="answers.check"
         :isDisabled="!isAuto"
         style="user-select: none"
         label="Использовать стилистику моих постов"
@@ -156,17 +198,16 @@ onMounted(() => {
       <p class="survey-title" :class="{ grey: isAuto }">
         Нажмите на карточку с вопросом, чтобы посмотреть пояснения и ответить
       </p>
-      <div class="survey">
-        <div class="questions">
-          <QuestionComponent
-            v-for="[question, answerKey] in Object.entries(questions)"
-            :question="question"
-            :isDisabled="isAuto"
-            v-model="answers[answerKey]"
-            @click="handlerOpenDialog(question, answerKey)"
-          />
-        </div>
+      <div v-if="!loading" class="questions">
+        <QuestionComponent
+          v-for="[question, answerKey] in Object.entries(questions)"
+          :question="question"
+          :isDisabled="isAuto"
+          v-model="answers[answerKey]"
+          @click="handlerOpenDialog(question, answerKey)"
+        />
       </div>
+      <q-spinner-puff v-else class="loading" size="50px" />
     </div>
   </q-page>
 </template>
@@ -230,23 +271,23 @@ onMounted(() => {
     font-weight: 500;
   }
 
-  .survey {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+  .text {
+    width: 20%;
+  }
+
+  .questions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     gap: var(--spacing-xs);
+  }
 
-    .text {
-      width: 20%;
-    }
-
-    .questions {
-      width: 80%;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: var(--spacing-xs);
-    }
+  .loading {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: var(--spacing-xl);
+    color: #4e4571;
   }
 }
 
