@@ -42,16 +42,16 @@ const onSave = () => {
       </q-btn>
       <p class="title">{{ question }}</p>
       <p class="subtitle">{{ question }}</p>
-      <!-- <InputComponent
-        :model-value="answer"
-        :is-high="!!isHigh"
-        @update:model-value="answer = $event"
-      /> -->
-      <EditorComponent
+      <InputComponent
         :model-value="answer"
         :is-high="!!isHigh"
         @update:model-value="answer = $event"
       />
+      <!-- <EditorComponent
+        :model-value="answer"
+        :is-high="!!isHigh"
+        @update:model-value="answer = $event"
+      /> -->
       <DefaultButton label="Сохранить" @click="onSave" class="save" />
     </div>
   </q-dialog>
