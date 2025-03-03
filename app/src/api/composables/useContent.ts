@@ -40,51 +40,47 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentCreatePost(post)
       .then((res) => {
-        return res.data.post_text
+        return res.data
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
       })
   }
 
-  const apiGetPost = async (post_id: number) => {
+  const apiGetPosts = async () => {
     return await apiInstances.contentApi
-      .postContentGetPostById({ post_id })
+      .getContentGetPostsNotInContentPlan()
       .then((res) => {
         return res.data
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
       })
   }
 
-  const savePost = async (post: SavePostRequest) => {
+  const apiGetContentPlan = async () => {
+    return await apiInstances.contentApi
+      .getContentGetContentPlans()
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
+  const apiSavePost = async (post: SavePostRequest) => {
     return await apiInstances.contentApi
       .postContentSavePost(post)
       .then((res) => {
-        return res.data.post_id
-      })
-      .catch((e: AxiosError) => {
-        console.error('Something went wrong:', e)
-        setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
-      })
-  }
-
-  const getUserPosts = async () => {
-    return await apiInstances.contentApi
-      .getContentGetUsersPosts({ withCredentials: false })
-      .then((res) => {
         return res.data
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
       })
   }
 
@@ -93,8 +89,8 @@ export default function useContent() {
     apiCreateImagePost,
     apiCreateImagePost,
     apiCreatePost,
-    apiGetPost,
-    savePost,
-    getUserPosts,
+    apiGetPosts,
+    apiGetContentPlan,
+    apiSavePost,
   }
 }

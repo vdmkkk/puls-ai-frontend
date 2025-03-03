@@ -81,11 +81,11 @@ const links = [
     to: '/texts',
     icon: text,
   },
-  {
-    name: 'Изображения',
-    to: 'images',
-    icon: image2,
-  },
+  // {
+  //   name: 'Изображения',
+  //   to: 'images',
+  //   icon: image2,
+  // },
   {
     name: 'Автопостинг',
     to: 'posting',

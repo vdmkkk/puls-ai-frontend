@@ -10,7 +10,7 @@
           информацию.
         </p>
       </div>
-      <div class="row items-start">
+      <div class="row items-start" style="position: relative">
         <div class="inputs">
           <p class="subtitle">Тема поста</p>
           <InputComponent
@@ -56,28 +56,92 @@
             ]"
           />
         </div>
+        <q-inner-loading dark :showing="loadingCreation" text-color="white" text="Создание поста">
+          <q-spinner-puff color="primary" size="xl" />
+        </q-inner-loading>
+      </div>
+      <div class="posts">
+        <p class="title">Все текстовые посты</p>
+        <div class="posts-grid">
+          <PostComponent
+            v-for="post in posts"
+            :topic="post.post_topic"
+            :text="post.post_text"
+            :date="post.created_at"
+          />
+        </div>
       </div>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import useContent from 'src/api/composables/useContent'
 import BlobComponent from 'src/components/BlobComponent.vue'
 import ContainerComponent from 'src/components/ContainerComponent.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import InputComponent from 'src/components/InputComponent.vue'
 import OptionButton from 'src/components/OptionButton.vue'
-import { ref } from 'vue'
+import PostComponent from 'src/components/PostComponent.vue'
+import { onMounted, ref } from 'vue'
 
-const prompt = ref<string>()
-const additions = ref<string>()
-const length = ref<string>('до 500 символов')
+const lenghtOptions = {
+  'до 300 символов': 300,
+  'до 500 символов': 500,
+  'до 750 символов': 750,
+  'до 1000 символов': 1000,
+}
+
+const prompt = ref<string>('')
+const additions = ref<string>('')
+const length = ref<keyof typeof lenghtOptions>('до 500 символов')
 const type = ref(true)
 
+const posts = ref([])
+const loadingCreation = ref(false)
+const loadingPosts = ref(false)
+
+const { apiGetPosts, apiCreatePost, apiGetContentPlan, apiSavePost } = useContent()
+
 const onSubmit = () => {
-  console.log(prompt.value, additions.value)
+  const topic = prompt.value
+  loadingCreation.value = true
+  apiCreatePost({
+    post_topic: topic,
+    additions: additions.value,
+    length: lenghtOptions[length.value],
+    type: type.value ? 'Фоновый' : 'Продающий',
+  })
+    .then((res) => {
+      apiSavePost({
+        post_topic: topic,
+        text: res.text,
+        image_urls: [],
+        in_content_plan: false,
+      }).then(() => {
+        loadPosts()
+      })
+    })
+    .finally(() => {
+      loadingCreation.value = false
+    })
 }
+
+const loadPosts = () => {
+  loadingPosts.value = true
+  apiGetPosts()
+    .then((res) => {
+      posts.value = res
+    })
+    .finally(() => {
+      loadingPosts.value = false
+    })
+}
+
+onMounted(() => {
+  loadPosts()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -102,6 +166,22 @@ const onSubmit = () => {
       font-size: var(--font-size-sm);
       font-weight: 500;
       color: #b8b8b8;
+    }
+  }
+
+  .posts {
+    .title {
+      margin-top: var(--spacing-sm);
+      font-size: var(--font-size-md);
+      font-weight: 600;
+    }
+    .posts-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: var(--spacing-xs);
+      padding-bottom: var(--spacing-md);
     }
   }
 
@@ -167,7 +247,7 @@ const onSubmit = () => {
 }
 
 :global(.q-menu) {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgb(124, 124, 124);
   color: white;
 }
 </style>

@@ -281,6 +281,7 @@ onMounted(() => {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
     gap: var(--spacing-xs);
+    padding-bottom: var(--spacing-md);
   }
 
   .loading {

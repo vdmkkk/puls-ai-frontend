@@ -56,7 +56,8 @@
             "description": "Заголовок для разоблачений или экспертных мнений",
             "example": "Что скрывают эксперты о string? И как это использовать",
             "type": "string"
-          }
+          },
+          "week_id": { "dsecription": "id недели", "example": 4, "type": "integer" }
         },
         "required": ["title1", "title2", "title3", "title4", "title5", "title6"],
         "type": "object"
@@ -270,34 +271,6 @@
   "info": { "description": "API Puls", "title": "PulsBackend", "version": "1.0.0" },
   "openapi": "3.0.0",
   "paths": {
-    "/archive/get_all_posts/": {
-      "get": {
-        "description": "Роут принимает id юзера и возвращает его посты.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
-        "operationId": "GetArchiveGetAllPosts",
-        "responses": {
-          "200": { "description": "получены посты пользователя" },
-          "400": {
-            "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
-            },
-            "description": "Невалидные данные"
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Внутренняя ошибка сервера"
-          }
-        },
-        "summary": "Получение всех постов пользователя",
-        "tags": ["archive"]
-      }
-    },
     "/auth/change_password": {
       "post": {
         "description": "Роут принимает токен и новый пароль, проверяет токен и изменяет пароль пользователя.\nЕсли токен невалиден или пароль не соответствует требованиям, возвращается ошибка `400 Bad Request`.\n",
@@ -688,6 +661,71 @@
           }
         },
         "summary": "Создание поста на основе ответов",
+        "tags": ["content"]
+      }
+    },
+    "/content/get_content_plans/": {
+      "get": {
+        "description": "Роут принимает id юзера и возвращает его контент планы.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetContentGetContentPlans",
+        "responses": {
+          "200": { "description": "получены посты пользователя" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение постов пользователя",
+        "tags": ["content"]
+      }
+    },
+    "/content/get_detail_content_plan/": {
+      "get": {
+        "description": "Роут принимает `user_id` и `week_id` в query-параметрах и возвращает контент-планы пользователя для указанной недели.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetContentGetDetailContentPlan",
+        "parameters": [
+          {
+            "description": "ID недели",
+            "in": "query",
+            "name": "week_id",
+            "required": true,
+            "schema": { "format": "int64", "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Получены посты пользователя" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение постов пользователя",
         "tags": ["content"]
       }
     },
