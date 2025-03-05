@@ -12,6 +12,18 @@
       </div>
       <div class="row items-start" style="position: relative">
         <div class="inputs">
+          <p class="subtitle">Режим</p>
+          <q-btn-toggle
+            v-model="type"
+            class="btn-group"
+            no-caps
+            rounded
+            unelevated
+            :options="[
+              { label: 'Фоновый', value: true },
+              { label: 'Продающий', value: false },
+            ]"
+          />
           <p class="subtitle">Тема поста</p>
           <InputComponent
             :model-value="prompt"
@@ -42,19 +54,65 @@
             <FancyButtonComponent class="submit-btn" label="Создать" @click="onSubmit" />
           </div>
         </div>
-        <div class="column">
-          <p class="subtitle" style="margin-left: var(--spacing-sm)">Режим</p>
-          <q-btn-toggle
-            v-model="type"
-            class="btn-group"
-            no-caps
-            rounded
-            unelevated
-            :options="[
-              { label: 'Фоновый', value: true },
-              { label: 'Продающий', value: false },
-            ]"
-          />
+        <div class="column no-wrap" style="margin-left: var(--spacing-sm)">
+          <div class="column">
+            <CheckComponent
+              :modelValue="check"
+              style="user-select: none"
+              label="Пост без фото"
+              @update:modelValue="check = $event"
+            />
+            <q-btn-toggle
+              v-model="imageType"
+              class="btn-group"
+              :disable="check"
+              no-caps
+              rounded
+              unelevated
+              :options="[
+                { label: 'Загрузить', value: 'download' },
+                { label: 'Из поста', value: 'from_post' },
+                { label: 'Промпт', value: 'prompt' },
+              ]"
+            />
+            <div class="image-content">
+              <p :class="{ subtitle: true, grey: check }">Изображение к посту</p>
+              <div v-if="imageType == 'download'">
+                <div class="download-image">
+                  <q-item :disable="check" clickable v-ripple class="container">
+                    <img :src="pin" />
+                    <q-item-section>
+                      <q-item-label class="btn-label">Выберите файл</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                  <p class="image-name">Файл не выбран</p>
+                  <q-btn :disable="check" class="close" flat round size="sm">
+                    <img :src="close" />
+                  </q-btn>
+                </div>
+              </div>
+              <div :class="{ 'template-image': true, grey: check }">
+                <img class="icon" :src="templateImage" />
+              </div>
+            </div>
+          </div>
+          <div class="controls row justify-between" v-if="imageType != 'download'">
+            <q-select
+              :disable="check"
+              class="q-select image-dimensions"
+              outlined
+              v-model="imageDimensions"
+              color="white"
+              hide-dropdown-icon
+              :options="['9x16', '16x9', '1x1', '4x3', '3x4']"
+            />
+            <FancyButtonComponent
+              :disabled="check"
+              class="submit-btn"
+              label="Создать"
+              @click="onSubmit"
+            />
+          </div>
         </div>
         <q-inner-loading dark :showing="loadingCreation" text-color="white" text="Создание поста">
           <q-spinner-puff color="primary" size="xl" />
@@ -78,6 +136,7 @@
 <script setup lang="ts">
 import useContent from 'src/api/composables/useContent'
 import BlobComponent from 'src/components/BlobComponent.vue'
+import CheckComponent from 'src/components/CheckComponent.vue'
 import ContainerComponent from 'src/components/ContainerComponent.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
@@ -85,6 +144,9 @@ import InputComponent from 'src/components/InputComponent.vue'
 import OptionButton from 'src/components/OptionButton.vue'
 import PostComponent from 'src/components/PostComponent.vue'
 import { onMounted, ref } from 'vue'
+import pin from 'src/assets/icons/pin.svg'
+import close from 'src/assets/icons/close.svg'
+import templateImage from 'src/assets/icons/image.svg'
 
 const lenghtOptions = {
   'до 300 символов': 300,
@@ -97,6 +159,9 @@ const prompt = ref<string>('')
 const additions = ref<string>('')
 const length = ref<keyof typeof lenghtOptions>('до 500 символов')
 const type = ref(true)
+const check = ref(false)
+const imageType = ref('download')
+const imageDimensions = ref('9x16')
 
 const posts = ref([])
 const loadingCreation = ref(false)
@@ -169,6 +234,66 @@ onMounted(() => {
     }
   }
 
+  .image-content {
+    margin-top: var(--spacing-sm);
+    .download-image {
+      display: flex;
+      flex-direction: row;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      position: relative;
+
+      .container {
+        .btn-label {
+          padding-left: var(--spacing-xxs);
+          font-size: var(--font-size-xs);
+          user-select: none;
+        }
+        background-color: #4e4571;
+        border: 1px solid transparent;
+        border-right-color: rgba(255, 255, 255, 0.5);
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+
+      .image-name {
+        padding-left: var(--spacing-sm);
+        margin-top: auto;
+        user-select: none;
+        margin-bottom: auto;
+      }
+
+      .close {
+        position: absolute;
+        right: var(--spacing-xs);
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+    .template-image {
+      margin-top: var(--spacing-xs);
+      width: 100%;
+      aspect-ratio: 1/0.5625;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+
+      .icon {
+        width: 20%;
+      }
+    }
+
+    .template-image.grey {
+      background-color: rgba(129, 129, 129, 0.1);
+    }
+
+    .controls {
+      margin-top: var(--spacing-xs);
+    }
+  }
+
   .posts {
     .title {
       margin-top: var(--spacing-sm);
@@ -209,9 +334,11 @@ onMounted(() => {
   }
 }
 
-.q-btn-group {
-  margin-left: var(--spacing-sm);
+.image-dimensions ::v-deep .q-field__control {
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
 }
+
 .q-btn-group ::v-deep .no-outline {
   border: 1px solid #4e4571 !important;
   width: var(--spacing-xl) !important;
@@ -249,5 +376,9 @@ onMounted(() => {
 :global(.q-menu) {
   background-color: rgb(124, 124, 124);
   color: white;
+}
+
+.grey {
+  color: #b8b8bb !important;
 }
 </style>

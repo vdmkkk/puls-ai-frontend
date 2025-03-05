@@ -16,7 +16,7 @@ import { toRefs } from 'vue'
 const props = defineProps<{
   modelValue: boolean
   label: string
-  isDisabled: boolean
+  isDisabled?: boolean
 }>()
 
 const { modelValue } = toRefs(props)
