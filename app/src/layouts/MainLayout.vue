@@ -10,6 +10,7 @@
     </q-header>
     <q-drawer v-model="leftDrawerOpen" show-if-above style="background-color: #2a2a32">
       <!-- <a class="drawer-title">Меню</a> -->
+
       <div class="row drawer-title">
         <q-avatar square>
           <img :src="logo" />
@@ -119,6 +120,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .app {
   background-color: #12121b;
+  height: 100%;
 }
 
 .active {

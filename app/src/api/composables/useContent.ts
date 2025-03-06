@@ -14,7 +14,7 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentCreateImagePost({ post, size })
       .then((res) => {
-        return res.data.image_url
+        return res.data.link
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
@@ -27,7 +27,7 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentCreateImagePrompt({ post, size })
       .then((res) => {
-        return res.data.image_url
+        return res.data.link
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
@@ -86,8 +86,7 @@ export default function useContent() {
 
   return {
     apiCreateImagePost,
-    apiCreateImagePost,
-    apiCreateImagePost,
+    apiCreateImagePrompt,
     apiCreatePost,
     apiGetPosts,
     apiGetContentPlan,

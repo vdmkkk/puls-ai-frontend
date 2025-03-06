@@ -10,34 +10,36 @@
           информацию.
         </p>
       </div>
-      <div class="row items-start" style="position: relative">
-        <div class="inputs">
-          <p class="subtitle">Режим</p>
-          <q-btn-toggle
-            v-model="type"
-            class="btn-group"
-            no-caps
-            rounded
-            unelevated
-            :options="[
-              { label: 'Фоновый', value: true },
-              { label: 'Продающий', value: false },
-            ]"
-          />
-          <p class="subtitle">Тема поста</p>
-          <InputComponent
-            :model-value="prompt"
-            style="font-size: var(--font-size-sm)"
-            @update:model-value="prompt = $event"
-          />
-          <p class="subtitle">Дополнительная информация</p>
-          <InputComponent
-            :model-value="additions"
-            style="font-size: var(--font-size-sm)"
-            has-voice
-            @update:model-value="additions = $event"
-          />
-          <div class="row q-mt-xl justify-between">
+      <div class="row items-start no-wrap" style="position: relative; align-items: stretch">
+        <div class="column justify-between no-wrap" style="width: 50%">
+          <div class="inputs">
+            <p class="subtitle">Режим</p>
+            <q-btn-toggle
+              v-model="type"
+              class="btn-group"
+              no-caps
+              rounded
+              unelevated
+              :options="[
+                { label: 'Фоновый', value: true },
+                { label: 'Продающий', value: false },
+              ]"
+            />
+            <p class="subtitle">Тема поста</p>
+            <InputComponent
+              :model-value="prompt"
+              style="font-size: var(--font-size-sm)"
+              @update:model-value="prompt = $event"
+            />
+            <p class="subtitle">Дополнительная информация</p>
+            <InputComponent
+              :model-value="additions"
+              style="font-size: var(--font-size-sm)"
+              has-voice
+              @update:model-value="additions = $event"
+            />
+          </div>
+          <div class="row q-mt-xl justify-between" style="align-items: stretch">
             <q-select
               class="q-select"
               outlined
@@ -54,18 +56,19 @@
             <FancyButtonComponent class="submit-btn" label="Создать" @click="onSubmit" />
           </div>
         </div>
-        <div class="column no-wrap" style="margin-left: var(--spacing-sm)">
-          <div class="column">
+        <div class="column no-wrap justify-between" style="margin-left: var(--spacing-sm); flex: 1">
+          <div class="column no-wrap" style="flex: 1">
             <CheckComponent
               :modelValue="check"
               style="user-select: none"
               label="Пост без фото"
+              :is-disabled="loadingImage"
               @update:modelValue="check = $event"
             />
             <q-btn-toggle
               v-model="imageType"
               class="btn-group"
-              :disable="check"
+              :disable="check || loadingImage"
               no-caps
               rounded
               unelevated
@@ -75,24 +78,73 @@
                 { label: 'Промпт', value: 'prompt' },
               ]"
             />
-            <div class="image-content">
-              <p :class="{ subtitle: true, grey: check }">Изображение к посту</p>
-              <div v-if="imageType == 'download'">
+            <div
+              class="image-content full-height"
+              :style="imageType != 'download' ? { marginBottom: 'var(--spacing-sm)' } : {}"
+            >
+              <div v-if="loadingImage">
+                <q-spinner-puff class="loading" size="50px" />
+              </div>
+              <div v-else-if="imageType == 'from_post'">
+                <p class="subtitle">Название поста</p>
+                <InputComponent
+                  :model-value="imagePost"
+                  :is-disabled="check"
+                  style="font-size: var(--font-size-sm)"
+                  @update:model-value="imagePost = $event"
+                />
+              </div>
+              <div v-else-if="imageType == 'prompt'">
+                <p class="subtitle">Промпт</p>
+                <InputComponent
+                  :model-value="imagePrompt"
+                  :is-disabled="check"
+                  style="font-size: var(--font-size-sm)"
+                  @update:model-value="imagePrompt = $event"
+                />
+              </div>
+              <div v-else-if="imageType == 'download'">
+                <input
+                  ref="fileInput"
+                  type="file"
+                  accept="image/*"
+                  style="display: none"
+                  @change="onFileChange"
+                />
                 <div class="download-image">
                   <q-item :disable="check" clickable v-ripple class="container">
                     <img :src="pin" />
-                    <q-item-section>
+                    <q-item-section @click="openFileExplorer">
                       <q-item-label class="btn-label">Выберите файл</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <p class="image-name">Файл не выбран</p>
-                  <q-btn :disable="check" class="close" flat round size="sm">
+                  <p class="image-name">{{ !fileName ? 'Файл не выбран' : fileName }}</p>
+                  <q-btn
+                    v-if="fileName"
+                    :disable="check"
+                    class="close"
+                    flat
+                    round
+                    size="sm"
+                    @click="clearImage"
+                  >
                     <img :src="close" />
                   </q-btn>
                 </div>
               </div>
-              <div :class="{ 'template-image': true, grey: check }">
+              <p :class="{ subtitle: true, grey: check }">Изображение к посту</p>
+              <div
+                v-if="!base64Image || imageType != 'download'"
+                :class="{ 'template-image': true, grey: check }"
+              >
                 <img class="icon" :src="templateImage" />
+              </div>
+              <div
+                v-else
+                :class="{ 'template-image': true, grey: check }"
+                style="background-color: transparent !important; justify-content: start"
+              >
+                <img :src="base64Image" alt="Selected Image" />
               </div>
             </div>
           </div>
@@ -107,10 +159,14 @@
               :options="['9x16', '16x9', '1x1', '4x3', '3x4']"
             />
             <FancyButtonComponent
-              :disabled="check"
+              :disabled="
+                check ||
+                (imageType == 'prompt' && imagePrompt == '') ||
+                (imageType == 'from_post' && imagePost == '')
+              "
               class="submit-btn"
               label="Создать"
-              @click="onSubmit"
+              @click="() => (imageType == 'prompt' ? createImagePrompt() : createImagePost())"
             />
           </div>
         </div>
@@ -154,6 +210,13 @@ const lenghtOptions = {
   'до 750 символов': 750,
   'до 1000 символов': 1000,
 }
+const aspectOptions = {
+  '9x16': 'ASPECT_9_16',
+  '16x9': 'ASPECT_16_9',
+  '1x1': 'ASPECT_1_1',
+  '4x3': 'ASPECT_4_3',
+  '3x4': 'ASPECT_3_4',
+}
 
 const prompt = ref<string>('')
 const additions = ref<string>('')
@@ -161,13 +224,17 @@ const length = ref<keyof typeof lenghtOptions>('до 500 символов')
 const type = ref(true)
 const check = ref(false)
 const imageType = ref('download')
-const imageDimensions = ref('9x16')
+const imageDimensions = ref<keyof typeof aspectOptions>('9x16')
+const imagePrompt = ref<string>('')
+const imagePost = ref<string>('')
 
 const posts = ref([])
 const loadingCreation = ref(false)
 const loadingPosts = ref(false)
+const loadingImage = ref(false)
 
-const { apiGetPosts, apiCreatePost, apiGetContentPlan, apiSavePost } = useContent()
+const { apiGetPosts, apiCreatePost, apiSavePost, apiCreateImagePost, apiCreateImagePrompt } =
+  useContent()
 
 const onSubmit = () => {
   const topic = prompt.value
@@ -207,6 +274,55 @@ const loadPosts = () => {
 onMounted(() => {
   loadPosts()
 })
+
+const base64Image = ref<string | null>(null)
+const fileName = ref<string | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function openFileExplorer() {
+  fileInput.value?.click()
+}
+
+function onFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    const file = target.files[0]
+    // Save the file name.
+    fileName.value = file.name
+    const reader = new FileReader()
+    reader.onload = () => {
+      base64Image.value = reader.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+const clearImage = () => {
+  base64Image.value = null
+  fileName.value = null
+}
+
+const createImagePost = () => {
+  loadingImage.value = true
+  apiCreateImagePost(imagePost.value, aspectOptions[imageDimensions.value])
+    .then((res) => {
+      console.log(res)
+    })
+    .finally(() => {
+      loadingImage.value = false
+    })
+}
+
+const createImagePrompt = () => {
+  loadingImage.value = true
+  apiCreateImagePrompt(imagePrompt.value, aspectOptions[imageDimensions.value])
+    .then((res) => {
+      console.log(res)
+    })
+    .finally(() => {
+      loadingImage.value = false
+    })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -217,6 +333,7 @@ onMounted(() => {
   height: 100%;
   padding-left: var(--spacing-sm);
   padding-right: var(--spacing-sm);
+  background-color: #12121b;
 
   .header {
     margin-top: var(--spacing-sm);
@@ -236,6 +353,15 @@ onMounted(() => {
 
   .image-content {
     margin-top: var(--spacing-sm);
+    margin-bottom: calc(var(--spacing-md) + var(--spacing-sm));
+
+    .loading {
+      margin-top: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+      margin-left: 50%;
+      transform: translateX(-50%);
+      color: #4e4571;
+    }
     .download-image {
       display: flex;
       flex-direction: row;
@@ -272,17 +398,24 @@ onMounted(() => {
     }
     .template-image {
       margin-top: var(--spacing-xs);
-      width: 100%;
-      aspect-ratio: 1/0.5625;
+      height: calc(var(--spacing-xxl) + var(--spacing-md)); /* Fixed height (e.g., a 16:9 ratio) */
       background-color: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       display: flex;
       align-items: center;
-      justify-content: space-around;
+      justify-content: center; /* Center the image horizontally and vertically */
+    }
 
-      .icon {
-        width: 20%;
-      }
+    /* Ensure that any img inside the container scales proportionally */
+    .template-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; /* Keeps the image aspect ratio while fitting within the container */
+    }
+
+    /* This class was previously used for the placeholder icon */
+    .icon {
+      width: 20%;
     }
 
     .template-image.grey {
@@ -308,10 +441,6 @@ onMounted(() => {
       gap: var(--spacing-xs);
       padding-bottom: var(--spacing-md);
     }
-  }
-
-  .inputs {
-    width: 50%;
   }
 
   .subtitle {
