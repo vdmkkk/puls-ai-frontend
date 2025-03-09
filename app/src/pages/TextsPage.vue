@@ -85,15 +85,6 @@
               <div v-if="loadingImage">
                 <q-spinner-puff class="loading" size="50px" />
               </div>
-              <div v-else-if="imageType == 'from_post'">
-                <p class="subtitle">Название поста</p>
-                <InputComponent
-                  :model-value="imagePost"
-                  :is-disabled="check"
-                  style="font-size: var(--font-size-sm)"
-                  @update:model-value="imagePost = $event"
-                />
-              </div>
               <div v-else-if="imageType == 'prompt'">
                 <p class="subtitle">Промпт</p>
                 <InputComponent
@@ -182,6 +173,7 @@
             :topic="post.post_topic"
             :text="post.post_text"
             :date="post.created_at"
+            @click="navigateTo(`/texts/posts/${post.post_id}`)"
           />
         </div>
       </div>
@@ -203,6 +195,12 @@ import { onMounted, ref } from 'vue'
 import pin from 'src/assets/icons/pin.svg'
 import close from 'src/assets/icons/close.svg'
 import templateImage from 'src/assets/icons/image.svg'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const navigateTo = (path: string) => {
+  router.push(path)
+}
 
 const lenghtOptions = {
   'до 300 символов': 300,
@@ -304,7 +302,7 @@ const clearImage = () => {
 
 const createImagePost = () => {
   loadingImage.value = true
-  apiCreateImagePost(imagePost.value, aspectOptions[imageDimensions.value])
+  apiCreateImagePost(prompt.value, aspectOptions[imageDimensions.value])
     .then((res) => {
       console.log(res)
     })
@@ -333,7 +331,7 @@ const createImagePrompt = () => {
   height: 100%;
   padding-left: var(--spacing-sm);
   padding-right: var(--spacing-sm);
-  background-color: #12121b;
+  // background-color: #12121b;
 
   .header {
     margin-top: var(--spacing-sm);

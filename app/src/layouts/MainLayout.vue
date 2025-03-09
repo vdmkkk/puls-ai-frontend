@@ -105,7 +105,10 @@ function toggleLeftDrawer() {
 
 const isActive = (to: string) => {
   console.log(router.currentRoute.value.path, to)
-  return router.currentRoute.value.path == to
+  return (
+    (router.currentRoute.value.path.includes(to) && to != '/') ||
+    (to == '/' && router.currentRoute.value.path == '/')
+  )
 }
 
 onMounted(() => {

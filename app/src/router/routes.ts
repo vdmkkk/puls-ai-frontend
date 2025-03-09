@@ -12,6 +12,16 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/ContentPlanPage.vue'),
       },
       { path: 'texts', name: 'texts', component: () => import('pages/TextsPage.vue') },
+      {
+        path: 'texts/posts/:id',
+        name: 'texts/posts',
+        component: () => import('pages/PostPage.vue'),
+      },
+      {
+        path: 'content-plan/posts/:id',
+        name: 'content-plan/posts',
+        component: () => import('pages/PostPage.vue'),
+      },
       { path: 'images', name: 'images', component: () => import('pages/ImagesPage.vue') },
       { path: 'archive', name: 'archive', component: () => import('pages/ArchivePage.vue') },
       { path: 'posting', name: 'posting', component: () => import('pages/AutoPostPage.vue') },

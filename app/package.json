@@ -16,7 +16,10 @@
     "codegen": "npx @openapitools/openapi-generator-cli generate -i .\\src\\assets\\swagger.codegen.json -g typescript-axios -o .\\src\\api\\"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.758.0",
+    "@aws-sdk/s3-request-presigner": "^3.758.0",
     "@quasar/extras": "^1.16.4",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.2.1",
     "dotenv": "^16.4.7",
     "js-cookie": "^3.0.5",

@@ -5,7 +5,7 @@ import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { AxiosError } from 'axios'
 import { useErrors } from 'src/composables/useErrors'
-import { CreatePostRequest, SavePostRequest } from '../api'
+import { CreatePostRequest, SavePostRequest, UpdatePostRequest } from '../api'
 
 export default function useContent() {
   const { setError } = useErrors()
@@ -60,6 +60,18 @@ export default function useContent() {
       })
   }
 
+  const apiGetPost = async (id: number) => {
+    return await apiInstances.contentApi
+      .postContentGetPostById({ post_id: id })
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
   const apiGetContentPlan = async () => {
     return await apiInstances.contentApi
       .getContentGetContentPlans()
@@ -84,6 +96,18 @@ export default function useContent() {
       })
   }
 
+  const apiUpdatePost = async (post: UpdatePostRequest) => {
+    return await apiInstances.contentApi
+      .patchContentUpdatePost(post)
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
   return {
     apiCreateImagePost,
     apiCreateImagePrompt,
@@ -91,5 +115,7 @@ export default function useContent() {
     apiGetPosts,
     apiGetContentPlan,
     apiSavePost,
+    apiGetPost,
+    apiUpdatePost,
   }
 }

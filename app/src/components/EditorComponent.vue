@@ -58,11 +58,11 @@ function handleUpdate(updatedHtml: string) {
 .q-input {
   border-radius: 20px !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  // border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 10px !important;
 }
 .disabled-style {
   background-color: transparent !important;
-  border: 1px solid rgba(107, 114, 128, 0.5);
+  // border: 1px solid rgba(107, 114, 128, 0.5);
 }
 </style>
