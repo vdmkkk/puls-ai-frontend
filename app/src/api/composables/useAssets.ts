@@ -3,21 +3,11 @@ import { ListObjectsCommand } from '@aws-sdk/client-s3'
 
 const useAssets = () => {
   const getAssets = async () => {
-    const command = new ListObjectsCommand({ Bucket: 'frontend-assets' })
+    const command = new ListObjectsCommand({ Bucket: 'images' })
     return await s3Client
       .send(command)
       .then(async (res) => {
-        const table = {}
-        return await Promise.all(
-          res.Contents!.map((object) => {
-            return getPresignedUrl('frontend-assets', object.Key)
-          }),
-        ).then((obj) => {
-          obj.forEach((item, index) => {
-            table[res.Contents[index].Key] = item
-          })
-          return table
-        })
+        return res
       })
       .catch((e) => {
         console.error(e)

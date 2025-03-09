@@ -145,6 +145,7 @@ import close from 'src/assets/icons/close.svg'
 import templateImage from 'src/assets/icons/image.svg'
 import { useRoute } from 'vue-router'
 import { debounce } from 'quasar'
+import { getPresignedUrl } from 'src/boot/aws'
 
 const { params } = useRoute()
 
@@ -236,6 +237,9 @@ watch(
 )
 
 onMounted(() => {
+  getPresignedUrl('images', '2-1d272e9f-07ec-4080-a8c8-dab36f7b9dd3').then((res) => {
+    console.log(res)
+  })
   apiGetPost(parseInt(params.id)).then((res) => {
     postTopic.value = res.post_topic
     postText.value = res.post_text
