@@ -22,6 +22,11 @@ const routes: RouteRecordRaw[] = [
         name: 'content-plan/posts',
         component: () => import('pages/PostPage.vue'),
       },
+      {
+        path: 'content-plan/:id',
+        name: 'content-plan-posts',
+        component: () => import('pages/ContentPlanPostsPage.vue'),
+      },
       { path: 'images', name: 'images', component: () => import('pages/ImagesPage.vue') },
       { path: 'archive', name: 'archive', component: () => import('pages/ArchivePage.vue') },
       { path: 'posting', name: 'posting', component: () => import('pages/AutoPostPage.vue') },

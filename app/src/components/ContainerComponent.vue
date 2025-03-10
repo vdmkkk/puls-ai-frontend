@@ -15,14 +15,13 @@ defineProps<{
 
 <style lang="scss" scoped>
 .text {
-  border: solid 2px rgba(255, 255, 255, 0.25);
+  // border: solid 2px rgba(255, 255, 255, 0.25);
   border-radius: 10px;
-  padding: 20px;
-  padding-top: 30px;
-  background-color: rgba(58, 58, 67, 0.5);
-
+  padding: var(--spacing-xs);
+  // padding-top: 30px;
+  background-color: rgba(255, 255, 255, 0.1);
   p {
-    font-size: 20px;
+    font-size: var(--font-size-md);
     font-weight: 600;
   }
 }

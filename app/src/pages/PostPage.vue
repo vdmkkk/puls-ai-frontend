@@ -112,7 +112,7 @@
                 :disabled="
                   check ||
                   (imageType == 'prompt' && imagePrompt == '') ||
-                  (imageType == 'from_post' && imagePost == '')
+                  (imageType == 'from_post' && postTopic == '')
                 "
                 class="submit-btn"
                 label="Создать"

@@ -3,21 +3,15 @@
   <q-page style="color: white" class="column justify-between">
     <div class="app">
       <div class="column header">
-        <p class="title">Контент-план</p>
+        <div class="row back items-center" @click="goBack">
+          <img :src="backIcon" style="color: #b8b8b8" />
+          <p>Назад</p>
+        </div>
+        <p class="title">Неделя {{ params.id }}</p>
         <p class="description">
-          Здесь вы можете автоматически создать шесть уникальных постов на разные темы в рамках
-          единого контент-плана. Каждый пост можно легко отредактировать вручную, дополнить
-          изображением или полностью изменить тему по вашему желанию.
+          Редактируйте посты, создавайте к ним изображения и отправляйте в очередь на публикацию
+          всего за пару кликов!
         </p>
-        <FancyButtonComponent
-          label="Создать"
-          style="
-            margin-top: var(--spacing-sm);
-            margin-bottom: var(--spacing-sm);
-            align-self: self-start;
-          "
-          @click="create"
-        />
       </div>
       <!-- <p class="title">Контент-план</p>
       <p class="subtitle">
@@ -25,18 +19,14 @@
         единого контент-плана. Каждый пост можно легко отредактировать вручную, дополнить
         изображением или полностью изменить тему по вашему желанию.
       </p> -->
-      <div v-if="loading">
-        <q-spinner-puff class="loading" size="50px" />
-      </div>
-      <div v-else class="containers">
-        <ContainerComponent
-          v-for="plan in contentPlan"
-          class="container"
-          :text="`Неделя ${plan.week_id}`"
-          @click="navigateTo(`/content-plan/${plan.week_id}`)"
-        >
-          <p class="date description">Дата создания: {{ plan.created_at }}</p>
-        </ContainerComponent>
+
+      <div class="posts-grid">
+        <PostComponent
+          v-for="post in contentPlan"
+          :topic="post.post_topic"
+          :text="post.post_text"
+          @click="navigateTo(`/content-plan/posts/${post.post_id}`)"
+        />
       </div>
     </div>
   </q-page>
@@ -47,42 +37,35 @@ import useContent from 'src/api/composables/useContent'
 import BlobComponent from 'src/components/BlobComponent.vue'
 import ContainerComponent from 'src/components/ContainerComponent.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
+import PostComponent from 'src/components/PostComponent.vue'
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import backIcon from 'src/assets/icons/arrow_left.svg'
 
-const { apiGetContentPlan, apiCreateContentPlan } = useContent()
+const { apiGetPostsContentPlan } = useContent()
+const { params } = useRoute()
 const router = useRouter()
-const loading = ref(false)
 
 const contentPlan = ref([])
 
 const getContentPlan = () => {
-  apiGetContentPlan()
-    .then((res) => {
-      contentPlan.value = res
+  console.log(params.id)
+  apiGetPostsContentPlan(params.id).then((res) => {
+    contentPlan.value = res.toSorted((a, b) => {
+      return a.post_id - b.post_id
     })
-    .finally(() => {
-      loading.value = false
-    })
+  })
 }
 
 const navigateTo = (path: string) => {
   router.push(path)
 }
 
-const create = () => {
-  loading.value = true
-  apiCreateContentPlan()
-    .then(() => {
-      getContentPlan()
-    })
-    .finally(() => {
-      loading.value = false
-    })
+const goBack = (path: string) => {
+  router.back()
 }
 
 onMounted(() => {
-  loading.value = true
   getContentPlan()
 })
 </script>
@@ -96,12 +79,29 @@ onMounted(() => {
   padding-left: var(--spacing-sm);
   padding-right: var(--spacing-sm);
 
-  .loading {
-    margin-top: var(--spacing-lg);
-    margin-bottom: var(--spacing-sm);
-    margin-left: 50%;
-    transform: translateX(-50%);
-    color: #4e4571;
+  .back {
+    cursor: pointer;
+    user-select: none;
+    p {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: #b8b8b8;
+      text-decoration: underline;
+      margin-bottom: 0;
+      margin-left: var(--spacing-xxs);
+    }
+    img {
+      height: var(--font-size-sm);
+    }
+  }
+
+  .posts-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: var(--spacing-xs);
+    padding-bottom: var(--spacing-md);
   }
 
   .description {

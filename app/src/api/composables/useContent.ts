@@ -19,7 +19,6 @@ export default function useContent() {
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
       })
   }
 
@@ -32,13 +31,36 @@ export default function useContent() {
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        return e
       })
   }
 
   const apiCreatePost = async (post: CreatePostRequest) => {
     return await apiInstances.contentApi
       .postContentCreatePost(post)
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
+  const apiCreateContentPlan = async () => {
+    return await apiInstances.contentApi
+      .postContentCreateContentPlan()
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
+  const apiGetPostsContentPlan = async (weekId) => {
+    return await apiInstances.contentApi
+      .getContentGetDetailContentPlan(weekId)
       .then((res) => {
         return res.data
       })
@@ -117,5 +139,7 @@ export default function useContent() {
     apiSavePost,
     apiGetPost,
     apiUpdatePost,
+    apiGetPostsContentPlan,
+    apiCreateContentPlan,
   }
 }

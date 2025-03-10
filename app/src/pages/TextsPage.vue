@@ -53,7 +53,12 @@
                 'до 1000 символов',
               ]"
             />
-            <FancyButtonComponent class="submit-btn" label="Создать" @click="onSubmit" />
+            <FancyButtonComponent
+              :disabled="prompt == '' || additions == '' || (!check && !base64Image)"
+              class="submit-btn"
+              label="Создать"
+              @click="onSubmit"
+            />
           </div>
         </div>
         <div class="column no-wrap justify-between" style="margin-left: var(--spacing-sm); flex: 1">
@@ -135,7 +140,7 @@
                 :class="{ 'template-image': true, grey: check }"
                 style="background-color: transparent !important; justify-content: start"
               >
-                <img :src="base64Image" alt="Selected Image" />
+                <img :src="computedImageSrc" alt="Selected Image" />
               </div>
             </div>
           </div>
@@ -153,7 +158,7 @@
               :disabled="
                 check ||
                 (imageType == 'prompt' && imagePrompt == '') ||
-                (imageType == 'from_post' && imagePost == '')
+                (imageType == 'from_post' && prompt == '')
               "
               class="submit-btn"
               label="Создать"
@@ -324,7 +329,7 @@ const createImagePost = () => {
   loadingImage.value = true
   apiCreateImagePost(prompt.value, aspectOptions[imageDimensions.value])
     .then((res) => {
-      console.log(res)
+      base64Image.value = res
     })
     .finally(() => {
       loadingImage.value = false
@@ -335,7 +340,7 @@ const createImagePrompt = () => {
   loadingImage.value = true
   apiCreateImagePrompt(imagePrompt.value, aspectOptions[imageDimensions.value])
     .then((res) => {
-      console.log(res)
+      base64Image.value = res
     })
     .finally(() => {
       loadingImage.value = false

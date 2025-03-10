@@ -2,7 +2,8 @@
   <div class="post column">
     <p class="topic">{{ topic }}</p>
     <p class="text">{{ text }}</p>
-    <p class="date">{{ date }}</p>
+    <p v-if="date" class="date">{{ date }}</p>
+    <p v-else class="date" style="text-decoration: underline">Перейти</p>
   </div>
 </template>
 
@@ -12,7 +13,7 @@
 defineProps<{
   topic: string
   text: string
-  date: string
+  date?: string
 }>()
 </script>
 
