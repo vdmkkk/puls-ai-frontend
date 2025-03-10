@@ -191,11 +191,12 @@ import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import InputComponent from 'src/components/InputComponent.vue'
 import OptionButton from 'src/components/OptionButton.vue'
 import PostComponent from 'src/components/PostComponent.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import pin from 'src/assets/icons/pin.svg'
 import close from 'src/assets/icons/close.svg'
 import templateImage from 'src/assets/icons/image.svg'
 import { useRouter } from 'vue-router'
+import { getPresignedUrl } from 'src/boot/aws'
 const router = useRouter()
 
 const navigateTo = (path: string) => {
@@ -276,6 +277,25 @@ onMounted(() => {
 const base64Image = ref<string | null>(null)
 const fileName = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
+const computedImageSrc = ref<string | null>(null)
+
+watch(
+  base64Image,
+  async (newVal) => {
+    console.log('base64Image changed:', newVal)
+    if (newVal?.includes('images.s3.amazonaws.com')) {
+      // Assume the bucket key is the last segment of the URL
+      const key = newVal.split('/').at(-1)
+      if (key) {
+        computedImageSrc.value = await getPresignedUrl(key)
+        console.log('Presigned URL:', computedImageSrc.value)
+      }
+    } else {
+      computedImageSrc.value = newVal
+    }
+  },
+  { deep: true },
+)
 
 function openFileExplorer() {
   fileInput.value?.click()

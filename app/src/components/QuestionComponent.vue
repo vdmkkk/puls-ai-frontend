@@ -46,6 +46,7 @@ const answer = defineModel<string>()
     -webkit-line-clamp: 3; /* number of lines to show */
     line-clamp: 3;
     -webkit-box-orient: vertical;
+    // color: #4e4571;
   }
 
   .answer {
@@ -54,6 +55,8 @@ const answer = defineModel<string>()
     -webkit-line-clamp: 3; /* number of lines to show */
     line-clamp: 3;
     -webkit-box-orient: vertical;
+    color: #b8b8bb;
+    // color: white;
   }
 }
 

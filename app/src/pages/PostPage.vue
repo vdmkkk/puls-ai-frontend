@@ -3,6 +3,10 @@
   <q-page style="color: white" class="column justify-between">
     <div class="app">
       <div class="column header">
+        <div class="row back items-center" @click="goBack">
+          <img :src="backIcon" style="color: #b8b8b8" />
+          <p>Назад</p>
+        </div>
         <p class="title">{{ postTopic }}</p>
         <p class="subtitle">Текст</p>
         <div class="row items-start no-wrap">
@@ -90,7 +94,7 @@
                   :class="{ 'template-image': true, grey: check }"
                   style="background-color: transparent !important; justify-content: start"
                 >
-                  <img :src="base64Image" alt="Selected Image" />
+                  <img :src="computedImageSrc" alt="Selected Image" />
                 </div>
               </div>
             </div>
@@ -117,13 +121,8 @@
             </div>
           </div>
         </div>
-        <div class="row" style="gap: var(--spacing-xxs)">
-          <div class="copy" style="width: min-content">
-            <q-btn flat round><img :src="edit" /></q-btn>
-          </div>
-          <div class="copy" style="width: min-content">
-            <q-btn flat round><img :src="copy" /></q-btn>
-          </div>
+        <div class="copy" style="width: min-content">
+          <q-btn flat round><img :src="copy" /></q-btn>
         </div>
       </div>
     </div>
@@ -135,7 +134,7 @@ import BlobComponent from 'src/components/BlobComponent.vue'
 import EditorComponent from 'src/components/EditorComponent.vue'
 import copy from 'src/assets/icons/copy.svg'
 import edit from 'src/assets/icons/edit.svg'
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import useContent from 'src/api/composables/useContent'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import InputComponent from 'src/components/InputComponent.vue'
@@ -146,8 +145,11 @@ import templateImage from 'src/assets/icons/image.svg'
 import { useRoute } from 'vue-router'
 import { debounce } from 'quasar'
 import { getPresignedUrl } from 'src/boot/aws'
+import backIcon from 'src/assets/icons/arrow_left.svg'
+import { useRouter } from 'vue-router'
 
 const { params } = useRoute()
+const router = useRouter()
 
 const { apiGetPost, apiUpdatePost, apiCreateImagePost, apiCreateImagePrompt } = useContent()
 
@@ -170,6 +172,31 @@ const imageDimensions = ref<keyof typeof aspectOptions>('9x16')
 const imagePrompt = ref<string>('')
 const imagePost = ref<string>('')
 
+const computedImageSrc = ref<string | null>(null)
+
+// Watch for changes to base64Image
+watch(
+  base64Image,
+  async (newVal) => {
+    console.log('base64Image changed:', newVal)
+    if (newVal?.includes('images.s3.amazonaws.com')) {
+      // Assume the bucket key is the last segment of the URL
+      const key = newVal.split('/').at(-1)
+      if (key) {
+        computedImageSrc.value = await getPresignedUrl(key)
+        console.log('Presigned URL:', computedImageSrc.value)
+      }
+    } else {
+      computedImageSrc.value = newVal
+    }
+  },
+  { deep: true },
+)
+
+const goBack = (path: string) => {
+  router.back()
+}
+
 const loadingImage = ref(false)
 
 function openFileExplorer() {
@@ -190,6 +217,10 @@ function onFileChange(event: Event) {
   }
 }
 
+const processImage = () => {
+  console.log(base64Image.value)
+}
+
 const clearImage = () => {
   base64Image.value = null
   fileName.value = null
@@ -199,7 +230,7 @@ const createImagePost = () => {
   loadingImage.value = true
   apiCreateImagePost(postText.value, aspectOptions[imageDimensions.value])
     .then((res) => {
-      console.log(res)
+      base64Image.value = res
     })
     .finally(() => {
       loadingImage.value = false
@@ -210,7 +241,7 @@ const createImagePrompt = () => {
   loadingImage.value = true
   apiCreateImagePrompt(imagePrompt.value, aspectOptions[imageDimensions.value])
     .then((res) => {
-      console.log(res)
+      base64Image.value = res
     })
     .finally(() => {
       loadingImage.value = false
@@ -237,9 +268,9 @@ watch(
 )
 
 onMounted(() => {
-  getPresignedUrl('images', '2-1d272e9f-07ec-4080-a8c8-dab36f7b9dd3').then((res) => {
-    console.log(res)
-  })
+  // getPresignedUrl('images', '2-9a7352c9-5d6f-4c03-a12c-292148cd69f6').then((res) => {
+  //   console.log(res)
+  // })
   apiGetPost(parseInt(params.id)).then((res) => {
     postTopic.value = res.post_topic
     postText.value = res.post_text
@@ -282,6 +313,22 @@ onMounted(() => {
       font-size: var(--font-size-sm);
       font-weight: 500;
       color: #b8b8b8;
+    }
+  }
+
+  .back {
+    cursor: pointer;
+    user-select: none;
+    p {
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      color: #b8b8b8;
+      text-decoration: underline;
+      margin-bottom: 0;
+      margin-left: var(--spacing-xxs);
+    }
+    img {
+      height: var(--font-size-sm);
     }
   }
 

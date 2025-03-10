@@ -183,9 +183,10 @@ onMounted(() => {
           class="link-input"
           @update:model-value="answers.link = $event"
         />
-        <q-btn round color="primary" @click="getFromLink">
+        <FancyButtonComponent label="Применить" @click="getFromLink" />
+        <!-- <q-btn round color="primary" @click="getFromLink">
           <img :src="arrow_down" />
-        </q-btn>
+        </q-btn> -->
       </div>
 
       <CheckComponent
