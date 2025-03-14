@@ -174,7 +174,9 @@ onMounted(() => {
           { label: 'Вручную', value: false },
         ]"
       />
-      <p class="link-title" :class="{ grey: !isAuto }">Ссылка на vk/tg:</p>
+      <p class="link-title" :class="{ grey: !isAuto }">
+        Ссылка на профессиональный аккаунт Telegram или VK
+      </p>
       <div class="row" style="gap: var(--spacing-xs)">
         <InputComponent
           :isDisabled="!isAuto"
@@ -194,7 +196,7 @@ onMounted(() => {
         :isDisabled="!isAuto"
         style="user-select: none"
         label="Использовать стилистику моих постов"
-        @update:modelValue="check = $event"
+        @update:modelValue="answers.check = $event"
       />
       <p class="survey-title" :class="{ grey: isAuto }">
         Нажмите на карточку с вопросом, чтобы посмотреть пояснения и ответить
@@ -244,7 +246,7 @@ onMounted(() => {
     .description {
       font-size: var(--font-size-sm);
       font-weight: 100;
-      color: #b8b8b8;
+      color: #ffffff;
     }
 
     .question {

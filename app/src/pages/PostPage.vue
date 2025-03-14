@@ -1,5 +1,12 @@
 <template>
   <BlobComponent />
+  <QuestionDialog
+    :is-open="dialog.isOpen"
+    question="Тема поста"
+    :model-value="postTopic"
+    @close="handlerCloseDialog"
+    @save="handlerSaveDialog"
+  />
   <q-page style="color: white" class="column justify-between">
     <div class="app">
       <div class="column header">
@@ -7,7 +14,13 @@
           <img :src="backIcon" style="color: #b8b8b8" />
           <p>Назад</p>
         </div>
-        <p class="title">{{ postTopic }}</p>
+        <div class="row no-wrap items-center" style="gap: var(--spacing-sm)">
+          <p class="title">{{ postTopic }}</p>
+          <q-btn class="edit" flat round size="md" @click="handlerOpenDialog">
+            <img :src="edit" />
+          </q-btn>
+        </div>
+
         <p class="subtitle">Текст</p>
         <div class="row items-start no-wrap">
           <EditorComponent
@@ -121,9 +134,12 @@
             </div>
           </div>
         </div>
-        <div class="copy" style="width: min-content">
-          <q-btn flat round><img :src="copy" /></q-btn>
-        </div>
+        <DefaultButton
+          style="align-self: flex-start; margin-top: var(--spacing-sm)"
+          label="Отправить в очередь на публикацию"
+          :icon="arrowRight"
+          @click="handlerAutoPost"
+        />
       </div>
     </div>
   </q-page>
@@ -132,7 +148,6 @@
 <script setup lang="ts">
 import BlobComponent from 'src/components/BlobComponent.vue'
 import EditorComponent from 'src/components/EditorComponent.vue'
-import copy from 'src/assets/icons/copy.svg'
 import edit from 'src/assets/icons/edit.svg'
 import { computed, onMounted, ref, watch } from 'vue'
 import useContent from 'src/api/composables/useContent'
@@ -147,6 +162,32 @@ import { debounce } from 'quasar'
 import { getPresignedUrl } from 'src/boot/aws'
 import backIcon from 'src/assets/icons/arrow_left.svg'
 import { useRouter } from 'vue-router'
+import QuestionDialog from 'src/dialogs/QuestionDialog.vue'
+import DefaultButton from 'src/components/DefaultButton.vue'
+import arrowRight from 'src/assets/icons/arrow_right.svg'
+
+const dialog = ref<{
+  isOpen: boolean
+}>({
+  isOpen: false,
+})
+
+const handlerOpenDialog = (): void => {
+  dialog.value = {
+    isOpen: true,
+  }
+}
+
+const handlerCloseDialog = () => {
+  dialog.value = {
+    isOpen: false,
+  }
+}
+
+const handlerSaveDialog = (answer: string) => {
+  postTopic.value = answer
+  handlerCloseDialog()
+}
 
 const { params } = useRoute()
 const router = useRouter()
@@ -217,10 +258,6 @@ function onFileChange(event: Event) {
   }
 }
 
-const processImage = () => {
-  console.log(base64Image.value)
-}
-
 const clearImage = () => {
   base64Image.value = null
   fileName.value = null
@@ -260,7 +297,7 @@ const savePost = () => {
 const debouncedProcessAnswers = debounce(savePost, 1000)
 
 watch(
-  [base64Image, postText, check, imageType],
+  [base64Image, postText, check, imageType, postTopic],
   () => {
     debouncedProcessAnswers()
   },

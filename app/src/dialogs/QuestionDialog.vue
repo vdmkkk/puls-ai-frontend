@@ -9,6 +9,7 @@ const answer = defineModel<string>()
 const props = defineProps<{
   isOpen: boolean
   question: string
+  description?: string
   isHigh?: boolean
 }>()
 
@@ -41,7 +42,7 @@ const onSave = () => {
         <img :src="close" />
       </q-btn>
       <p class="title">{{ question }}</p>
-      <p class="subtitle">{{ question }}</p>
+      <p v-if="description" class="subtitle">{{ description }}</p>
       <InputComponent
         :model-value="answer"
         :is-high="!!isHigh"
@@ -73,7 +74,7 @@ const onSave = () => {
   .title {
     font-size: var(--font-size-md);
     font-weight: 600;
-    margin: 0px;
+    margin-bottom: var(--spacing-xs);
   }
 
   .close {
@@ -88,7 +89,6 @@ const onSave = () => {
     font-size: var(--font-size-sm);
     font-weight: 500;
     color: #b8b8bb;
-    margin-top: var(--spacing-xs);
   }
 
   .save {

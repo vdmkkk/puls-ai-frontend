@@ -27,6 +27,8 @@
             />
             <p class="subtitle">Тема поста</p>
             <InputComponent
+              class="prompt"
+              autogrow
               :model-value="prompt"
               style="font-size: var(--font-size-sm)"
               @update:model-value="prompt = $event"
@@ -54,7 +56,7 @@
               ]"
             />
             <FancyButtonComponent
-              :disabled="prompt == '' || additions == '' || (!check && !base64Image)"
+              :disabled="prompt == '' || (!check && !base64Image)"
               class="submit-btn"
               label="Создать"
               @click="onSubmit"
@@ -129,10 +131,7 @@
                 </div>
               </div>
               <p :class="{ subtitle: true, grey: check }">Изображение к посту</p>
-              <div
-                v-if="!base64Image || imageType != 'download'"
-                :class="{ 'template-image': true, grey: check }"
-              >
+              <div v-if="!base64Image || check" :class="{ 'template-image': true, grey: check }">
                 <img class="icon" :src="templateImage" />
               </div>
               <div
@@ -376,7 +375,7 @@ const createImagePrompt = () => {
 
   .image-content {
     margin-top: var(--spacing-sm);
-    margin-bottom: calc(var(--spacing-md) + var(--spacing-sm));
+    // margin-bottom: calc(var(--spacing-md) + var(--spacing-sm));
 
     .loading {
       margin-top: var(--spacing-sm);

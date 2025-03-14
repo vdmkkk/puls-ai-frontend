@@ -1,9 +1,15 @@
 <template>
-  <div class="post column">
-    <p class="topic">{{ topic }}</p>
-    <p class="text">{{ text }}</p>
-    <p v-if="date" class="date">{{ date }}</p>
-    <p v-else class="date" style="text-decoration: underline">Перейти</p>
+  <div class="post column justify-between">
+    <div>
+      <p class="topic">{{ topic }}</p>
+      <p v-if="text" class="text">{{ text }}</p>
+      <div v-else class="space" />
+    </div>
+
+    <div>
+      <p v-if="date" class="date">{{ date }}</p>
+      <p v-else class="date" style="text-decoration: underline">Перейти</p>
+    </div>
   </div>
 </template>
 
@@ -47,6 +53,10 @@ defineProps<{
     -webkit-line-clamp: 3; /* number of lines to show */
     line-clamp: 3;
     -webkit-box-orient: vertical;
+  }
+
+  .space {
+    height: var(--spacing-md);
   }
 
   .date {
