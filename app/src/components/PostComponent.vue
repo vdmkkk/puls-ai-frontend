@@ -1,35 +1,80 @@
 <template>
   <div class="post column justify-between">
-    <div>
-      <p class="topic">{{ topic }}</p>
-      <p v-if="text" class="text">{{ text }}</p>
-      <div v-else class="space" />
+    <div class="column no-wrap">
+      <img v-if="image" :src="computedImageSrc" />
+      <div class="column content justify-between">
+        <div>
+          <p class="topic">{{ topic }}</p>
+          <p v-if="text" class="text">{{ text }}</p>
+          <div v-else class="space" />
+        </div>
+
+        <div>
+          <p v-if="date" class="date">{{ date }}</p>
+          <p v-else-if="!posting" class="date" style="text-decoration: underline">Перейти</p>
+        </div>
+      </div>
     </div>
 
-    <div>
-      <p v-if="date" class="date">{{ date }}</p>
-      <p v-else class="date" style="text-decoration: underline">Перейти</p>
-    </div>
+    <DefaultButton
+      v-if="posting"
+      style="align-self: flex-start; margin: var(--spacing-xs)"
+      label="Опубликовать"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue'
+import DefaultButton from './DefaultButton.vue'
+import { getPresignedUrl } from 'src/boot/aws'
+
 // @ts-nocheck //
 
-defineProps<{
+const { image } = defineProps<{
   topic: string
   text: string
   date?: string
+  posting?: boolean
+  image?: string
 }>()
+
+const computedImageSrc = ref()
+
+onMounted(() => {
+  if (image?.includes('images.s3.amazonaws.com')) {
+    // Assume the bucket key is the last segment of the URL
+    const key = image.split('/').at(-1)
+    console.log(key)
+    if (key) {
+      getPresignedUrl(key).then((res) => {
+        computedImageSrc.value = res
+      })
+    }
+  } else {
+    computedImageSrc.value = image
+  }
+})
 </script>
 
 <style lang="scss" scoped>
 .post {
-  border-radius: 10px;
-  padding: var(--spacing-xs);
   background-color: rgba(255, 255, 255, 0.08);
   user-select: none;
   cursor: pointer;
+  border-radius: 10px;
+
+  .content {
+    padding: var(--spacing-xs);
+  }
+
+  img {
+    max-height: calc(var(--spacing-xl) + var(--spacing-md)) !important;
+    width: 100%;
+    object-fit: contain;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+  }
 
   .topic {
     font-size: var(--font-size-md);

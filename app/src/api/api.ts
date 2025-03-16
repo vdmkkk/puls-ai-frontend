@@ -104,7 +104,7 @@ export interface ContentTitles {
      */
     'title6': string;
     /**
-     * 
+     * id недели
      * @type {number}
      * @memberof ContentTitles
      */
@@ -295,6 +295,19 @@ export interface LoginRequest {
 /**
  * 
  * @export
+ * @interface MarkPostReadyToPublish
+ */
+export interface MarkPostReadyToPublish {
+    /**
+     * id поста
+     * @type {number}
+     * @memberof MarkPostReadyToPublish
+     */
+    'post_id'?: number;
+}
+/**
+ * 
+ * @export
  * @interface PostAuthChangePassword500Response
  */
 export interface PostAuthChangePassword500Response {
@@ -419,6 +432,31 @@ export interface RegisterRequest {
      * @memberof RegisterRequest
      */
     'verification_code': number;
+}
+/**
+ * 
+ * @export
+ * @interface SaveAccountRequest
+ */
+export interface SaveAccountRequest {
+    /**
+     * URL телеграм-канала
+     * @type {string}
+     * @memberof SaveAccountRequest
+     */
+    'tg_channel_url'?: string;
+    /**
+     * URL VK-канала
+     * @type {string}
+     * @memberof SaveAccountRequest
+     */
+    'vk_channel_url'?: string;
+    /**
+     * Токен для доступа к API VK
+     * @type {string}
+     * @memberof SaveAccountRequest
+     */
+    'vk_token'?: string;
 }
 /**
  * 
@@ -1292,6 +1330,42 @@ export const ContentApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Роут принимает id поста и помечает его готовым  Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Пометить пост готовым к публикации
+         * @param {MarkPostReadyToPublish} markPostReadyToPublish 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentMarkReadyToPublish: async (markPostReadyToPublish: MarkPostReadyToPublish, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'markPostReadyToPublish' is not null or undefined
+            assertParamExists('postContentMarkReadyToPublish', 'markPostReadyToPublish', markPostReadyToPublish)
+            const localVarPath = `/content/mark_ready_to_publish/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(markPostReadyToPublish, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение поста
          * @param {SavePostRequest} savePostRequest 
@@ -1493,6 +1567,19 @@ export const ContentApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Роут принимает id поста и помечает его готовым  Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Пометить пост готовым к публикации
+         * @param {MarkPostReadyToPublish} markPostReadyToPublish 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postContentMarkReadyToPublish(markPostReadyToPublish: MarkPostReadyToPublish, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postContentMarkReadyToPublish(markPostReadyToPublish, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.postContentMarkReadyToPublish']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение поста
          * @param {SavePostRequest} savePostRequest 
@@ -1614,6 +1701,16 @@ export const ContentApiFactory = function (configuration?: Configuration, basePa
          */
         postContentGetPostById(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<SavePostRequest> {
             return localVarFp.postContentGetPostById(getPostByIdRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает id поста и помечает его готовым  Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Пометить пост готовым к публикации
+         * @param {MarkPostReadyToPublish} markPostReadyToPublish 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postContentMarkReadyToPublish(markPostReadyToPublish: MarkPostReadyToPublish, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postContentMarkReadyToPublish(markPostReadyToPublish, options).then((request) => request(axios, basePath));
         },
         /**
          * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
@@ -1751,6 +1848,18 @@ export class ContentApi extends BaseAPI {
     }
 
     /**
+     * Роут принимает id поста и помечает его готовым  Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Пометить пост готовым к публикации
+     * @param {MarkPostReadyToPublish} markPostReadyToPublish 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public postContentMarkReadyToPublish(markPostReadyToPublish: MarkPostReadyToPublish, options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).postContentMarkReadyToPublish(markPostReadyToPublish, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Роут принимает текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
      * @summary Сохранение поста
      * @param {SavePostRequest} savePostRequest 
@@ -1850,6 +1959,42 @@ export const CustomizeApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
+         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * @summary Сохранение данных аккаунта
+         * @param {SaveAccountRequest} saveAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCustomizeSaveAccount: async (saveAccountRequest: SaveAccountRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'saveAccountRequest' is not null or undefined
+            assertParamExists('postCustomizeSaveAccount', 'saveAccountRequest', saveAccountRequest)
+            const localVarPath = `/customize/save_account`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(saveAccountRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Получить профиль на основе ответов
          * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
@@ -1921,6 +2066,19 @@ export const CustomizeApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * @summary Сохранение данных аккаунта
+         * @param {SaveAccountRequest} saveAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postCustomizeSaveAccount(saveAccountRequest: SaveAccountRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postCustomizeSaveAccount(saveAccountRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomizeApi.postCustomizeSaveAccount']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary Получить профиль на основе ответов
          * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
@@ -1961,6 +2119,16 @@ export const CustomizeApiFactory = function (configuration?: Configuration, base
          */
         postCustomizeGetProfileFromUrl(getProfileFromUrlRequest: GetProfileFromUrlRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.postCustomizeGetProfileFromUrl(getProfileFromUrlRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * @summary Сохранение данных аккаунта
+         * @param {SaveAccountRequest} saveAccountRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postCustomizeSaveAccount(saveAccountRequest: SaveAccountRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postCustomizeSaveAccount(saveAccountRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
@@ -2006,6 +2174,18 @@ export class CustomizeApi extends BaseAPI {
     }
 
     /**
+     * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+     * @summary Сохранение данных аккаунта
+     * @param {SaveAccountRequest} saveAccountRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomizeApi
+     */
+    public postCustomizeSaveAccount(saveAccountRequest: SaveAccountRequest, options?: RawAxiosRequestConfig) {
+        return CustomizeApiFp(this.configuration).postCustomizeSaveAccount(saveAccountRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * Роут принимает ответы на вопросы и возвращает сгенерированный профиль. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
      * @summary Получить профиль на основе ответов
      * @param {GetProfileFromAnswersRequest} getProfileFromAnswersRequest 
@@ -2015,6 +2195,121 @@ export class CustomizeApi extends BaseAPI {
      */
     public postCustomizeSaveProfileAnswers(getProfileFromAnswersRequest: GetProfileFromAnswersRequest, options?: RawAxiosRequestConfig) {
         return CustomizeApiFp(this.configuration).postCustomizeSaveProfileAnswers(getProfileFromAnswersRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * FilesApi - axios parameter creator
+ * @export
+ */
+export const FilesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Роут принимает файл, загружает на s3 и возвращает ссылку. Если данные невалидны, возвращается ошибка `400 Bad Request` 
+         * @summary Загружает файл на s3
+         * @param {File} file Файл для загрузки на s3
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postFilesSaveImage: async (file: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'file' is not null or undefined
+            assertParamExists('postFilesSaveImage', 'file', file)
+            const localVarPath = `/files/save_image/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * FilesApi - functional programming interface
+ * @export
+ */
+export const FilesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = FilesApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Роут принимает файл, загружает на s3 и возвращает ссылку. Если данные невалидны, возвращается ошибка `400 Bad Request` 
+         * @summary Загружает файл на s3
+         * @param {File} file Файл для загрузки на s3
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postFilesSaveImage(file: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postFilesSaveImage(file, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['FilesApi.postFilesSaveImage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * FilesApi - factory interface
+ * @export
+ */
+export const FilesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = FilesApiFp(configuration)
+    return {
+        /**
+         * Роут принимает файл, загружает на s3 и возвращает ссылку. Если данные невалидны, возвращается ошибка `400 Bad Request` 
+         * @summary Загружает файл на s3
+         * @param {File} file Файл для загрузки на s3
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postFilesSaveImage(file: File, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postFilesSaveImage(file, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * FilesApi - object-oriented interface
+ * @export
+ * @class FilesApi
+ * @extends {BaseAPI}
+ */
+export class FilesApi extends BaseAPI {
+    /**
+     * Роут принимает файл, загружает на s3 и возвращает ссылку. Если данные невалидны, возвращается ошибка `400 Bad Request` 
+     * @summary Загружает файл на s3
+     * @param {File} file Файл для загрузки на s3
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FilesApi
+     */
+    public postFilesSaveImage(file: File, options?: RawAxiosRequestConfig) {
+        return FilesApiFp(this.configuration).postFilesSaveImage(file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2125,6 +2420,116 @@ export class PaymentApi extends BaseAPI {
      */
     public postPaymentUsePromo(usePromoRequest: UsePromoRequest, options?: RawAxiosRequestConfig) {
         return PaymentApiFp(this.configuration).postPaymentUsePromo(usePromoRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * PostsApi - axios parameter creator
+ * @export
+ */
+export const PostsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Роут принимает в теле запроса id поста и публикует его. Если ни один аккаунт не подключен, то возвращает ошибка. 
+         * @summary Опубликовать пост в подключенные платформы
+         * @param {GetPostByIdRequest} getPostByIdRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postPostsPublishPost: async (getPostByIdRequest: GetPostByIdRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'getPostByIdRequest' is not null or undefined
+            assertParamExists('postPostsPublishPost', 'getPostByIdRequest', getPostByIdRequest)
+            const localVarPath = `/posts/publish_post`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getPostByIdRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PostsApi - functional programming interface
+ * @export
+ */
+export const PostsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PostsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Роут принимает в теле запроса id поста и публикует его. Если ни один аккаунт не подключен, то возвращает ошибка. 
+         * @summary Опубликовать пост в подключенные платформы
+         * @param {GetPostByIdRequest} getPostByIdRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postPostsPublishPost(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postPostsPublishPost(getPostByIdRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PostsApi.postPostsPublishPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * PostsApi - factory interface
+ * @export
+ */
+export const PostsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PostsApiFp(configuration)
+    return {
+        /**
+         * Роут принимает в теле запроса id поста и публикует его. Если ни один аккаунт не подключен, то возвращает ошибка. 
+         * @summary Опубликовать пост в подключенные платформы
+         * @param {GetPostByIdRequest} getPostByIdRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postPostsPublishPost(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postPostsPublishPost(getPostByIdRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PostsApi - object-oriented interface
+ * @export
+ * @class PostsApi
+ * @extends {BaseAPI}
+ */
+export class PostsApi extends BaseAPI {
+    /**
+     * Роут принимает в теле запроса id поста и публикует его. Если ни один аккаунт не подключен, то возвращает ошибка. 
+     * @summary Опубликовать пост в подключенные платформы
+     * @param {GetPostByIdRequest} getPostByIdRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostsApi
+     */
+    public postPostsPublishPost(getPostByIdRequest: GetPostByIdRequest, options?: RawAxiosRequestConfig) {
+        return PostsApiFp(this.configuration).postPostsPublishPost(getPostByIdRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

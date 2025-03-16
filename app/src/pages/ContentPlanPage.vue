@@ -59,7 +59,9 @@ const contentPlan = ref([])
 const getContentPlan = () => {
   apiGetContentPlan()
     .then((res) => {
-      contentPlan.value = res
+      contentPlan.value = res.toSorted((a, b) => {
+        return b.week_id - a.week_id
+      })
     })
     .finally(() => {
       loading.value = false

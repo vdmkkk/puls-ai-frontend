@@ -57,7 +57,7 @@
             "example": "Что скрывают эксперты о string? И как это использовать",
             "type": "string"
           },
-          "week_id": { "dsecription": "id недели", "example": 4, "type": "integer" }
+          "week_id": { "description": "id недели", "example": 4, "type": "integer" }
         },
         "required": ["title1", "title2", "title3", "title4", "title5", "title6"],
         "type": "object"
@@ -187,6 +187,12 @@
         "required": ["email", "password"],
         "type": "object"
       },
+      "MarkPostReadyToPublish": {
+        "properties": {
+          "post_id": { "description": "id поста", "example": 123, "type": "integer" }
+        },
+        "type": "object"
+      },
       "RegisterRequest": {
         "properties": {
           "email": { "example": "user@example.com", "type": "string" },
@@ -196,6 +202,26 @@
           "verification_code": { "example": 123456, "format": "int64", "type": "integer" }
         },
         "required": ["first_name", "last_name", "email", "password", "verification_code"],
+        "type": "object"
+      },
+      "SaveAccountRequest": {
+        "properties": {
+          "tg_channel_url": {
+            "description": "URL телеграм-канала",
+            "example": "https://t.me/example_channel",
+            "type": "string"
+          },
+          "vk_channel_url": {
+            "description": "URL VK-канала",
+            "example": "https://vk.com/example_channel",
+            "type": "string"
+          },
+          "vk_token": {
+            "description": "Токен для доступа к API VK",
+            "example": "vk1.a.exampleToken",
+            "type": "string"
+          }
+        },
         "type": "object"
       },
       "SavePostRequest": {
@@ -796,6 +822,42 @@
         "tags": ["content"]
       }
     },
+    "/content/mark_ready_to_publish/": {
+      "post": {
+        "description": "Роут принимает id поста и помечает его готовым \nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostContentMarkReadyToPublish",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MarkPostReadyToPublish" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "пост помечен готовым к публикаци" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Пометить пост готовым к публикации",
+        "tags": ["content"]
+      }
+    },
     "/content/save_post/": {
       "post": {
         "description": "Роут принимает текст поста и ссылку на изображение.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
@@ -1029,6 +1091,40 @@
         "tags": ["customize"]
       }
     },
+    "/customize/save_account": {
+      "post": {
+        "description": "Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK.\nЕсли данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "PostCustomizeSaveAccount",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/SaveAccountRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Данные аккаунта успешно сохранены" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные или отсутствие обязательных полей"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Сохранение данных аккаунта",
+        "tags": ["customize"]
+      }
+    },
     "/customize/save_profile_answers": {
       "post": {
         "description": "Роут принимает ответы на вопросы и возвращает сгенерированный профиль.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
@@ -1063,6 +1159,52 @@
         },
         "summary": "Получить профиль на основе ответов",
         "tags": ["customize"]
+      }
+    },
+    "/files/save_image/": {
+      "post": {
+        "description": "Роут принимает файл, загружает на s3 и возвращает ссылку.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`\n",
+        "operationId": "PostFilesSaveImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "description": "Файл для загрузки на s3",
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": ["file"],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "файл успешно загружен" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Загружает файл на s3",
+        "tags": ["files"]
       }
     },
     "/payment/use_promo": {
@@ -1113,6 +1255,40 @@
         },
         "summary": "Использование промокода",
         "tags": ["payment"]
+      }
+    },
+    "/posts/publish_post": {
+      "post": {
+        "description": "Роут принимает в теле запроса id поста и публикует его.\nЕсли ни один аккаунт не подключен, то возвращает ошибка.\n",
+        "operationId": "PostPostsPublishPost",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/GetPostByIdRequest" } }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "Пост успешно опубликован" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные или отсутствие обязательных полей"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Опубликовать пост в подключенные платформы",
+        "tags": ["posts"]
       }
     },
     "/profile/get_all_user_info": {

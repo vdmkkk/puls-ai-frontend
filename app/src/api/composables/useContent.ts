@@ -24,7 +24,7 @@ export default function useContent() {
 
   const apiCreateImagePrompt = async (post, size) => {
     return await apiInstances.contentApi
-      .postContentCreateImagePrompt({ post, size })
+      .postContentCreateImagePrompt({ prompt: post, size })
       .then((res) => {
         return res.data.link
       })
@@ -130,6 +130,18 @@ export default function useContent() {
       })
   }
 
+  const apiReadyToPublish = async (id: number) => {
+    return await apiInstances.contentApi
+      .postContentMarkReadyToPublish({ post_id: id })
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
   return {
     apiCreateImagePost,
     apiCreateImagePrompt,
@@ -141,5 +153,6 @@ export default function useContent() {
     apiUpdatePost,
     apiGetPostsContentPlan,
     apiCreateContentPlan,
+    apiReadyToPublish,
   }
 }

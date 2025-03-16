@@ -49,10 +49,9 @@
               color="white"
               hide-dropdown-icon
               :options="[
-                'до 300 символов',
-                'до 500 символов',
-                'до 750 символов',
-                'до 1000 символов',
+                'Короткий — 500 символов',
+                'Средний — 1500 символов',
+                'Лонгрид — 2200 символов',
               ]"
             />
             <FancyButtonComponent
@@ -208,22 +207,19 @@ const navigateTo = (path: string) => {
 }
 
 const lenghtOptions = {
-  'до 300 символов': 300,
-  'до 500 символов': 500,
-  'до 750 символов': 750,
-  'до 1000 символов': 1000,
+  'Короткий — 500 символов': 500,
+  'Средний — 1500 символов': 1500,
+  'Лонгрид — 2200 символов': 2200,
 }
 const aspectOptions = {
   '9x16': 'ASPECT_9_16',
   '16x9': 'ASPECT_16_9',
   '1x1': 'ASPECT_1_1',
-  '4x3': 'ASPECT_4_3',
-  '3x4': 'ASPECT_3_4',
 }
 
 const prompt = ref<string>('')
 const additions = ref<string>('')
-const length = ref<keyof typeof lenghtOptions>('до 500 символов')
+const length = ref<keyof typeof lenghtOptions>('Короткий — 500 символов')
 const type = ref(true)
 const check = ref(false)
 const imageType = ref('download')
@@ -252,7 +248,7 @@ const onSubmit = () => {
       apiSavePost({
         post_topic: topic,
         text: res.text,
-        image_urls: [],
+        image_urls: base64Image.value && !check.value ? [base64Image.value] : ['NULL'],
         in_content_plan: false,
       }).then(() => {
         loadPosts()

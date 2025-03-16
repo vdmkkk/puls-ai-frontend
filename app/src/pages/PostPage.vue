@@ -21,13 +21,67 @@
           </q-btn>
         </div>
 
-        <p class="subtitle">Текст</p>
         <div class="row items-start no-wrap">
-          <EditorComponent
-            class="editor"
-            :model-value="postText"
-            @update:model-value="postText = $event"
-          />
+          <div class="column left-side" v-if="postText.length != 0">
+            <p class="subtitle">Текст</p>
+            <EditorComponent
+              class="editor"
+              :model-value="postText"
+              @update:model-value="postText = $event"
+            />
+            <FancyButtonComponent
+              label="Переписать текст"
+              style="align-self: flex-start; margin-top: var(--spacing-sm)"
+              @click="clearText"
+            />
+          </div>
+          <div class="column left-side" v-else>
+            <p class="subtitle">Режим</p>
+            <q-btn-toggle
+              v-model="type"
+              class="btn-group"
+              no-caps
+              rounded
+              unelevated
+              :options="[
+                { label: 'Фоновый', value: true },
+                { label: 'Продающий', value: false },
+              ]"
+            />
+            <p class="subtitle">Дополнительная информация</p>
+            <q-spinner-puff
+              style="margin: var(--spacing-sm) auto"
+              color="primary"
+              size="50px"
+              v-if="loadingCreation"
+            />
+            <InputComponent
+              v-else
+              :model-value="additions"
+              style="font-size: var(--font-size-sm)"
+              has-voice
+              @update:model-value="additions = $event"
+            />
+            <div class="row justify-between buttons">
+              <q-select
+                class="q-select"
+                outlined
+                v-model="length"
+                color="white"
+                hide-dropdown-icon
+                :options="[
+                  'Короткий — 500 символов',
+                  'Средний — 1500 символов',
+                  'Лонгрид — 2200 символов',
+                ]"
+              />
+              <FancyButtonComponent
+                label="Сгенерировать текст"
+                style="margin: auto 0"
+                @click="createText"
+              />
+            </div>
+          </div>
           <div
             class="column no-wrap justify-between"
             style="margin-left: var(--spacing-sm); flex: 1"
@@ -135,10 +189,18 @@
           </div>
         </div>
         <DefaultButton
+          v-if="!ready"
           style="align-self: flex-start; margin-top: var(--spacing-sm)"
           label="Отправить в очередь на публикацию"
           :icon="arrowRight"
-          @click="handlerAutoPost"
+          @click="readyToPublish"
+        />
+        <DefaultButton
+          v-else
+          style="align-self: flex-start; margin-top: var(--spacing-sm)"
+          label="В очереди на публикацию"
+          :icon="checkIcon"
+          disabled
         />
       </div>
     </div>
@@ -165,6 +227,8 @@ import { useRouter } from 'vue-router'
 import QuestionDialog from 'src/dialogs/QuestionDialog.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import arrowRight from 'src/assets/icons/arrow_right.svg'
+import checkIcon from 'src/assets/icons/check.svg'
+import { SavePostRequest } from 'src/api'
 
 const dialog = ref<{
   isOpen: boolean
@@ -192,36 +256,60 @@ const handlerSaveDialog = (answer: string) => {
 const { params } = useRoute()
 const router = useRouter()
 
-const { apiGetPost, apiUpdatePost, apiCreateImagePost, apiCreateImagePrompt } = useContent()
+const {
+  apiGetPost,
+  apiUpdatePost,
+  apiCreateImagePost,
+  apiCreateImagePrompt,
+  apiCreatePost,
+  apiReadyToPublish,
+} = useContent()
 
 const aspectOptions = {
   '9x16': 'ASPECT_9_16',
   '16x9': 'ASPECT_16_9',
   '1x1': 'ASPECT_1_1',
-  '4x3': 'ASPECT_4_3',
-  '3x4': 'ASPECT_3_4',
 }
 
+const lenghtOptions = {
+  'Короткий — 500 символов': 500,
+  'Средний — 1500 символов': 1500,
+  'Лонгрид — 2200 символов': 2200,
+}
+
+const post = ref<SavePostRequest>()
 const postTopic = ref('')
 const postText = ref('')
-const base64Image = ref<string | null>(null)
+const additions = ref<string>('')
+// const base64Image = ref<string | null>(null)
+const base64Image = ref<string | null>()
+
 const fileName = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const check = ref(false)
 const imageType = ref('download')
 const imageDimensions = ref<keyof typeof aspectOptions>('9x16')
 const imagePrompt = ref<string>('')
-const imagePost = ref<string>('')
+const loadingCreation = ref<boolean>(false)
+const postType = ref(null)
+const length = ref<keyof typeof lenghtOptions>('Короткий — 500 символов')
+const type = ref(true)
+const ready = ref(false)
 
 const computedImageSrc = ref<string | null>(null)
+
+const readyToPublish = () => {
+  apiReadyToPublish(post.value.post_id)
+}
 
 // Watch for changes to base64Image
 watch(
   base64Image,
   async (newVal) => {
-    console.log('base64Image changed:', newVal)
+    console.log(newVal)
     if (newVal?.includes('images.s3.amazonaws.com')) {
       // Assume the bucket key is the last segment of the URL
+      console.log(base64Image.value)
       const key = newVal.split('/').at(-1)
       if (key) {
         computedImageSrc.value = await getPresignedUrl(key)
@@ -236,6 +324,27 @@ watch(
 
 const goBack = (path: string) => {
   router.back()
+}
+
+const clearText = () => {
+  postText.value = ''
+}
+
+const createText = () => {
+  loadingCreation.value = true
+  apiCreatePost({
+    post_topic: postTopic.value,
+    additions: additions.value,
+    length: lenghtOptions[length.value],
+    type: postType.value,
+  })
+    .then((res) => {
+      postText.value = res.text
+      additions.value = ''
+    })
+    .finally(() => {
+      loadingCreation.value = false
+    })
 }
 
 const loadingImage = ref(false)
@@ -265,7 +374,7 @@ const clearImage = () => {
 
 const createImagePost = () => {
   loadingImage.value = true
-  apiCreateImagePost(postText.value, aspectOptions[imageDimensions.value])
+  apiCreateImagePost(postTopic.value, aspectOptions[imageDimensions.value])
     .then((res) => {
       base64Image.value = res
     })
@@ -309,10 +418,15 @@ onMounted(() => {
   //   console.log(res)
   // })
   apiGetPost(parseInt(params.id)).then((res) => {
+    post.value = res
     postTopic.value = res.post_topic
     postText.value = res.post_text
+    postType.value = res.type
+    ready.value = res.ready_to_publish
     if (res.image_urls[0] != 'NULL') {
       base64Image.value = res.image_urls[0]
+    } else {
+      check.value = true
     }
   })
 })
@@ -327,8 +441,16 @@ onMounted(() => {
   padding-left: var(--spacing-sm);
   padding-right: var(--spacing-sm);
 
-  .editor {
+  .left-side {
+    // margin-top: var(--spacing-sm);
     width: 60%;
+
+    .buttons {
+      margin-top: var(--spacing-sm);
+    }
+  }
+  .editor {
+    // width: 60%;
   }
 
   .copy {
