@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n'
 import { AxiosError } from 'axios'
 import { useErrors } from 'src/composables/useErrors'
 import { Ref } from 'vue'
-import { GetProfileFromUrlRequest } from '../api'
+import { GetProfileFromUrlRequest, SaveAccountRequest } from '../api'
 
 export default function useCustomize(loading: Ref<boolean>) {
   const { setError } = useErrors()
@@ -66,5 +66,21 @@ export default function useCustomize(loading: Ref<boolean>) {
       })
   }
 
-  return { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers }
+  const apiSaveAccount = async (obj: SaveAccountRequest) => {
+    return await apiInstances.customizeApi
+      .postCustomizeSaveAccount(obj)
+      .then((res) => {
+        Notify.create({
+          message: t('customize.account_saved'),
+          color: 'positive',
+        })
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
+  return { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers, apiSaveAccount }
 }

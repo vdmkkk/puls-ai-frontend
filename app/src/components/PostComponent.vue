@@ -1,26 +1,19 @@
 <template>
-  <div class="post column justify-between">
-    <div class="column no-wrap">
-      <img v-if="image" :src="computedImageSrc" />
-      <div class="column content justify-between">
-        <div>
-          <p class="topic">{{ topic }}</p>
-          <p v-if="text" class="text">{{ text }}</p>
-          <div v-else class="space" />
-        </div>
+  <div class="post">
+    <!-- <img v-if="image" :src="computedImageSrc" /> -->
+    <div class="column content justify-between">
+      <div>
+        <p class="topic">{{ topic }}</p>
+        <p v-if="text" class="text">{{ text }}</p>
+        <div v-else class="space" />
+      </div>
 
-        <div>
-          <p v-if="date" class="date">{{ date }}</p>
-          <p v-else-if="!posting" class="date" style="text-decoration: underline">Перейти</p>
-        </div>
+      <div>
+        <p v-if="date" class="date">{{ date }}</p>
+        <p v-else-if="!posting" class="date" style="text-decoration: underline">Перейти</p>
+        <DefaultButton v-else style="align-self: flex-start" label="Опубликовать" />
       </div>
     </div>
-
-    <DefaultButton
-      v-if="posting"
-      style="align-self: flex-start; margin: var(--spacing-xs)"
-      label="Опубликовать"
-    />
   </div>
 </template>
 
@@ -31,30 +24,30 @@ import { getPresignedUrl } from 'src/boot/aws'
 
 // @ts-nocheck //
 
-const { image } = defineProps<{
+defineProps<{
   topic: string
   text: string
   date?: string
   posting?: boolean
-  image?: string
+  // image?: string
 }>()
 
-const computedImageSrc = ref()
+// const computedImageSrc = ref()
 
-onMounted(() => {
-  if (image?.includes('images.s3.amazonaws.com')) {
-    // Assume the bucket key is the last segment of the URL
-    const key = image.split('/').at(-1)
-    console.log(key)
-    if (key) {
-      getPresignedUrl(key).then((res) => {
-        computedImageSrc.value = res
-      })
-    }
-  } else {
-    computedImageSrc.value = image
-  }
-})
+// onMounted(() => {
+//   if (image?.includes('images.s3.amazonaws.com')) {
+//     // Assume the bucket key is the last segment of the URL
+//     const key = image.split('/').at(-1)
+//     console.log(key)
+//     if (key) {
+//       getPresignedUrl(key).then((res) => {
+//         computedImageSrc.value = res
+//       })
+//     }
+//   } else {
+//     computedImageSrc.value = image
+//   }
+// })
 </script>
 
 <style lang="scss" scoped>
@@ -66,15 +59,15 @@ onMounted(() => {
 
   .content {
     padding: var(--spacing-xs);
+    height: 100%;
   }
 
-  img {
-    max-height: calc(var(--spacing-xl) + var(--spacing-md)) !important;
-    width: 100%;
-    object-fit: contain;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
-  }
+  // img {
+  //   width: 100%;
+  //   object-fit: contain;
+  //   border-top-right-radius: 10px;
+  //   border-top-left-radius: 10px;
+  // }
 
   .topic {
     font-size: var(--font-size-md);
