@@ -1,157 +1,113 @@
 <template>
   <BlobComponent />
   <q-page style="color: white" class="column justify-between">
-    <div class="column no-wrap app">
-      <a class="title">Привет, Артем! 👋</a>
-      <a class="email">pluzhnikov.artem2005@gmail.com</a>
-      <div class="row projects">
-        <q-select
-          v-model="chosenProject"
-          :options="projectOptions"
-          label="Активный проект"
-          dark
-          filled
-          style="width: 200px"
-          color="blue-grey-4"
-        >
-          <template v-slot:selected>
-            {{ chosenProject?.label }}
-          </template>
-        </q-select>
-        <q-btn
-          no-caps
-          flat
-          label="Управлять проектами"
-          icon-right="trending_flat"
-          style="color: #6262ad"
-        />
+    <div class="app">
+      <div class="column header">
+        <p class="title">Профиль</p>
+        <p class="name">{{ me?.first_name }} {{ me?.last_name }}</p>
+        <p class="description">
+          {{ me?.email }}
+        </p>
       </div>
-      <div class="rates">
-        <a class="title">Ваш тарифный план</a>
-        <div class="rate">
-          <a class="title">30 текстов, 1 проект</a>
-          <a class="description">Подписка с автоматическим продлением</a>
-        </div>
+      <DefaultButton label="Сменить пароль" style="align-self: flex-start" />
+      <div>
+        <p>Прорыв</p>
+        <p>45 генераций</p>
+        <p>Управлять подпиской <img :src="arrowRight" /></p>
       </div>
-      <div class="restrictions">
-        <a class="title">Возможности вашей подписки</a>
-        <a style="margin-top: 6px" class="description"
-          >Каждый месяц у вас есть возможность сгенерировать до 30 текстов или иллюстраций.</a
-        >
-        <a class="description"
-          >Подписка закончится через <span style="font-weight: 800">20</span> дней</a
-        >
-      </div>
-    </div>
-
-    <div class="row justify-between buttons" style="gap: 12px; width: fit-content">
-      <q-btn
-        label="Управлять подпиской"
-        icon="open_in_new"
-        flat
-        no-caps
-        style="border: 2px solid #6262ad; color: #6262ad"
-      />
-      <q-btn label="Выйти" icon="logout" color="red" flat no-caps @click="handlerLogout" />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
-// @ts-nocheck //
-import { ref } from 'vue'
-import Cookies from 'js-cookie'
-import { useRouter } from 'vue-router'
+import useContent from 'src/api/composables/useContent'
+import useProfile from 'src/api/composables/useProfile'
 import BlobComponent from 'src/components/BlobComponent.vue'
+import ContainerComponent from 'src/components/ContainerComponent.vue'
+import DefaultButton from 'src/components/DefaultButton.vue'
+import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import arrowRight from 'src/assets/icons/arrow_right.svg'
 
+const { getMe } = useProfile()
 const router = useRouter()
+const loading = ref(false)
 
-const projectOptions = [
-  { value: { id: 1, name: 'Проект 1' }, label: 'Проект 1' },
-  { value: { id: 2, name: 'Проект 2' }, label: 'Проект 2' },
-  { value: { id: 3, name: 'Проект 3' }, label: 'Проект 3' },
-]
+const me = ref()
 
-const chosenProject = ref(projectOptions[0])
-
-const handlerLogout = () => {
-  Cookies.remove('refresh_token')
-  Cookies.remove('atoken')
-  router.push('/login')
+const load = () => {
+  getMe()
+    .then((res) => {
+      me.value = res
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
+
+const navigateTo = (path: string) => {
+  router.push(path)
+}
+
+onMounted(() => {
+  loading.value = true
+  load()
+})
 </script>
 
 <style lang="scss" scoped>
 .app {
-  padding-left: 7%;
-  padding-right: 7%;
-  padding-top: 50px;
-  .title {
-    font-size: 40px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
+
+  .loading {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+    margin-left: 50%;
+    transform: translateX(-50%);
+    color: #4e4571;
+  }
+
+  .description {
+    font-size: var(--font-size-sm);
     font-weight: 400;
-  }
-  .email {
-    font-size: 14px;
-    margin-top: 6px;
-    font-weight: 500;
+    color: #b8b8b8;
+    text-decoration: underline;
   }
 
-  .projects {
-    margin-top: 60px;
-    gap: 10px;
-  }
-
-  .rates {
-    margin-top: 60px;
-
+  .header {
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    margin-right: var(--spacing-sm);
+    align-items: start;
     .title {
-      font-size: 30px;
+      font-size: var(--font-size-title);
       font-weight: 500;
+      margin: 0;
     }
-    .rate {
-      margin-top: 30px;
-      border: 2px solid #323249;
 
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      padding-bottom: 26px;
-      padding-top: 26px;
-      gap: 6px;
-      width: 40%;
-      .title {
-        font-size: 22px;
-        font-weight: 500;
-      }
-      .description {
-        font-size: 14px;
-        font-weight: 400;
-      }
+    .name {
+      padding-top: var(--spacing-sm);
+      font-size: var(--font-size-md);
+      font-weight: 500;
+      margin: 0;
     }
   }
+  .containers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xs);
 
-  .restrictions {
-    margin-top: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    .title {
-      font-size: 30px;
-      font-weight: 500;
+    .date {
+      padding-top: var(--spacing-xs);
+      padding-bottom: var(--spacing-xxs);
+      margin-bottom: 0;
     }
-
-    .description {
-      font-size: 14px;
-      font-weight: 400;
-    }
-  }
-
-  .buttons {
-    padding-left: 7%;
-    padding-right: 7%;
-    margin-bottom: 40px;
   }
 }
 </style>

@@ -4,7 +4,10 @@
       <q-toolbar style="background-color: #1e1e29" class="justify-end">
         <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" @click="toggleLeftDrawer" /> -->
 
-        <div class="actions"><q-icon name="bolt" style="scale: 1.3" /> 10</div>
+        <div class="actions">
+          <q-icon v-if="!loading" name="bolt" style="scale: 1.3" /> {{ me?.gen_point_amount }}
+          <q-spinner-puff v-if="loading" color="primary" size="10px" />
+        </div>
         <!-- <q-btn @click="navigateTo('profile')" flat round dense icon="person" /> -->
       </q-toolbar>
     </q-header>
@@ -57,6 +60,7 @@ import autoposting from 'src/assets/icons/autoposting.svg'
 import profile from 'src/assets/icons/profile.svg'
 import projects from 'src/assets/icons/projects.svg'
 import logo from 'src/assets/svg/logo.svg'
+import useProfile from 'src/api/composables/useProfile'
 
 const router = useRouter()
 
@@ -110,6 +114,26 @@ const isActive = (to: string) => {
     (to == '/' && router.currentRoute.value.path == '/')
   )
 }
+
+const { getMe } = useProfile()
+const loading = ref(false)
+
+const me = ref()
+
+const load = () => {
+  getMe()
+    .then((res) => {
+      me.value = res
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
+
+onMounted(() => {
+  loading.value = true
+  load()
+})
 
 onMounted(() => {
   const jwt = Cookies.get('refresh_token')

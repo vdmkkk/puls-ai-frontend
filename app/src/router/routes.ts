@@ -30,6 +30,11 @@ const routes: RouteRecordRaw[] = [
       { path: 'images', name: 'images', component: () => import('pages/ImagesPage.vue') },
       { path: 'archive', name: 'archive', component: () => import('pages/ArchivePage.vue') },
       { path: 'posting', name: 'posting', component: () => import('pages/AutoPostPage.vue') },
+      {
+        path: 'posting/posts/:id',
+        name: 'posting/posts',
+        component: () => import('pages/PostPage.vue'),
+      },
 
       { path: 'profile', name: 'profile', component: () => import('pages/MainPage.vue') },
     ],
