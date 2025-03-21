@@ -25,4 +25,11 @@ defineProps<{
     font-weight: 600;
   }
 }
+
+@media screen and (max-width: 576px) {
+  p {
+    font-size: var(--font-size-title) !important;
+    font-weight: 600;
+  }
+}
 </style>

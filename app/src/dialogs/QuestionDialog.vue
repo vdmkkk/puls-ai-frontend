@@ -96,4 +96,15 @@ const onSave = () => {
     align-self: center;
   }
 }
+
+@media screen and (max-width: 576px) {
+  .dialog-container {
+    height: 60vh !important;
+    justify-content: space-between;
+
+    .q-input {
+      height: -webkit-fill-available;
+    }
+  }
+}
 </style>

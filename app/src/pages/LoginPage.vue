@@ -18,7 +18,7 @@
         :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
         :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
       />
-      <div class="row">
+      <div class="row no-wrap">
         <q-input
           v-model="password"
           :type="!showPassword ? 'password' : 'text'"
@@ -191,5 +191,15 @@ select {
   border-radius: 12px;
   margin-top: 6px !important;
   margin-left: 16px !important;
+}
+
+@media screen and (max-width: 576px) {
+  .q-input {
+    width: 100% !important;
+  }
+
+  .q-gutter-md {
+    width: unset !important;
+  }
 }
 </style>

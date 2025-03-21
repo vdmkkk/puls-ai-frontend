@@ -10,8 +10,11 @@
           информацию.
         </p>
       </div>
-      <div class="row items-start no-wrap" style="position: relative; align-items: stretch">
-        <div class="column justify-between no-wrap" style="width: 50%">
+      <div
+        class="main-grid row items-start no-wrap"
+        style="position: relative; align-items: stretch"
+      >
+        <div class="inputs-container column justify-between no-wrap" style="width: 50%">
           <div class="inputs">
             <p class="subtitle">Режим</p>
             <q-btn-toggle
@@ -41,7 +44,7 @@
               @update:model-value="additions = $event"
             />
           </div>
-          <div class="row q-mt-xl justify-between" style="align-items: stretch">
+          <div class="buttons row q-mt-xl justify-between" style="align-items: stretch">
             <q-select
               class="q-select"
               outlined
@@ -62,7 +65,10 @@
             />
           </div>
         </div>
-        <div class="column no-wrap justify-between" style="margin-left: var(--spacing-sm); flex: 1">
+        <div
+          class="images-container column no-wrap justify-between"
+          style="margin-left: var(--spacing-sm); flex: 1"
+        >
           <div class="column no-wrap" style="flex: 1">
             <CheckComponent
               :modelValue="check"
@@ -150,7 +156,7 @@
               v-model="imageDimensions"
               color="white"
               hide-dropdown-icon
-              :options="['9x16', '16x9', '1x1', '4x3', '3x4']"
+              :options="['9x16', '16x9', '1x1']"
             />
             <FancyButtonComponent
               :disabled="
@@ -527,5 +533,47 @@ const createImagePrompt = () => {
 
 .grey {
   color: #b8b8bb !important;
+}
+
+@media screen and (max-width: 576px) {
+  .posts-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-sm) !important;
+  }
+
+  .main-grid {
+    flex-direction: column !important;
+
+    .inputs-container {
+      width: 100% !important;
+
+      .buttons {
+        margin-top: var(--spacing-sm) !important;
+      }
+    }
+
+    .images-container {
+      margin-left: 0 !important;
+      margin-top: var(--spacing-sm);
+      .download-image {
+        margin: var(--spacing-xs) 0 !important;
+        .btn-label {
+          padding-left: var(--spacing-xxs);
+          font-size: var(--font-size-sm) !important;
+          user-select: none;
+        }
+      }
+    }
+  }
+
+  .q-btn-group ::v-deep .no-outline {
+    width: calc(var(--spacing-xl) + var(--spacing-lg)) !important;
+    font-size: var(--font-size-sm);
+  }
+
+  .q-select ::v-deep .q-field__native {
+    color: white;
+    font-size: var(--font-size-sm);
+  }
 }
 </style>

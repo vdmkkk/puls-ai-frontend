@@ -31,4 +31,11 @@ const emits = defineEmits(['click'])
 .fancy-btn:hover {
   background-color: #625985;
 }
+
+@media screen and (max-width: 576px) {
+  .fancy-btn {
+    font-size: var(--font-size-sm);
+    width: calc(var(--spacing-xl) + var(--spacing-md)) !important;
+  }
+}
 </style>

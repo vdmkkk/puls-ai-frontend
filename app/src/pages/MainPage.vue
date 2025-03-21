@@ -10,13 +10,17 @@
         @close="handlerCloseDialog"
         @save="handlerSaveDialog"
       />
-      <div class="column header">
-        <p class="title">Профиль</p>
-        <p class="name">{{ me?.first_name }} {{ me?.last_name }}</p>
-        <p class="description">
-          {{ me?.email }}
-        </p>
+      <div class="row justify-between items-start">
+        <div class="column header">
+          <p class="title">Профиль</p>
+          <p class="name">{{ me?.first_name }} {{ me?.last_name }}</p>
+          <p class="description">
+            {{ me?.email }}
+          </p>
+        </div>
+        <DefaultButton label="Выйти" style="margin-top: var(--spacing-sm)" @click="handleLogout" />
       </div>
+
       <DefaultButton label="Сменить пароль" style="align-self: flex-start" />
       <div class="container">
         <p class="title">Прорыв</p>
@@ -29,7 +33,7 @@
         <p class="link">Управлять подпиской <img :src="arrowRight" /></p>
       </div>
       <p class="name">Интеграции</p>
-      <div class="row" style="gap: var(--spacing-sm); width: 50%">
+      <div class="integrations row" style="gap: var(--spacing-sm); width: 50%">
         <div class="int-container">
           <div class="icon-container-tg">
             <img class="icon" :src="tgIcon" />
@@ -75,6 +79,7 @@ import vkIcon from 'src/assets/icons/vk.svg'
 import IntegrationDialog from 'src/dialogs/IntegrationDialog.vue'
 import useCustomize from 'src/api/composables/useCustomize'
 import { Notify } from 'quasar'
+import Cookies from 'js-cookie'
 
 const { getMe } = useProfile()
 const router = useRouter()
@@ -110,6 +115,8 @@ const handlerSaveDialog = (answer: string) => {
   if (dialog.value.answerKey == 'tg') {
     apiSaveAccount({
       tg_channel_url: answer,
+      vk_channel_url: '',
+      vk_token: '',
     }).then((res) => {
       if (res) {
         me.value.tg_channel_url = answer
@@ -126,6 +133,7 @@ const handlerSaveDialog = (answer: string) => {
     apiSaveAccount({
       vk_channel_url: answer.answer,
       vk_token: answer.code,
+      tg_channel_url: '',
     }).then((res) => {
       if (res) {
         me.value.vk_channel_url = answer.answer
@@ -155,6 +163,12 @@ const load = () => {
 
 const navigateTo = (path: string) => {
   router.push(path)
+}
+
+const handleLogout = () => {
+  Cookies.remove('refresh_token')
+  Cookies.remove('atoken')
+  navigateTo('/login')
 }
 
 onMounted(() => {
@@ -305,6 +319,38 @@ onMounted(() => {
       img {
         width: var(--line-height-sm);
         height: var(--line-height-sm);
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .app {
+    padding-left: var(--spacing-xs);
+    padding-right: var(--spacing-xs);
+
+    .container {
+      width: 100%;
+    }
+
+    .integrations {
+      width: 100% !important;
+
+      .int-container {
+        width: 100% !important;
+      }
+
+      .icon-container-tg,
+      .icon-container-vk {
+        width: calc(var(--spacing-md) + var(--spacing-sm) + var(--spacing-xs)) !important;
+        height: calc(var(--spacing-md) + var(--spacing-sm) + var(--spacing-xs)) !important;
+        border-radius: 24px;
+      }
+
+      .icon {
+        width: var(--spacing-md);
+        height: var(--spacing-md);
+        padding-right: 2px;
       }
     }
   }

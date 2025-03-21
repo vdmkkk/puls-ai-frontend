@@ -20,6 +20,7 @@
           :text="post.post_text"
           :image="post.image_urls[0]"
           posting
+          @publish="publishPost(post.post_id)"
           @click="navigateTo(`/posting/posts/${post.post_id}`)"
         />
       </div>
@@ -36,7 +37,7 @@ import PostComponent from 'src/components/PostComponent.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { apiGetPosts } = useContent()
+const { apiGetPosts, apiPublishPost } = useContent()
 const router = useRouter()
 const loading = ref(false)
 
@@ -46,9 +47,22 @@ const navigateTo = (path: string) => {
 
 const posts = ref([])
 
+const publishPost = (id: number) => {
+  apiPublishPost(id).then(() => {
+    // posts.value = posts.value.map((post) => {
+    //   if (post.post_id === id) {
+    //     post.published = true
+    //   }
+    //   return post
+    // })
+  })
+}
+
 onMounted(() => {
   apiGetPosts().then((res) => {
-    posts.value = res
+    posts.value = res.filter((post) => {
+      return post.ready_to_publish
+    })
   })
 })
 </script>
@@ -97,6 +111,12 @@ onMounted(() => {
       padding-bottom: var(--spacing-xxs);
       margin-bottom: 0;
     }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .containers {
+    grid-template-columns: 1fr !important;
   }
 }
 </style>

@@ -11,7 +11,12 @@
       <div>
         <p v-if="date" class="date">{{ date }}</p>
         <p v-else-if="!posting" class="date" style="text-decoration: underline">Перейти</p>
-        <DefaultButton v-else style="align-self: flex-start" label="Опубликовать" />
+        <DefaultButton
+          v-else
+          style="align-self: flex-start; margin-top: var(--spacing-xs)"
+          label="Опубликовать"
+          @click.stop="emits('publish')"
+        />
       </div>
     </div>
   </div>
@@ -22,6 +27,7 @@ import { onMounted, ref, watch } from 'vue'
 import DefaultButton from './DefaultButton.vue'
 import { getPresignedUrl } from 'src/boot/aws'
 
+const emits = defineEmits(['publish'])
 // @ts-nocheck //
 
 defineProps<{
@@ -102,6 +108,22 @@ defineProps<{
     font-size: var(--font-size-sm);
     font-weight: 500;
     color: #29c2e8;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .post {
+    .topic {
+      font-size: var(--font-size-lg);
+    }
+
+    .space {
+      height: var(--spacing-sm);
+    }
+
+    .date {
+      font-size: var(--font-size-md);
+    }
   }
 }
 </style>

@@ -21,4 +21,11 @@ const emits = defineEmits(['click'])
   font-size: var(--font-size-xs);
   font-weight: 500;
 }
+
+@media screen and (max-width: 576px) {
+  .default-btn {
+    font-size: var(--font-size-sm);
+    // width: calc(var(--spacing-xl) + var(--spacing-md)) !important;
+  }
+}
 </style>

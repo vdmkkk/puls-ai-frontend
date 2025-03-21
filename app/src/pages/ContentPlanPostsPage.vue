@@ -133,4 +133,11 @@ onMounted(() => {
     }
   }
 }
+
+@media screen and (max-width: 576px) {
+  .posts-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-sm) !important;
+  }
+}
 </style>

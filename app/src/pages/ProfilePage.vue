@@ -185,7 +185,7 @@ onMounted(() => {
           class="link-input"
           @update:model-value="answers.link = $event"
         />
-        <FancyButtonComponent label="Применить" @click="getFromLink" />
+        <FancyButtonComponent :disabled="!isAuto" label="Применить" @click="getFromLink" />
         <!-- <q-btn round color="primary" @click="getFromLink">
           <img :src="arrow_down" />
         </q-btn> -->
@@ -318,5 +318,17 @@ onMounted(() => {
 
 .grey {
   color: #b8b8bb !important;
+}
+
+@media screen and (max-width: 576px) {
+  .questions {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .q-btn-group ::v-deep .no-outline {
+    width: calc(var(--spacing-xl) + var(--spacing-lg)) !important;
+    font-size: var(--font-size-sm);
+  }
 }
 </style>

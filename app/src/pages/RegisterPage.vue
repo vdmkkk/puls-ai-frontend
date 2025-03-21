@@ -301,4 +301,14 @@ const handlerRedirect = () => {
   margin-top: 6px !important;
   margin-left: 16px !important;
 }
+
+@media screen and (max-width: 576px) {
+  .q-input {
+    width: 100% !important;
+  }
+
+  .q-gutter-md {
+    width: unset !important;
+  }
+}
 </style>

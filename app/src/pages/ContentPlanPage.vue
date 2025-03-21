@@ -135,4 +135,14 @@ onMounted(() => {
     }
   }
 }
+
+@media screen and (max-width: 576px) {
+  .containers {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-sm) !important;
+    .date {
+      font-size: var(--font-size-md);
+    }
+  }
+}
 </style>

@@ -1,10 +1,21 @@
 <template>
   <q-layout view="lHh lpR fFf">
     <q-header elevated>
-      <q-toolbar style="background-color: #1e1e29" class="justify-end">
-        <!-- <q-btn flat round dense icon="menu" class="q-mr-sm" @click="toggleLeftDrawer" /> -->
+      <q-toolbar
+        style="background-color: #1e1e29"
+        :class="$q.screen.xs ? 'justify-between' : 'justify-end'"
+      >
+        <q-btn
+          v-if="$q.screen.xs"
+          flat
+          round
+          dense
+          icon="menu"
+          class="q-mr-sm"
+          @click="toggleLeftDrawer"
+        />
 
-        <div class="actions">
+        <div class="actions" style="justify-self: flex-end">
           <q-icon v-if="!loading" name="bolt" style="scale: 1.3" /> {{ me?.gen_point_amount }}
           <q-spinner-puff v-if="loading" color="primary" size="10px" />
         </div>
@@ -190,5 +201,12 @@ onMounted(() => {
   margin-left: 10%;
   padding-top: var(--spacing-sm);
   padding-bottom: var(--spacing-sm);
+}
+
+@media screen and (max-width: 576px) {
+  .menu-item {
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-sm);
+  }
 }
 </style>

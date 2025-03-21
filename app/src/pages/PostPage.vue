@@ -20,9 +20,8 @@
             <img :src="edit" />
           </q-btn>
         </div>
-
-        <div class="row items-start no-wrap">
-          <div class="column left-side" v-if="postText.length != 0">
+        <div class="main-grid row items-start no-wrap">
+          <div class="inputs-container column left-side" v-if="postText.length != 0">
             <p class="subtitle">Текст</p>
             <EditorComponent
               class="editor"
@@ -35,7 +34,7 @@
               @click="clearText"
             />
           </div>
-          <div class="column left-side" v-else>
+          <div class="inputs-containers column left-side" v-else>
             <p class="subtitle">Режим</p>
             <q-btn-toggle
               v-model="type"
@@ -83,7 +82,7 @@
             </div>
           </div>
           <div
-            class="column no-wrap justify-between"
+            class="images-container column no-wrap justify-between"
             style="margin-left: var(--spacing-sm); flex: 1"
           >
             <div class="column no-wrap" style="flex: 1">
@@ -173,7 +172,7 @@
                 v-model="imageDimensions"
                 color="white"
                 hide-dropdown-icon
-                :options="['9x16', '16x9', '1x1', '4x3', '3x4']"
+                :options="['9x16', '16x9', '1x1']"
               />
               <FancyButtonComponent
                 :disabled="
@@ -649,5 +648,52 @@ onMounted(() => {
 
 .grey {
   color: #b8b8bb !important;
+}
+
+@media screen and (max-width: 576px) {
+  .posts-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-sm) !important;
+  }
+
+  .main-grid {
+    flex-direction: column !important;
+
+    .inputs-container {
+      width: 100% !important;
+
+      .buttons {
+        margin-top: var(--spacing-sm) !important;
+      }
+    }
+
+    .images-container {
+      margin-left: 0 !important;
+      width: 100%;
+      margin-top: var(--spacing-sm);
+      .download-image {
+        margin: var(--spacing-xs) 0 !important;
+        .btn-label {
+          padding-left: var(--spacing-xxs);
+          font-size: var(--font-size-sm) !important;
+          user-select: none;
+        }
+      }
+    }
+  }
+
+  .q-btn-group ::v-deep .no-outline {
+    width: calc(var(--spacing-xl) + var(--spacing-sm)) !important;
+    font-size: var(--font-size-sm);
+  }
+
+  .q-select ::v-deep .q-field__native {
+    color: white;
+    font-size: var(--font-size-sm);
+  }
+
+  .fancy-btn {
+    width: calc(var(--spacing-xxl) + var(--spacing-md)) !important;
+  }
 }
 </style>
