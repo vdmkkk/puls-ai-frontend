@@ -6,14 +6,17 @@ import { useI18n } from 'vue-i18n'
 import { AxiosError } from 'axios'
 import { useErrors } from 'src/composables/useErrors'
 import { CreatePostRequest, SavePostRequest, UpdatePostRequest } from '../api'
+import { useErrorStore } from 'src/stores/error-store'
 
 export default function useContent() {
   const { setError } = useErrors()
   const { t } = useI18n()
+  const store = useErrorStore()
   const apiCreateImagePost = async (post, size) => {
     return await apiInstances.contentApi
       .postContentCreateImagePost({ post, size })
       .then((res) => {
+        store.genCounter += 1
         return res.data.link
       })
       .catch((e: AxiosError) => {
@@ -26,6 +29,7 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentCreateImagePrompt({ prompt: post, size })
       .then((res) => {
+        store.genCounter += 1
         return res.data.link
       })
       .catch((e: AxiosError) => {
@@ -38,6 +42,7 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentCreatePost(post)
       .then((res) => {
+        store.genCounter += 1
         return res.data
       })
       .catch((e: AxiosError) => {
@@ -50,6 +55,7 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentCreateContentPlan()
       .then((res) => {
+        store.genCounter += 1
         return res.data
       })
       .catch((e: AxiosError) => {
@@ -134,7 +140,11 @@ export default function useContent() {
     return await apiInstances.contentApi
       .postContentMarkReadyToPublish({ post_id: id })
       .then((res) => {
-        return res.data
+        Notify.create({
+          message: t('Пост готов к публикации'),
+          color: 'positive',
+        })
+        return 200
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)

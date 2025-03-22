@@ -68,6 +68,9 @@ export default function useAuth() {
   const apiChangePassword = async (token: string, newPassword: string) => {
     return await apiInstances.authApi
       .postAuthChangePassword({ token, password: newPassword })
+      .then((res) => {
+        return null
+      })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)

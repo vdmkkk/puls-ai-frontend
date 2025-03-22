@@ -71,7 +71,7 @@ export default function useCustomize(loading: Ref<boolean>) {
       .postCustomizeSaveAccount(obj)
       .then((res) => {
         Notify.create({
-          message: t('customize.account_saved'),
+          message: t('Аккаунт успешно привязан'),
           color: 'positive',
         })
         return res.data

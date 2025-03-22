@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 // @ts-nocheck //
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import mane from 'src/assets/icons/mane.svg'
@@ -72,8 +72,10 @@ import profile from 'src/assets/icons/profile.svg'
 import projects from 'src/assets/icons/projects.svg'
 import logo from 'src/assets/svg/logo.svg'
 import useProfile from 'src/api/composables/useProfile'
+import { useErrorStore } from 'src/stores/error-store'
 
 const router = useRouter()
+const store = useErrorStore()
 
 const navigateTo = (path: string) => {
   router.push(path)
@@ -145,6 +147,14 @@ onMounted(() => {
   loading.value = true
   load()
 })
+
+watch(
+  () => store.genCounter,
+  () => {
+    load()
+  },
+  { deep: true },
+)
 
 onMounted(() => {
   const jwt = Cookies.get('refresh_token')

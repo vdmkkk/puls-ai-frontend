@@ -11,6 +11,7 @@ export const useErrorStore = defineStore('ErrorStore', {
       verificationCode: false,
     },
     errorMessage: null as string | null,
+    genCounter: 0,
   }),
 
   getters: {},

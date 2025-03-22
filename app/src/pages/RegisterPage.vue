@@ -1,136 +1,146 @@
 <template class="overflow-hidden">
-  <div class="column app items-center no-wrap">
-    <div class="row title-container">
-      <a class="title">Регистрация в</a><img :src="logo" /><a class="title">puls.</a>
-    </div>
-    <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
-      <q-input
-        v-model="name"
-        :label="$t('name')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        outlined
-        rounded
-        lazy-rules
-        :error="errorStore.errors.name"
-        :error-message="errorStore.errors.name ? errorStore.errorMessage : undefined"
-        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-      />
-      <q-input
-        v-model="lastName"
-        :label="$t('lastName')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        outlined
-        rounded
-        lazy-rules
-        :error="errorStore.errors.lastName"
-        :error-message="errorStore.errors.lastName ? errorStore.errorMessage : undefined"
-        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-      />
-      <div class="row">
+  <BlobComponent />
+  <q-page style="color: white" class="column justify-between">
+    <div class="column app items-center no-wrap">
+      <div class="row title-container">
+        <a class="title">Регистрация в</a><img :src="logo" /><a class="title">puls.</a>
+      </div>
+      <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
         <q-input
-          v-model="login"
-          :label="$t('email')"
-          style="width: 436px"
-          type="email"
+          v-model="name"
+          :label="$t('name')"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          outlined
+          rounded
+          lazy-rules
+          :error="errorStore.errors.name"
+          :error-message="errorStore.errors.name ? errorStore.errorMessage : undefined"
+          :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+        />
+        <q-input
+          v-model="lastName"
+          :label="$t('lastName')"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          outlined
+          rounded
+          lazy-rules
+          :error="errorStore.errors.lastName"
+          :error-message="errorStore.errors.lastName ? errorStore.errorMessage : undefined"
+          :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+        />
+        <div class="row no-wrap" :style="$q.screen.xs ? { width: '100%' } : {}">
+          <q-input
+            v-model="login"
+            :label="$t('email')"
+            style="width: 436px"
+            type="email"
+            color="deep-purple-8"
+            label-color="grey-1"
+            rounded
+            outlined
+            lazy-rules
+            :error="errorStore.errors.login"
+            :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
+            :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+          />
+          <q-btn class="check" icon="check" @click="handlerVerify" size="sm" color="grey-1" outline>
+            <q-tooltip>
+              <a>{{ $t('verify') }}</a>
+            </q-tooltip>
+          </q-btn>
+        </div>
+        <q-input
+          v-model="verificationCode"
+          :label="$t('verificationCode')"
+          style="width: 500px"
           color="deep-purple-8"
           label-color="grey-1"
           rounded
           outlined
           lazy-rules
-          :error="errorStore.errors.login"
-          :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
+          :error="errorStore.errors.verificationCode"
+          :error-message="errorStore.errors.verificationCode ? errorStore.errorMessage : undefined"
           :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
         />
-        <q-btn class="check" icon="check" @click="handlerVerify" size="sm" color="grey-1" outline>
-          <q-tooltip>
-            <a>{{ $t('verify') }}</a>
-          </q-tooltip>
-        </q-btn>
-      </div>
-      <q-input
-        v-model="verificationCode"
-        :label="$t('verificationCode')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        rounded
-        outlined
-        lazy-rules
-        :error="errorStore.errors.verificationCode"
-        :error-message="errorStore.errors.verificationCode ? errorStore.errorMessage : undefined"
-        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-      />
-      <q-input
-        v-model="password"
-        :type="!showPassword ? 'password' : 'text'"
-        :label="$t('password')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        rounded
-        outlined
-        lazy-rules
-        :error="errorStore.errors.password"
-        :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
-        :rules="[
-          (val) => (val && val.length > 0) || $t('errors.required'),
-          (val) => isValidPassword(val) || $t('errors.passwordNotValid'),
-          (val) => val === againPassword || $t('errors.passwordsNotSame'),
-        ]"
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="!showPassword ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            color="grey-1"
-            size="xs"
-            @click="showPassword = !showPassword"
-          />
-        </template>
-      </q-input>
-      <q-input
-        v-model="againPassword"
-        :type="!showPasswordAgain ? 'password' : 'text'"
-        :label="$t('passwordAgain')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        rounded
-        outlined
-        lazy-rules
-        :error="errorStore.errors.againPassword"
-        :error-message="errorStore.errors.againPassword ? errorStore.errorMessage : undefined"
-        :rules="[
-          (val) => (val && val.length > 0) || $t('errors.required'),
-          (val) => val === password || $t('errors.passwordsNotSame'),
-        ]"
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="!showPasswordAgain ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            color="grey-1"
-            size="xs"
-            @click="showPasswordAgain = !showPasswordAgain"
-          /> </template
-      ></q-input>
+        <q-input
+          v-model="password"
+          :type="!showPassword ? 'password' : 'text'"
+          :label="$t('password')"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+          lazy-rules
+          :error="errorStore.errors.password"
+          :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
+          :rules="[
+            (val) => (val && val.length > 0) || $t('errors.required'),
+            (val) => isValidPassword(val) || $t('errors.passwordNotValid'),
+            (val) => val === againPassword || $t('errors.passwordsNotSame'),
+          ]"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="!showPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              color="grey-1"
+              size="xs"
+              @click="showPassword = !showPassword"
+            />
+          </template>
+        </q-input>
+        <q-input
+          v-model="againPassword"
+          :type="!showPasswordAgain ? 'password' : 'text'"
+          :label="$t('passwordAgain')"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+          lazy-rules
+          :error="errorStore.errors.againPassword"
+          :error-message="errorStore.errors.againPassword ? errorStore.errorMessage : undefined"
+          :rules="[
+            (val) => (val && val.length > 0) || $t('errors.required'),
+            (val) => val === password || $t('errors.passwordsNotSame'),
+          ]"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="!showPasswordAgain ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              color="grey-1"
+              size="xs"
+              @click="showPasswordAgain = !showPasswordAgain"
+            /> </template
+        ></q-input>
 
-      <q-btn :label="$t('register')" class="login" type="submit" flat text-color="grey-1" no-caps />
+        <q-btn
+          :label="$t('register')"
+          class="login"
+          type="submit"
+          flat
+          text-color="grey-1"
+          no-caps
+        />
 
-      <q-btn
-        :label="$t('alreadyHaveAccount')"
-        class="already-have-account"
-        flat
-        no-caps
-        rounded
-        @click="handlerRedirect"
-      />
-    </q-form>
-  </div>
+        <q-btn
+          :label="$t('alreadyHaveAccount')"
+          class="already-have-account"
+          flat
+          no-caps
+          rounded
+          @click="handlerRedirect"
+        />
+      </q-form>
+    </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
@@ -142,6 +152,7 @@ import { reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import logo from 'src/assets/svg/logo.svg'
+import BlobComponent from 'src/components/BlobComponent.vue'
 
 const { t } = useI18n()
 
@@ -235,11 +246,11 @@ const handlerRedirect = () => {
 
 <style lang="scss" scoped>
 .app {
-  background-color: #12121b;
+  // background-color: #12121b;
   padding-left: 10%;
   padding-right: 10%;
   padding-top: 80px;
-  // height: 100%;
+  height: 100%;
   gap: 20px;
 
   .title-container {
@@ -309,6 +320,10 @@ const handlerRedirect = () => {
 
   .q-gutter-md {
     width: unset !important;
+  }
+
+  .already-have-account {
+    font-size: var(--font-size-sm);
   }
 }
 </style>

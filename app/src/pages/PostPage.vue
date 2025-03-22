@@ -34,7 +34,7 @@
               @click="clearText"
             />
           </div>
-          <div class="inputs-containers column left-side" v-else>
+          <div class="inputs-container column left-side" v-else>
             <p class="subtitle">Режим</p>
             <q-btn-toggle
               v-model="type"
@@ -74,11 +74,7 @@
                   'Лонгрид — 2200 символов',
                 ]"
               />
-              <FancyButtonComponent
-                label="Сгенерировать текст"
-                style="margin: auto 0"
-                @click="createText"
-              />
+              <FancyButtonComponent label="Создать" style="margin: auto 0" @click="createText" />
             </div>
           </div>
           <div
@@ -298,7 +294,11 @@ const ready = ref(false)
 const computedImageSrc = ref<string | null>(null)
 
 const readyToPublish = () => {
-  apiReadyToPublish(post.value.post_id)
+  apiReadyToPublish(post.value.post_id).then((res) => {
+    if (res == 200) {
+      ready.value = true
+    }
+  })
 }
 
 // Watch for changes to base64Image
@@ -657,7 +657,7 @@ onMounted(() => {
   }
 
   .main-grid {
-    flex-direction: column !important;
+    flex-direction: column-reverse !important;
 
     .inputs-container {
       width: 100% !important;
@@ -665,6 +665,10 @@ onMounted(() => {
       .buttons {
         margin-top: var(--spacing-sm) !important;
       }
+    }
+
+    .image-content {
+      margin-bottom: var(--spacing-md);
     }
 
     .images-container {
@@ -694,6 +698,15 @@ onMounted(() => {
 
   .fancy-btn {
     width: calc(var(--spacing-xxl) + var(--spacing-md)) !important;
+  }
+
+  .subtitle {
+    margin-bottom: 0;
+    margin-top: var(--spacing-xs);
+    // padding-left: var(--spacing-xxs);
+    font-size: var(--font-size-md) !important;
+    font-weight: 500;
+    margin-bottom: 6px;
   }
 }
 </style>

@@ -1,59 +1,69 @@
 <template>
-  <div class="column app items-center">
-    <div class="row title-container">
-      <a class="title">Восстановление пароля</a>
+  <BlobComponent />
+  <q-page style="color: white" class="column justify-between">
+    <div class="column app items-center">
+      <div class="row title-container">
+        <a class="title">Восстановление пароля</a>
+      </div>
+      <q-form @submit="handlerSubmit" class="q-gutter-md column items-center">
+        <q-input
+          v-model="password"
+          :type="!showPassword ? 'password' : 'text'"
+          :label="$t('password')"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+          lazy-rules
+          :error="errorStore.errors.password"
+          :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
+          :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="!showPassword ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              color="grey-1"
+              size="xs"
+              @click="showPassword = !showPassword"
+            />
+          </template>
+        </q-input>
+        <q-input
+          v-model="againPassword"
+          :type="!showPasswordAgain ? 'password' : 'text'"
+          :label="$t('passwordAgain')"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+          lazy-rules
+          :error="errorStore.errors.againPassword"
+          :error-message="errorStore.errors.againPassword ? errorStore.errorMessage : undefined"
+          :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="!showPasswordAgain ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              color="grey-1"
+              size="xs"
+              @click="showPasswordAgain = !showPasswordAgain"
+            /> </template
+        ></q-input>
+        <q-btn
+          :label="$t('confirm')"
+          class="login"
+          type="submit"
+          flat
+          text-color="grey-1"
+          no-caps
+        />
+      </q-form>
     </div>
-    <q-form @submit="handlerSubmit" class="q-gutter-md column items-center">
-      <q-input
-        v-model="password"
-        :type="!showPassword ? 'password' : 'text'"
-        :label="$t('password')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        rounded
-        outlined
-        lazy-rules
-        :error="errorStore.errors.password"
-        :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
-        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="!showPassword ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            color="grey-1"
-            size="xs"
-            @click="showPassword = !showPassword"
-          />
-        </template>
-      </q-input>
-      <q-input
-        v-model="againPassword"
-        :type="!showPasswordAgain ? 'password' : 'text'"
-        :label="$t('passwordAgain')"
-        style="width: 500px"
-        color="deep-purple-8"
-        label-color="grey-1"
-        rounded
-        outlined
-        lazy-rules
-        :error="errorStore.errors.againPassword"
-        :error-message="errorStore.errors.againPassword ? errorStore.errorMessage : undefined"
-        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-      >
-        <template v-slot:append>
-          <q-icon
-            :name="!showPasswordAgain ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            color="grey-1"
-            size="xs"
-            @click="showPasswordAgain = !showPasswordAgain"
-          /> </template
-      ></q-input>
-      <q-btn :label="$t('sendLink')" class="login" type="submit" flat text-color="grey-1" no-caps />
-    </q-form>
-  </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
@@ -120,7 +130,7 @@ const handlerSubmit = () => {
 
 <style lang="scss" scoped>
 .app {
-  background-color: #12121b;
+  // background-color: #12121b;
   padding-left: 10%;
   padding-right: 10%;
   padding-top: 80px;
@@ -187,5 +197,28 @@ select {
   border-radius: 12px;
   top: 80px;
   left: 80px;
+}
+
+@media screen and (max-width: 576px) {
+  .q-input {
+    width: 100% !important;
+  }
+
+  .q-gutter-md {
+    width: unset !important;
+  }
+
+  .check {
+    position: absolute;
+    height: 38px !important;
+    width: 38px !important;
+    border-radius: 12px;
+    top: 30px;
+    left: 30px;
+  }
+
+  .title {
+    // margin-top: var(--spacing-md);
+  }
 }
 </style>

@@ -269,7 +269,9 @@ const loadPosts = () => {
   loadingPosts.value = true
   apiGetPosts()
     .then((res) => {
-      posts.value = res
+      posts.value = res.sort((a, b) => {
+        return new Date(b.created_at) - new Date(a.created_at)
+      })
     })
     .finally(() => {
       loadingPosts.value = false
@@ -542,10 +544,11 @@ const createImagePrompt = () => {
   }
 
   .main-grid {
-    flex-direction: column !important;
+    flex-direction: column-reverse !important;
 
     .inputs-container {
       width: 100% !important;
+      margin-top: var(--spacing-md);
 
       .buttons {
         margin-top: var(--spacing-sm) !important;
@@ -554,7 +557,7 @@ const createImagePrompt = () => {
 
     .images-container {
       margin-left: 0 !important;
-      margin-top: var(--spacing-sm);
+      margin-top: 0;
       .download-image {
         margin: var(--spacing-xs) 0 !important;
         .btn-label {

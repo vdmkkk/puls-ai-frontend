@@ -1,74 +1,77 @@
 <template>
-  <div class="column app items-center">
-    <div class="row title-container">
-      <a class="title">Вход в</a><img :src="logo" /><a class="title">puls.</a>
-    </div>
-    <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
-      <q-input
-        v-model="login"
-        :label="$t('email')"
-        style="width: 500px"
-        type="email"
-        color="deep-purple-8"
-        label-color="grey-1"
-        rounded
-        outlined
-        lazy-rules
-        :error="errorStore.errors.login"
-        :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
-        :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-      />
-      <div class="row no-wrap">
+  <BlobComponent />
+  <q-page style="color: white" class="column justify-between">
+    <div class="column app items-center">
+      <div class="row title-container">
+        <a class="title">Вход в</a><img :src="logo" /><a class="title">puls.</a>
+      </div>
+      <q-form @submit="handlerLogin" class="q-gutter-md items-center column">
         <q-input
-          v-model="password"
-          :type="!showPassword ? 'password' : 'text'"
-          :label="$t('password')"
-          style="width: 436px"
+          v-model="login"
+          :label="$t('email')"
+          style="width: 500px"
+          type="email"
           color="deep-purple-8"
           label-color="grey-1"
           rounded
           outlined
           lazy-rules
-          :error="errorStore.errors.password"
-          :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
-          @keydown.enter.prevent="handlerLogin"
+          :error="errorStore.errors.login"
+          :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
           :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-        >
-          <template v-slot:append>
-            <q-icon
-              :name="!showPassword ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              color="grey-1"
-              size="xs"
-              @click="showPassword = !showPassword"
-            />
-          </template>
-        </q-input>
-        <q-btn
-          class="check"
-          icon="question_mark"
-          @click="handlerChangePassword"
-          size="sm"
-          color="grey-1"
-          outline
-        >
-          <q-tooltip>
-            <a>{{ $t('forgotPassword') }}</a>
-          </q-tooltip>
-        </q-btn>
-      </div>
-      <q-btn :label="$t('login')" class="login" type="submit" flat text-color="grey-1" no-caps />
-    </q-form>
+        />
+        <div class="row no-wrap" :style="$q.screen.xs ? { width: '100%' } : {}">
+          <q-input
+            v-model="password"
+            :type="!showPassword ? 'password' : 'text'"
+            :label="$t('password')"
+            style="width: 436px"
+            color="deep-purple-8"
+            label-color="grey-1"
+            rounded
+            outlined
+            lazy-rules
+            :error="errorStore.errors.password"
+            :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
+            @keydown.enter.prevent="handlerLogin"
+            :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="!showPassword ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                color="grey-1"
+                size="xs"
+                @click="showPassword = !showPassword"
+              />
+            </template>
+          </q-input>
+          <q-btn
+            class="check"
+            icon="question_mark"
+            @click="handlerChangePassword"
+            size="sm"
+            color="grey-1"
+            outline
+          >
+            <q-tooltip>
+              <a>{{ $t('forgotPassword') }}</a>
+            </q-tooltip>
+          </q-btn>
+        </div>
+        <q-btn :label="$t('login')" class="login" type="submit" flat text-color="grey-1" no-caps />
+      </q-form>
 
-    <q-btn
-      :label="$t('dontHaveAccount')"
-      class="already-have-account"
-      flat
-      no-caps
-      rounded
-      @click="handlerRedirect"
-    />
-  </div>
+      <q-btn
+        :label="$t('dontHaveAccount')"
+        class="already-have-account"
+        flat
+        no-caps
+        rounded
+        @click="handlerRedirect"
+      />
+    </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
@@ -80,6 +83,7 @@ import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useErrorStore } from 'src/stores/error-store'
 import logo from 'src/assets/svg/logo.svg'
+import BlobComponent from 'src/components/BlobComponent.vue'
 
 const { t } = useI18n()
 
@@ -125,7 +129,7 @@ const handlerRedirect = () => {
 
 <style lang="scss" scoped>
 .app {
-  background-color: #12121b;
+  // background-color: #12121b;
   padding-left: 10%;
   padding-right: 10%;
   padding-top: 80px;
@@ -200,6 +204,10 @@ select {
 
   .q-gutter-md {
     width: unset !important;
+  }
+
+  .already-have-account {
+    font-size: var(--font-size-sm);
   }
 }
 </style>
