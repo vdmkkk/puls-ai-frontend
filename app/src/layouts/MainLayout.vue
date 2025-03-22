@@ -137,6 +137,9 @@ const load = () => {
   getMe()
     .then((res) => {
       me.value = res
+      if (res?.days_left == 0) {
+        router.push('/subscription')
+      }
     })
     .finally(() => {
       loading.value = false

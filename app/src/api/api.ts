@@ -113,6 +113,19 @@ export interface ContentTitles {
 /**
  * 
  * @export
+ * @interface CreatePaymentRequest
+ */
+export interface CreatePaymentRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof CreatePaymentRequest
+     */
+    'tariff_id': number;
+}
+/**
+ * 
+ * @export
  * @interface CreatePostImageRequest
  */
 export interface CreatePostImageRequest {
@@ -304,6 +317,19 @@ export interface MarkPostReadyToPublish {
      * @memberof MarkPostReadyToPublish
      */
     'post_id'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface PaymentResponse
+ */
+export interface PaymentResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof PaymentResponse
+     */
+    'confirmation_url'?: string;
 }
 /**
  * 
@@ -2201,6 +2227,107 @@ export class CustomizeApi extends BaseAPI {
 
 
 /**
+ * DefaultApi - axios parameter creator
+ * @export
+ */
+export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Handle payment webhook
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postWebhook: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/webhook`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DefaultApi - functional programming interface
+ * @export
+ */
+export const DefaultApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Handle payment webhook
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postWebhook(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postWebhook(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.postWebhook']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DefaultApi - factory interface
+ * @export
+ */
+export const DefaultApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DefaultApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Handle payment webhook
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postWebhook(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postWebhook(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DefaultApi - object-oriented interface
+ * @export
+ * @class DefaultApi
+ * @extends {BaseAPI}
+ */
+export class DefaultApi extends BaseAPI {
+    /**
+     * 
+     * @summary Handle payment webhook
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public postWebhook(options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).postWebhook(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * FilesApi - axios parameter creator
  * @export
  */
@@ -2322,6 +2449,42 @@ export class FilesApi extends BaseAPI {
 export const PaymentApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * 
+         * @summary Create a payment
+         * @param {CreatePaymentRequest} createPaymentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postPaymentCreatePayment: async (createPaymentRequest: CreatePaymentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createPaymentRequest' is not null or undefined
+            assertParamExists('postPaymentCreatePayment', 'createPaymentRequest', createPaymentRequest)
+            const localVarPath = `/payment/create-payment`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(createPaymentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
          * @summary Использование промокода
          * @param {UsePromoRequest} usePromoRequest 
@@ -2368,6 +2531,19 @@ export const PaymentApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = PaymentApiAxiosParamCreator(configuration)
     return {
         /**
+         * 
+         * @summary Create a payment
+         * @param {CreatePaymentRequest} createPaymentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postPaymentCreatePayment(createPaymentRequest: CreatePaymentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaymentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postPaymentCreatePayment(createPaymentRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PaymentApi.postPaymentCreatePayment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
          * @summary Использование промокода
          * @param {UsePromoRequest} usePromoRequest 
@@ -2391,6 +2567,16 @@ export const PaymentApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = PaymentApiFp(configuration)
     return {
         /**
+         * 
+         * @summary Create a payment
+         * @param {CreatePaymentRequest} createPaymentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postPaymentCreatePayment(createPaymentRequest: CreatePaymentRequest, options?: RawAxiosRequestConfig): AxiosPromise<PaymentResponse> {
+            return localVarFp.postPaymentCreatePayment(createPaymentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
          * @summary Использование промокода
          * @param {UsePromoRequest} usePromoRequest 
@@ -2410,6 +2596,18 @@ export const PaymentApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class PaymentApi extends BaseAPI {
+    /**
+     * 
+     * @summary Create a payment
+     * @param {CreatePaymentRequest} createPaymentRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PaymentApi
+     */
+    public postPaymentCreatePayment(createPaymentRequest: CreatePaymentRequest, options?: RawAxiosRequestConfig) {
+        return PaymentApiFp(this.configuration).postPaymentCreatePayment(createPaymentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
      * @summary Использование промокода

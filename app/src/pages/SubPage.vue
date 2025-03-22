@@ -2,63 +2,57 @@
   <BlobComponent />
   <q-page style="color: white" class="column justify-between">
     <div class="app">
-      <IntegrationDialog
-        :is-open="dialog.isOpen"
-        :answer-key="dialog.answerKey"
-        :model="dialog.answerKey == 'vk' ? me?.vk_channel_url : me?.tg_channel_url"
-        :code="me?.vk_channel_code"
-        @close="handlerCloseDialog"
-        @save="handlerSaveDialog"
-      />
-      <div class="row justify-between items-start">
-        <div class="column header">
-          <p class="title">Профиль</p>
-          <p class="name">{{ me?.first_name }} {{ me?.last_name }}</p>
+      <div class="column header">
+        <p class="title">Управление подпиской</p>
+      </div>
+      <div v-if="me?.days_left > 0">
+        <p class="subtitle">Текущая подписка</p>
+        <div class="container">
+          <p class="title">{{ subs[me?.tariff]?.title }}</p>
           <p class="description">
-            {{ me?.email }}
+            осталось
+            {{ me?.gen_point_amount }}/{{ subs[me?.tariff]?.gens }}
+            <img style="vertical-align: sub" :src="boltIcon" /> генераций
           </p>
+          <p class="description">осталось {{ me?.days_left }} дней подписки</p>
         </div>
-        <DefaultButton label="Выйти" style="margin-top: var(--spacing-sm)" @click="handleLogout" />
+        <DefaultButton
+          style="margin-top: var(--spacing-xs)"
+          label="Перейти в профиль"
+          @click="navigateTo('/profile')"
+        />
       </div>
+      <div>
+        <p class="subtitle">Ввести промокод</p>
+        <div class="row" style="gap: var(--spacing-xs); margin-top: var(--spacing-sm)">
+          <InputComponent
+            :modelValue="promo"
+            type="text"
+            class="link-input"
+            @update:model-value="promo = $event"
+          />
+          <FancyButtonComponent label="Применить" @click="applyPromo" />
+        </div>
+      </div>
+      <div>
+        <p class="subtitle">Приобрести подписку</p>
+        <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
+          <div v-for="(sub, key) in subs" :key="key" class="container column justify-between">
+            <div class="column">
+              <p class="title">{{ sub.title }}</p>
+              <p class="description">
+                {{ sub.gens }} <img style="vertical-align: sub" :src="boltIcon" /> генераций
+              </p>
+              <p class="description">{{ sub.days }} дней подписки</p>
+              <p class="description">{{ sub.desc }}</p>
+            </div>
 
-      <DefaultButton label="Сменить пароль" style="align-self: flex-start" />
-      <div class="container">
-        <p class="title">{{ subs[me?.tariff]?.title }}</p>
-        <p class="description">
-          осталось
-          {{ me?.gen_point_amount }}/{{ subs[me?.tariff]?.gens }}
-          <img style="vertical-align: sub" :src="boltIcon" /> генераций
-        </p>
-        <p class="description">осталось {{ me?.days_left }} дней подписки</p>
-        <p class="link" @click="navigateTo('/subscription')">
-          Управлять подпиской <img :src="arrowRight" />
-        </p>
-      </div>
-      <p class="name">Интеграции</p>
-      <div class="integrations row" style="gap: var(--spacing-sm); width: 50%">
-        <div class="int-container">
-          <div class="icon-container-tg">
-            <img class="icon" :src="tgIcon" />
+            <FancyButtonComponent
+              style="margin-top: var(--spacing-xxs)"
+              :label="sub.cost + ' ₽'"
+              @click="createPayment(key)"
+            />
           </div>
-          <p v-if="me?.tg_channel_url" class="description">{{ me?.tg_channel_url }}</p>
-          <p v-else class="description">Не подключен</p>
-          <DefaultButton
-            :label="me?.tg_channel_url ? 'Изменить' : 'Подключить'"
-            style="align-self: flex-start; margin-top: var(--spacing-xs)"
-            @click="handlerOpenDialog('tg')"
-          />
-        </div>
-        <div class="int-container">
-          <div class="icon-container-vk">
-            <img class="icon" :src="vkIcon" />
-          </div>
-          <p v-if="me?.vk_channel_url" class="description">{{ me?.vk_channel_url }}</p>
-          <p v-else class="description">Не подключен</p>
-          <DefaultButton
-            :label="me?.vk_channel_url ? 'Изменить' : 'Подключить'"
-            style="align-self: flex-start; margin-top: var(--spacing-xs)"
-            @click="handlerOpenDialog('vk')"
-          />
         </div>
       </div>
     </div>
@@ -70,114 +64,70 @@ import useContent from 'src/api/composables/useContent'
 import useProfile from 'src/api/composables/useProfile'
 import BlobComponent from 'src/components/BlobComponent.vue'
 import ContainerComponent from 'src/components/ContainerComponent.vue'
-import DefaultButton from 'src/components/DefaultButton.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import arrowRight from 'src/assets/icons/arrow_right_blue.svg'
 import boltIcon from 'src/assets/icons/energy.svg'
-import tgIcon from 'src/assets/icons/telegram.svg'
-import vkIcon from 'src/assets/icons/vk.svg'
-import IntegrationDialog from 'src/dialogs/IntegrationDialog.vue'
-import useCustomize from 'src/api/composables/useCustomize'
-import { Notify } from 'quasar'
-import Cookies from 'js-cookie'
+import InputComponent from 'src/components/InputComponent.vue'
+import usePayment from 'src/api/composables/usePayment'
+import DefaultButton from 'src/components/DefaultButton.vue'
 
 const { getMe } = useProfile()
 const router = useRouter()
 const loading = ref(false)
-const loading2 = ref(false)
-const { apiSaveAccount } = useCustomize(loading2)
+
+const me = ref()
+
+const promo = ref('')
 
 const subs = {
   '2': {
     title: 'Старт',
     days: '30',
     gens: '14',
+    desc: 'создание фото, создание текста поста',
     cost: '990',
   },
   '3': {
     title: 'Прорыв',
     days: '30',
     gens: '28',
+    desc: 'создание фото, создание текста поста, контент-план',
     cost: '2490',
   },
   '4': {
     title: 'Мастер',
     days: '30',
     gens: '40',
+    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
     cost: '3990',
   },
   '1': {
     title: 'Пробный тариф',
     days: '7',
     gens: '6',
-    cost: '990',
+    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
+    cost: '1',
   },
 }
 
-const dialog = ref<{
-  isOpen: boolean
-  answerKey: 'vk' | 'tg'
-}>({
-  isOpen: false,
-  answerKey: null,
-})
+const { apiUsePromocode, apiCreatePayment } = usePayment()
 
-const me = ref()
-
-const handlerOpenDialog = (answerKey: string): void => {
-  dialog.value = {
-    isOpen: true,
-    answerKey,
-  }
+const applyPromo = () => {
+  apiUsePromocode(promo.value).then((res) => {
+    if (res) {
+      navigateTo('/profile')
+    }
+  })
 }
 
-const handlerCloseDialog = () => {
-  dialog.value = {
-    isOpen: false,
-    answerKey: null,
-  }
-}
-
-const handlerSaveDialog = (answer: string) => {
-  if (dialog.value.answerKey == 'tg') {
-    apiSaveAccount({
-      tg_channel_url: answer,
-      vk_channel_url: '',
-      vk_token: '',
-    }).then((res) => {
-      if (res) {
-        me.value.tg_channel_url = answer
-      } else {
-        Notify.create({
-          message:
-            'Произошла ошибка при привязке аккаунта. Пожалуйста, убедитесь, что вы выполнили все шаги инструкции, и попробуйте еще раз',
-          position: 'top',
-          color: 'negative',
-        })
-      }
-    })
-  } else {
-    apiSaveAccount({
-      vk_channel_url: answer.answer,
-      vk_token: answer.code,
-      tg_channel_url: '',
-    }).then((res) => {
-      if (res) {
-        me.value.vk_channel_url = answer.answer
-        me.value.vk_channel_code = answer.code
-      } else {
-        Notify.create({
-          message:
-            'Произошла ошибка при привязке аккаунта. Пожалуйста, убедитесь, что вы выполнили все шаги инструкции, и попробуйте еще раз',
-          position: 'top',
-          color: 'negative',
-        })
-      }
-    })
-  }
-  handlerCloseDialog()
+const createPayment = (key: string) => {
+  apiCreatePayment(parseInt(key)).then((res) => {
+    if (res) {
+      res.confirmation_url && window.open(res.confirmation_url)
+      //   navigateTo('/profile')
+    }
+  })
 }
 
 const load = () => {
@@ -194,12 +144,6 @@ const navigateTo = (path: string) => {
   router.push(path)
 }
 
-const handleLogout = () => {
-  Cookies.remove('refresh_token')
-  Cookies.remove('atoken')
-  navigateTo('/login')
-}
-
 onMounted(() => {
   loading.value = true
   load()
@@ -214,6 +158,15 @@ onMounted(() => {
   height: 100%;
   padding-left: var(--spacing-sm);
   padding-right: var(--spacing-sm);
+
+  .subtitle {
+    margin-bottom: 0;
+    margin-top: var(--spacing-xs);
+    // padding-left: var(--spacing-xxs);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
 
   .loading {
     margin-top: var(--spacing-lg);
@@ -313,7 +266,7 @@ onMounted(() => {
     }
   }
   .container {
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-sm);
     background-color: rgba(255, 255, 255, 0.08);
     user-select: none;
     border-radius: 10px;
@@ -332,6 +285,7 @@ onMounted(() => {
       color: #b8b8b8;
       text-decoration: none;
       margin-top: var(--spacing-xxs);
+      margin-bottom: var(--spacing-xxs);
     }
 
     .link {
@@ -360,6 +314,12 @@ onMounted(() => {
 
     .container {
       width: 100%;
+    }
+
+    .containers {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr);
+      margin-bottom: var(--spacing-lg);
     }
 
     .integrations {
