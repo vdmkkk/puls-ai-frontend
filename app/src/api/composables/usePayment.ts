@@ -16,6 +16,11 @@ export default function usePayment() {
     return await apiInstances.paymentApi
       .postPaymentUsePromo({ promocode })
       .then((res) => {
+        Notify.create({
+          message: 'Промокод успешно активирован',
+          position: 'top',
+          color: 'positive',
+        })
         return res.data
       })
       .catch((e: AxiosError) => {

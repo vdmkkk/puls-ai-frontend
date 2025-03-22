@@ -116,7 +116,8 @@ const { apiUsePromocode, apiCreatePayment } = usePayment()
 const applyPromo = () => {
   apiUsePromocode(promo.value).then((res) => {
     if (res) {
-      navigateTo('/profile')
+      load()
+      //   navigateTo('/profile')
     }
   })
 }
