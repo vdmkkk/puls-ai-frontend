@@ -117,6 +117,7 @@ const applyPromo = () => {
   apiUsePromocode(promo.value).then((res) => {
     if (res) {
       load()
+      promo.value = ''
       //   navigateTo('/profile')
     }
   })

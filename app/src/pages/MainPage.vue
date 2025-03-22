@@ -21,7 +21,7 @@
         <DefaultButton label="Выйти" style="margin-top: var(--spacing-sm)" @click="handleLogout" />
       </div>
 
-      <DefaultButton label="Сменить пароль" style="align-self: flex-start" />
+      <DefaultButton label="Сменить пароль" style="align-self: flex-start" @click="changePwd" />
       <div class="container">
         <p class="title">{{ subs[me?.tariff]?.title }}</p>
         <p class="description">
@@ -82,12 +82,14 @@ import IntegrationDialog from 'src/dialogs/IntegrationDialog.vue'
 import useCustomize from 'src/api/composables/useCustomize'
 import { Notify } from 'quasar'
 import Cookies from 'js-cookie'
+import useAuth from 'src/api/composables/useAuth'
 
 const { getMe } = useProfile()
 const router = useRouter()
 const loading = ref(false)
 const loading2 = ref(false)
 const { apiSaveAccount } = useCustomize(loading2)
+const { apiSendLink } = useAuth()
 
 const subs = {
   '2': {
@@ -198,6 +200,24 @@ const handleLogout = () => {
   Cookies.remove('refresh_token')
   Cookies.remove('atoken')
   navigateTo('/login')
+}
+
+const changePwd = () => {
+  apiSendLink(me.value?.email).then((res) => {
+    if (res) {
+      Notify.create({
+        message: 'Ссылка для смены пароля отправлена на вашу почту',
+        position: 'top',
+        color: 'positive',
+      })
+    } else {
+      Notify.create({
+        message: 'Произошла ошибка при отправке письма. Попробуйте еще раз',
+        position: 'top',
+        color: 'negative',
+      })
+    }
+  })
 }
 
 onMounted(() => {
