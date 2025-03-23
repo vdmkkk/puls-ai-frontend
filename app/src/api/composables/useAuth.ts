@@ -39,8 +39,8 @@ export default function useAuth() {
         verification_code: verificationCode,
       })
       .then((res) => {
+        Cookies.set('refresh_token', res.data.rtoken)
         Cookies.set('atoken', res.data.atoken)
-        Cookies.set('refresh_token', res.data.Refresh_token)
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
@@ -58,11 +58,16 @@ export default function useAuth() {
   }
 
   const apiEmailCode = async (email: string) => {
-    return await apiInstances.authApi.postSendEmailCode({ email }).catch((e: AxiosError) => {
-      console.error('Something went wrong:', e)
-      setError(e?.response?.data?.error, e?.response?.data?.user_message)
-      return e
-    })
+    return await apiInstances.authApi
+      .postSendEmailCode({ email })
+      .then((res) => {
+        return null
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+        return e
+      })
   }
 
   const apiChangePassword = async (token: string, newPassword: string) => {

@@ -179,7 +179,11 @@ const isValidPassword = (password: string): boolean => {
 const handlerVerify = () => {
   apiEmailCode(login.value).then((e) => {
     if (!e) {
-      Notify.create({ message: t('sentConfirm'), color: 'positive', position: 'top' })
+      Notify.create({
+        message: 'Код подтверждения выслан на почту',
+        color: 'positive',
+        position: 'top',
+      })
     } else {
       if (e.response?.data?.user_message) {
         Notify.create({
