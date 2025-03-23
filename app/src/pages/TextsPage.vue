@@ -70,13 +70,21 @@
           style="margin-left: var(--spacing-sm); flex: 1"
         >
           <div class="column no-wrap" style="flex: 1">
-            <CheckComponent
-              :modelValue="check"
-              style="user-select: none"
-              label="Пост без фото"
-              :is-disabled="loadingImage"
-              @update:modelValue="check = $event"
-            />
+            <div class="row justify-between" style="margin-bottom: var(--spacing-xxs)">
+              <CheckComponent
+                :modelValue="check"
+                style="user-select: none"
+                label="Пост без фото"
+                :is-disabled="loadingImage"
+                @update:modelValue="check = $event"
+              />
+              <q-btn class="download" round :disable="!computedImageSrc" @click="downloadImage">
+                <q-tooltip>
+                  <p style="margin-bottom: 0">Скачать изображение</p>
+                </q-tooltip>
+                <img :src="downloadIcon" />
+              </q-btn>
+            </div>
             <q-btn-toggle
               v-model="imageType"
               class="btn-group"
@@ -206,6 +214,7 @@ import close from 'src/assets/icons/close.svg'
 import templateImage from 'src/assets/icons/image.svg'
 import { useRouter } from 'vue-router'
 import { getPresignedUrl } from 'src/boot/aws'
+import downloadIcon from 'src/assets/icons/download.svg'
 const router = useRouter()
 
 const navigateTo = (path: string) => {
@@ -292,6 +301,35 @@ const base64Image = ref<string | null>(null)
 const fileName = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const computedImageSrc = ref<string | null>(null)
+
+async function downloadImage() {
+  try {
+    // Fetch the image data
+    const response = await fetch(computedImageSrc.value)
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    // Convert response to a Blob
+    const blob = await response.blob()
+    // Create a temporary object URL from the blob
+    const objectUrl = window.URL.createObjectURL(blob)
+
+    // Create an anchor element and set the download attribute
+    const link = document.createElement('a')
+    link.href = objectUrl
+    link.download = 'puls.jpg' // your desired filename
+
+    // Append, trigger click, and remove the link element
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    // Clean up the object URL
+    window.URL.revokeObjectURL(objectUrl)
+  } catch (error) {
+    console.error('Error downloading the image:', error)
+  }
+}
 
 function base64ToBlob(base64, mimeType = 'image/png') {
   // Remove any data URL prefix if present

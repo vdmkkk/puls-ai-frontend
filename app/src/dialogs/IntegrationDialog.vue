@@ -51,10 +51,14 @@ const onSave = () => {
         <img :src="close" />
       </q-btn>
       <p class="title">{{ title[answerKey] }}</p>
-      <p v-if="description" class="subtitle">{{ description[answerKey] }}</p>
+      <p v-if="description" class="subtitle"><p v-if="answerKey == 'tg'">1. Найти в поиске telegram- бота @puls_autopost_bot<br/>2. Перейдите в Ваш канал<br/>3. Сделайте @puls_autopost_bot вторым администратором Вашего канала</p><p v-else>{{ description['vk'] }}</p></p>
       <InputComponent :model-value="answer" @update:model-value="answer = $event" />
       <div v-if="answerKey === 'vk'">
-        <p class="subtitle" style="margin-top: var(--spacing-sm)">Ключ</p>
+        <p class="subtitle" style="margin-top: var(--spacing-sm)">
+          1. Перейдите в https://vkhost.github.io/<br />2. Выберите приложение VK Admin<br />3.
+          Нажмите кнопку Разрешить<br />4. Скопируйте часть адресной строки от access_token= до
+          &expires_in<br />5. Вставьте скопированный ключ в поле
+        </p>
         <InputComponent :model-value="code" @update:model-value="code = $event" />
       </div>
       <DefaultButton label="Сохранить" @click="onSave" class="save" />
