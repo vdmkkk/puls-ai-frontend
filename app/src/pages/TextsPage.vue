@@ -301,31 +301,37 @@ const base64Image = ref<string | null>(null)
 const fileName = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const computedImageSrc = ref<string | null>(null)
-
 async function downloadImage() {
   try {
-    // Fetch the image data
-    const response = await fetch(computedImageSrc.value)
+    let url = computedImageSrc.value
+    console.log('Original URL:', url)
+
+    // Ensure the URL is decoded (replace HTML entities)
+    url = url.replace(/&amp;/g, '&')
+
+    // Optionally, add a tiny delay to ensure the URL is ready
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    console.log('Decoded URL:', url)
+    const response = await fetch(url, { cache: 'no-store' })
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
-    // Convert response to a Blob
+
     const blob = await response.blob()
-    // Create a temporary object URL from the blob
     const objectUrl = window.URL.createObjectURL(blob)
 
-    // Create an anchor element and set the download attribute
     const link = document.createElement('a')
     link.href = objectUrl
-    link.download = 'puls.jpg' // your desired filename
-
-    // Append, trigger click, and remove the link element
+    link.download = 'puls.jpg'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
 
-    // Clean up the object URL
-    window.URL.revokeObjectURL(objectUrl)
+    // Delay revocation to ensure the download has started
+    setTimeout(() => {
+      window.URL.revokeObjectURL(objectUrl)
+    }, 1000)
   } catch (error) {
     console.error('Error downloading the image:', error)
   }
