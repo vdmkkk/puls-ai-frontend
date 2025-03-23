@@ -38,9 +38,8 @@ export default function useAuth() {
         password,
         verification_code: verificationCode,
       })
-      .then((res) => {
-        Cookies.set('refresh_token', res.data.rtoken)
-        Cookies.set('atoken', res.data.atoken)
+      .then(async (res) => {
+        return await apiLogin(email, password)
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
