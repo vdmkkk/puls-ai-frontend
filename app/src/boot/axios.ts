@@ -31,14 +31,28 @@ const apiInstances = {
   postsApi: new PostsApi(config),
 }
 
-Object.entries(apiInstances).forEach(([_, apiInstance]) => {
+apiInstances.authApi.axios.interceptors.request.use(
+  (config) => {
+    // config.headers['Access-Control-Allow-Origin'] = 'https://my.pulsai.tech'
+    return config
+  },
+  (error) => Promise.reject(error),
+)
+
+Object.entries(apiInstances).forEach(([key, apiInstance]) => {
+  // console.log(key)
   apiInstance.axios.interceptors.request.use(
     (config) => {
+      console.log(key == 'authApi')
+      if (key == 'authApi') {
+        console.log(config)
+        // config.headers['Access-Control-Allow-Origin'] = 'https://my.pulsai.tech'
+      }
       // config.withCredentials = true
       const token = Cookies.get('refresh_token')
       const atoken = Cookies.get('atoken')
       if (token) {
-        config.headers['Access-Control-Allow-Origin'] = 'https://my.pulsai.tech'
+        // config.headers['Access-Control-Allow-Origin'] = 'https://my.pulsai.tech'
         config.headers['atoken'] = Cookies.get('atoken')
         config.headers['rtoken'] = Cookies.get('refresh_token')
       }
