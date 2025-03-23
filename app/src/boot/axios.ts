@@ -1,7 +1,15 @@
 // @ts-nocheck //
 import { defineBoot } from '#q-app/wrappers'
 import axios, { type AxiosInstance } from 'axios'
-import { AuthApi, Configuration, CustomizeApi, ContentApi, ProfileApi, PostsApi } from 'src/api'
+import {
+  AuthApi,
+  Configuration,
+  CustomizeApi,
+  ContentApi,
+  ProfileApi,
+  PostsApi,
+  FilesApi,
+} from 'src/api'
 import { PaymentApi } from 'src/api'
 import Cookies from 'js-cookie'
 declare module 'vue' {
@@ -29,6 +37,7 @@ const apiInstances = {
   profileApi: new ProfileApi(config),
   contentApi: new ContentApi(config),
   postsApi: new PostsApi(config),
+  filesApi: new FilesApi(config),
 }
 
 apiInstances.authApi.axios.interceptors.request.use(

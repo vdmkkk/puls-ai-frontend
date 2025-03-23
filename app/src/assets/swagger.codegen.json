@@ -836,6 +836,34 @@
         "tags": ["content"]
       }
     },
+    "/content/get_posts_ready_to_publish/": {
+      "get": {
+        "description": "Роут принимает id юзера и возвращает его посты.\nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",
+        "operationId": "GetContentGetPostsReadyToPublish",
+        "responses": {
+          "200": { "description": "получены посты пользователя" },
+          "400": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Невалидные данные"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получение постов пользователя готовых к публикации",
+        "tags": ["content"]
+      }
+    },
     "/content/mark_ready_to_publish/": {
       "post": {
         "description": "Роут принимает id поста и помечает его готовым \nЕсли данные невалидны, возвращается ошибка `400 Bad Request`.\n",

@@ -1146,6 +1146,36 @@ export const ContentApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
+         * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение постов пользователя готовых к публикации
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContentGetPostsReadyToPublish: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/content/get_posts_ready_to_publish/`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary обновление
          * @param {UpdatePostRequest} updatePostRequest 
@@ -1516,6 +1546,18 @@ export const ContentApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение постов пользователя готовых к публикации
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getContentGetPostsReadyToPublish(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getContentGetPostsReadyToPublish(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContentApi.getContentGetPostsReadyToPublish']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary обновление
          * @param {UpdatePostRequest} updatePostRequest 
@@ -1670,6 +1712,15 @@ export const ContentApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.getContentGetPostsNotInContentPlan(options).then((request) => request(axios, basePath));
         },
         /**
+         * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+         * @summary Получение постов пользователя готовых к публикации
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getContentGetPostsReadyToPublish(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.getContentGetPostsReadyToPublish(options).then((request) => request(axios, basePath));
+        },
+        /**
          * Роут принимает id, текст поста и ссылку на изображение. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
          * @summary обновление
          * @param {UpdatePostRequest} updatePostRequest 
@@ -1800,6 +1851,17 @@ export class ContentApi extends BaseAPI {
      */
     public getContentGetPostsNotInContentPlan(options?: RawAxiosRequestConfig) {
         return ContentApiFp(this.configuration).getContentGetPostsNotInContentPlan(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает id юзера и возвращает его посты. Если данные невалидны, возвращается ошибка `400 Bad Request`. 
+     * @summary Получение постов пользователя готовых к публикации
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContentApi
+     */
+    public getContentGetPostsReadyToPublish(options?: RawAxiosRequestConfig) {
+        return ContentApiFp(this.configuration).getContentGetPostsReadyToPublish(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

@@ -258,6 +258,7 @@ const {
   apiCreateImagePrompt,
   apiCreatePost,
   apiReadyToPublish,
+  apiUploadImage,
 } = useContent()
 
 const aspectOptions = {
@@ -300,7 +301,23 @@ const readyToPublish = () => {
     }
   })
 }
+function base64ToBlob(base64, mimeType = 'image/png') {
+  // Remove any data URL prefix if present
+  if (base64.startsWith('data:')) {
+    base64 = base64.split(',')[1]
+  }
 
+  // Decode the base64 string
+  const byteCharacters = atob(base64)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+
+  // Create a Blob with the binary data and MIME type
+  return new Blob([byteArray], { type: mimeType })
+}
 // Watch for changes to base64Image
 watch(
   base64Image,
@@ -315,6 +332,11 @@ watch(
         console.log('Presigned URL:', computedImageSrc.value)
       }
     } else {
+      if (newVal) {
+        apiUploadImage(base64ToBlob(newVal)).then((res) => {
+          base64Image.value = res.link
+        })
+      }
       computedImageSrc.value = newVal
     }
   },

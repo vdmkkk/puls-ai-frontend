@@ -164,6 +164,18 @@ export default function useContent() {
       })
   }
 
+  const apiUploadImage = async (file: Blob) => {
+    return await apiInstances.filesApi
+      .postFilesSaveImage(file)
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
   return {
     apiCreateImagePost,
     apiCreateImagePrompt,
@@ -177,5 +189,6 @@ export default function useContent() {
     apiCreateContentPlan,
     apiReadyToPublish,
     apiPublishPost,
+    apiUploadImage,
   }
 }

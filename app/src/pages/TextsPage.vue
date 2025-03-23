@@ -238,8 +238,14 @@ const loadingCreation = ref(false)
 const loadingPosts = ref(false)
 const loadingImage = ref(false)
 
-const { apiGetPosts, apiCreatePost, apiSavePost, apiCreateImagePost, apiCreateImagePrompt } =
-  useContent()
+const {
+  apiGetPosts,
+  apiCreatePost,
+  apiSavePost,
+  apiCreateImagePost,
+  apiCreateImagePrompt,
+  apiUploadImage,
+} = useContent()
 
 const onSubmit = () => {
   const topic = prompt.value
@@ -287,6 +293,24 @@ const fileName = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const computedImageSrc = ref<string | null>(null)
 
+function base64ToBlob(base64, mimeType = 'image/png') {
+  // Remove any data URL prefix if present
+  if (base64.startsWith('data:')) {
+    base64 = base64.split(',')[1]
+  }
+
+  // Decode the base64 string
+  const byteCharacters = atob(base64)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+
+  // Create a Blob with the binary data and MIME type
+  return new Blob([byteArray], { type: mimeType })
+}
+
 watch(
   base64Image,
   async (newVal) => {
@@ -299,6 +323,11 @@ watch(
         console.log('Presigned URL:', computedImageSrc.value)
       }
     } else {
+      if (newVal) {
+        apiUploadImage(base64ToBlob(newVal)).then((res) => {
+          base64Image.value = res.link
+        })
+      }
       computedImageSrc.value = newVal
     }
   },

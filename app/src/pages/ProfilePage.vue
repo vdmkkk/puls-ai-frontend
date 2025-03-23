@@ -63,14 +63,14 @@ const answers = ref<{
 const { apiGenAnswersFromLink, apiGetUserAnswers, apiSaveAnswers } = useCustomize(loading)
 
 const handlerOpenDialog = (question: string, answerKey: string, isHigh = false): void => {
-  if (!isAuto.value) {
-    dialog.value = {
-      isOpen: true,
-      question,
-      isHigh,
-      answerKey,
-    }
+  // if (!isAuto.value) {
+  dialog.value = {
+    isOpen: true,
+    question,
+    isHigh,
+    answerKey,
   }
+  // }
 }
 
 const handlerCloseDialog = () => {
@@ -198,14 +198,13 @@ onMounted(() => {
         label="Использовать стилистику моих постов"
         @update:modelValue="answers.check = $event"
       />
-      <p class="survey-title" :class="{ grey: isAuto }">
+      <p class="survey-title">
         Нажмите на карточку с вопросом, чтобы посмотреть пояснения и ответить
       </p>
       <div v-if="!loading" class="questions">
         <QuestionComponent
           v-for="[question, answerKey] in Object.entries(questions)"
           :question="question"
-          :isDisabled="isAuto"
           v-model="answers[answerKey]"
           @click="handlerOpenDialog(question, answerKey)"
         />
