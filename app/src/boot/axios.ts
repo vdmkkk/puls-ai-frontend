@@ -38,6 +38,7 @@ Object.entries(apiInstances).forEach(([_, apiInstance]) => {
       const token = Cookies.get('refresh_token')
       const atoken = Cookies.get('atoken')
       if (token) {
+        config.headers['Access-Control-Allow-Origin'] = 'https://my.pulsai.tech'
         config.headers['atoken'] = Cookies.get('atoken')
         config.headers['rtoken'] = Cookies.get('refresh_token')
       }
