@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue'
+import { onMounted, toRefs } from 'vue'
 import micIcon from '../assets/icons/micro.svg'
 
 const props = withDefaults(
@@ -52,6 +52,14 @@ const { modelValue } = toRefs(props)
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
 }>()
+
+onMounted(() => {
+  const ua = navigator.userAgent
+  // Check for iOS device and Safari (excluding Chrome on iOS)
+  if (/iP(ad|hone|od)/.test(ua) && /Safari/.test(ua) && !/CriOS/.test(ua)) {
+    document.documentElement.classList.add('ios-safari')
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -60,6 +68,11 @@ const emit = defineEmits<{
 }
 .q-input ::v-deep .q-field__control {
   height: -webkit-fill-available !important;
+}
+
+.ios-safari .q-input ::v-deep .q-field__control {
+  /* Adjust height for iOS Safari */
+  height: auto !important;
 }
 
 .q-input ::v-deep .q-field__control {
