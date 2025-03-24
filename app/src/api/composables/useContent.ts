@@ -176,6 +176,18 @@ export default function useContent() {
       })
   }
 
+  const apiGetAllPosts = async () => {
+    return await apiInstances.contentApi
+      .getContentGetPostsReadyToPublish()
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
   return {
     apiCreateImagePost,
     apiCreateImagePrompt,
@@ -190,5 +202,6 @@ export default function useContent() {
     apiReadyToPublish,
     apiPublishPost,
     apiUploadImage,
+    apiGetAllPosts,
   }
 }

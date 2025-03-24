@@ -37,7 +37,7 @@ import PostComponent from 'src/components/PostComponent.vue'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const { apiGetPosts, apiPublishPost } = useContent()
+const { apiGetPosts, apiPublishPost, apiGetAllPosts } = useContent()
 const router = useRouter()
 const loading = ref(false)
 
@@ -59,10 +59,8 @@ const publishPost = (id: number) => {
 }
 
 onMounted(() => {
-  apiGetPosts().then((res) => {
-    posts.value = res.filter((post) => {
-      return post.ready_to_publish
-    })
+  apiGetAllPosts().then((res) => {
+    posts.value = res
   })
 })
 </script>

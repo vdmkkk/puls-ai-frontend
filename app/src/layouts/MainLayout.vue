@@ -106,12 +106,12 @@ const links = [
   // },
   {
     name: 'Автопостинг',
-    to: 'posting',
+    to: '/posting',
     icon: autoposting,
   },
   {
     name: 'Профиль',
-    to: 'profile',
+    to: '/profile',
     icon: profile,
   },
 ]
