@@ -15,7 +15,7 @@
           v-else
           style="align-self: flex-start; margin-top: var(--spacing-xs)"
           label="Опубликовать"
-          @click.stop="emits('publish')"
+          @click="emits('publish')"
         />
       </div>
     </div>

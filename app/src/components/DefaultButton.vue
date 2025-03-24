@@ -1,5 +1,5 @@
 <template>
-  <q-btn :label="label" flat no-caps class="default-btn" @click="emits('click')">
+  <q-btn :label="label" flat no-caps class="default-btn" @click.stop="emits('click')">
     <img :src="icon" v-if="icon" />
   </q-btn>
 </template>
