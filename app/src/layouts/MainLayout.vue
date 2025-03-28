@@ -39,6 +39,7 @@
             clickable
             v-ripple
             :class="{ 'menu-item': true, active: isActive(menuItem.to) }"
+            :disable="menuItem.disabled"
             @click="navigateTo(menuItem.to)"
           >
             <q-item-section avatar>
@@ -60,7 +61,7 @@
 
 <script setup lang="ts">
 // @ts-nocheck //
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import mane from 'src/assets/icons/mane.svg'
@@ -81,23 +82,27 @@ const navigateTo = (path: string) => {
   router.push(path)
 }
 
+const me = ref()
 const leftDrawerOpen = ref(false)
 
-const links = [
+const links = computed(() => [
   {
     name: 'Главная',
     to: '/',
     icon: mane,
+    disabled: false,
   },
   {
     name: 'Контент-план',
     to: '/content-plan',
     icon: plan,
+    disabled: me.value?.tariff != 4 && me.value?.tariff != 3 && me.value?.tariff != 1,
   },
   {
     name: 'Авторские темы',
     to: '/texts',
     icon: text,
+    disabled: false,
   },
   // {
   //   name: 'Изображения',
@@ -108,13 +113,15 @@ const links = [
     name: 'Автопостинг',
     to: '/posting',
     icon: autoposting,
+    disabled: me.value?.tariff != 4 && me.value?.tariff != 1,
   },
   {
     name: 'Профиль',
     to: '/profile',
     icon: profile,
+    disabled: false,
   },
-]
+])
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
@@ -130,8 +137,6 @@ const isActive = (to: string) => {
 
 const { getMe } = useProfile()
 const loading = ref(false)
-
-const me = ref()
 
 const load = () => {
   getMe()
