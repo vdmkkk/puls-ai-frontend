@@ -19,7 +19,9 @@
           :topic="post.post_topic"
           :text="post.post_text"
           :image="post.image_urls[0]"
-          posting
+          :posting="post.published_at == ''"
+          :date="post.published_at"
+          :darken="post.published_at != ''"
           @publish="publishPost(post.post_id)"
           @click="navigateTo(`/posting/posts/${post.post_id}`)"
         />
@@ -60,7 +62,9 @@ const publishPost = (id: number) => {
 
 onMounted(() => {
   apiGetAllPosts().then((res) => {
-    posts.value = res
+    posts.value = res.sort((a, b) => {
+      return new Date(b.marked_at) - new Date(a.marked_at)
+    })
   })
 })
 </script>

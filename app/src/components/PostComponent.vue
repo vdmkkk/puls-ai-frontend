@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div :class="{ post: true, darken: darken }">
     <!-- <img v-if="image" :src="computedImageSrc" /> -->
     <div class="column content justify-between">
       <div>
@@ -35,6 +35,7 @@ defineProps<{
   text: string
   date?: string
   posting?: boolean
+  darken?: boolean
   // image?: string
 }>()
 
@@ -124,6 +125,15 @@ defineProps<{
     .date {
       font-size: var(--font-size-md);
     }
+  }
+}
+
+.darken {
+  background-color: rgba(156, 156, 156, 0.05);
+  color: #6e6e6e;
+
+  .text {
+    color: #6e6e6e;
   }
 }
 </style>
