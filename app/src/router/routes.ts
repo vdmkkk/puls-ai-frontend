@@ -62,6 +62,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/SubLayout.vue'),
     children: [
       { path: '/subscription', name: 'subscription', component: () => import('pages/SubPage.vue') },
+      { path: '/cart', name: 'cart', component: () => import('pages/CartPage.vue') },
     ],
   },
 

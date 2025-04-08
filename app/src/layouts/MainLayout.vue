@@ -62,7 +62,7 @@
 <script setup lang="ts">
 // @ts-nocheck //
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import mane from 'src/assets/icons/mane.svg'
 import plan from 'src/assets/icons/plan.svg'
@@ -76,6 +76,7 @@ import useProfile from 'src/api/composables/useProfile'
 import { useErrorStore } from 'src/stores/error-store'
 
 const router = useRouter()
+const route = useRoute()
 const store = useErrorStore()
 
 const navigateTo = (path: string) => {
@@ -152,6 +153,10 @@ const load = () => {
 }
 
 onMounted(() => {
+  const subParam = route.query.sub
+  if (subParam) {
+    Cookies.set('sub', String(subParam))
+  }
   loading.value = true
   load()
 })

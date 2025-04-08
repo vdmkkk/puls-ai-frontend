@@ -20,6 +20,10 @@ onMounted(() => {
   if (!jwt) {
     router.push('/login')
   }
+  const sub = Cookies.get('sub')
+  if (sub) {
+    router.push('/cart')
+  }
 })
 </script>
 
