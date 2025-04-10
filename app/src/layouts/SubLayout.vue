@@ -21,13 +21,14 @@ onMounted(() => {
   if (!jwt) {
     router.push('/login')
   }
-  const sub = Cookies.get('sub')
-  if (sub) {
-    router.push('/cart')
-  }
+  // const sub = Cookies.get('sub')
+  // if (sub) {
+  //   router.push('/cart')
+  // }
   const subParam = route.query.sub
   if (subParam) {
     Cookies.set('sub', String(subParam))
+    router.push('/cart')
   }
 })
 </script>
