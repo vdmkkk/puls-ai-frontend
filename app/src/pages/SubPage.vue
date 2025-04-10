@@ -37,22 +37,7 @@
       <div>
         <p class="subtitle">Приобрести подписку</p>
         <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
-          <div v-for="(sub, key) in subs" :key="key" class="container column justify-between">
-            <div class="column">
-              <p class="title">{{ sub.title }}</p>
-              <p class="description">
-                {{ sub.gens }} <img style="vertical-align: sub" :src="boltIcon" /> генераций
-              </p>
-              <p class="description">{{ sub.days }} дней подписки</p>
-              <p class="description">{{ sub.desc }}</p>
-            </div>
-
-            <FancyButtonComponent
-              style="margin-top: var(--spacing-xxs)"
-              :label="sub.cost + ' ₽'"
-              @click="createPayment(key)"
-            />
-          </div>
+          <SubComponent v-for="(sub, key) in subs" :key="key" :chosenSub="key" />
         </div>
       </div>
     </div>
@@ -71,6 +56,7 @@ import boltIcon from 'src/assets/icons/energy.svg'
 import InputComponent from 'src/components/InputComponent.vue'
 import usePayment from 'src/api/composables/usePayment'
 import DefaultButton from 'src/components/DefaultButton.vue'
+import SubComponent from 'src/components/SubComponent.vue'
 
 const { getMe } = useProfile()
 const router = useRouter()
@@ -205,6 +191,10 @@ onMounted(() => {
     }
   }
 
+  .containers {
+    margin: 20px 0;
+  }
+
   .int-container {
     margin-top: var(--spacing-sm);
     background-color: rgba(255, 255, 255, 0.08);
@@ -320,8 +310,9 @@ onMounted(() => {
 
     .containers {
       display: grid !important;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       margin-bottom: var(--spacing-lg);
+      justify-items: center;
     }
 
     .integrations {

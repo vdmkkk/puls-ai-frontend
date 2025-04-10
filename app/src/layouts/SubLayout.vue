@@ -9,10 +9,11 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 
 const router = useRouter()
+const route = useRoute()
 
 onMounted(() => {
   const jwt = Cookies.get('refresh_token')
@@ -23,6 +24,10 @@ onMounted(() => {
   const sub = Cookies.get('sub')
   if (sub) {
     router.push('/cart')
+  }
+  const subParam = route.query.sub
+  if (subParam) {
+    Cookies.set('sub', String(subParam))
   }
 })
 </script>

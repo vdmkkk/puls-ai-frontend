@@ -37,23 +37,7 @@
       <div>
         <p class="subtitle">Выбранная подписка</p>
         <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
-          <div class="container column justify-between">
-            <div class="column">
-              <p class="title">{{ subs[chosenSub]?.title }}</p>
-              <p class="description">
-                {{ subs[chosenSub]?.gens }}
-                <img style="vertical-align: sub" :src="boltIcon" /> генераций
-              </p>
-              <p class="description">{{ subs[chosenSub]?.days }} дней подписки</p>
-              <p class="description">{{ subs[chosenSub]?.desc }}</p>
-            </div>
-
-            <FancyButtonComponent
-              style="margin-top: var(--spacing-xxs)"
-              :label="subs[chosenSub]?.cost + ' ₽'"
-              @click="createPayment(chosenSub)"
-            />
-          </div>
+          <SubComponent :chosenSub="chosenSub" />
         </div>
         <DefaultButton
           style="margin-top: var(--spacing-xs)"
@@ -78,6 +62,7 @@ import InputComponent from 'src/components/InputComponent.vue'
 import usePayment from 'src/api/composables/usePayment'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import Cookies from 'js-cookie'
+import SubComponent from 'src/components/SubComponent.vue'
 
 const { getMe } = useProfile()
 const router = useRouter()
@@ -335,8 +320,9 @@ onMounted(() => {
 
     .containers {
       display: grid !important;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       margin-bottom: var(--spacing-lg);
+      justify-items: center;
     }
 
     .integrations {
