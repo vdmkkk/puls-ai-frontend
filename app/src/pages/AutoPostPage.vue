@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import { Notify } from 'quasar'
 import useContent from 'src/api/composables/useContent'
 import BlobComponent from 'src/components/BlobComponent.vue'
 import ContainerComponent from 'src/components/ContainerComponent.vue'
@@ -51,12 +52,19 @@ const posts = ref([])
 
 const publishPost = (id: number) => {
   apiPublishPost(id).then(() => {
-    // posts.value = posts.value.map((post) => {
-    //   if (post.post_id === id) {
-    //     post.published = true
-    //   }
-    //   return post
-    // })
+    Notify.create({
+      message: 'Пост успешно опубликован',
+      color: 'positive',
+      icon: 'check_circle',
+      position: 'top',
+    })
+    posts.value = posts.value.map((post) => {
+      if (post.post_id === id) {
+        // to YYYY-MM-DD format
+        post.published_at = new Date().toISOString().split('T')[0]
+      }
+      return post
+    })
   })
 }
 

@@ -69,13 +69,13 @@ const subs = {
     cost: '1990', // New discounted price
     oldCost: '3990', // Old price to display as strikethrough
   },
-  '1': {
-    title: 'Пробный тариф',
-    days: '7',
-    gens: '6',
-    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
-    cost: '1', // No oldCost => no strike-through
-  },
+  // '1': {
+  //   title: 'Пробный тариф',
+  //   days: '7',
+  //   gens: '6',
+  //   desc: 'создание фото, создание текста поста, контент-план, автопостинг',
+  //   cost: '1', // No oldCost => no strike-through
+  // },
 }
 
 const { apiCreatePayment } = usePayment()
