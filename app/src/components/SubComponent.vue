@@ -66,8 +66,8 @@ const subs = {
     gens: '40',
     // We’ll split these into bullet points in the template
     desc: 'создание фото, создание текста поста, контент-план, автопостинг',
-    cost: '1990', // New discounted price
-    oldCost: '3990', // Old price to display as strikethrough
+    cost: '3990', // New discounted price
+    oldCost: '5490', // Old price to display as strikethrough
   },
   '1': {
     title: 'Пробный тариф',
