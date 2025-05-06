@@ -92,29 +92,29 @@ const { apiSaveAccount } = useCustomize(loading2)
 const { apiSendLink } = useAuth()
 
 const subs = {
-  '2': {
-    title: 'Старт',
-    days: '30',
-    gens: '14',
-    cost: '990',
-  },
-  '3': {
-    title: 'Прорыв',
-    days: '30',
-    gens: '28',
-    cost: '2490',
-  },
-  '4': {
-    title: 'Мастер',
-    days: '30',
-    gens: '40',
-    cost: '3990',
-  },
   '1': {
     title: 'Пробный тариф',
     days: '7',
     gens: '6',
     cost: '990',
+  },
+  '2': {
+    title: 'Старт',
+    days: '30',
+    gens: '14',
+    cost: '690',
+  },
+  '3': {
+    title: 'Прорыв',
+    days: '30',
+    gens: '28',
+    cost: '1590',
+  },
+  '4': {
+    title: 'Мастер',
+    days: '30',
+    gens: '40',
+    cost: '2490',
   },
 }
 

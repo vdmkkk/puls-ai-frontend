@@ -30,7 +30,7 @@
 
       <!-- Button -->
       <!-- You can keep the dynamic cost label, or set a static label like "Получить" -->
-      <DefaultButton class="default-btn" label="Получить" @click="createPayment(chosenSub)" />
+      <DefaultButton class="default-btn" label="Купить" @click="createPayment(chosenSub)" />
     </div>
   </div>
 </template>
@@ -45,20 +45,29 @@ const { chosenSub } = defineProps<{
 }>()
 
 const subs = {
+  '1': {
+    title: 'Пробный тариф',
+    days: '7',
+    gens: '6',
+    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
+    cost: '1', // No oldCost => no strike-through
+  },
   '2': {
     title: 'Старт',
     days: '30',
     gens: '14',
     // Keep desc a comma-separated string
     desc: 'создание фото, создание текста поста',
-    cost: '990', // No oldCost => no strike-through
+    cost: '690', // No oldCost => no strike-through,
+    oldCost: '990', // Old price to display as strikethrough
   },
   '3': {
     title: 'Прорыв',
     days: '30',
     gens: '28',
     desc: 'создание фото, создание текста поста, контент-план',
-    cost: '2490', // No oldCost => no strike-through
+    cost: '1590', // No oldCost => no strike-through
+    oldCost: '2490', // Old price to display as strikethrough
   },
   '4': {
     title: 'Мастер',
@@ -66,15 +75,8 @@ const subs = {
     gens: '40',
     // We’ll split these into bullet points in the template
     desc: 'создание фото, создание текста поста, контент-план, автопостинг',
-    cost: '3990', // New discounted price
-    oldCost: '5490', // Old price to display as strikethrough
-  },
-  '1': {
-    title: 'Пробный тариф',
-    days: '7',
-    gens: '6',
-    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
-    cost: '1', // No oldCost => no strike-through
+    cost: '2490', // New discounted price
+    oldCost: '3990', // Old price to display as strikethrough
   },
 }
 
