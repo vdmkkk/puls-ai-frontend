@@ -172,7 +172,7 @@ const showPassword = ref<boolean>(false)
 const showPasswordAgain = ref<boolean>(false)
 
 const isValidPassword = (password: string): boolean => {
-  const passwordRegex = /^[A-Za-z0-9]{8,}$/
+  const passwordRegex = /^[A-Za-z0-9.,\-/_\\|()~!?&%$#@*]{8,}$/
   return passwordRegex.test(password)
 }
 
