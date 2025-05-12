@@ -3,7 +3,7 @@
 import QuestionComponent from 'src/components/QuestionComponent.vue'
 import BlobComponent from 'src/components/BlobComponent.vue'
 
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import QuestionDialog from 'src/dialogs/QuestionDialog.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 import DefaultButton from 'src/components/DefaultButton.vue'
@@ -114,9 +114,17 @@ const getFromLink = () => {
 
 const debouncedProcessAnswers = debounce(processAnswers, 1000)
 
+const filteredAnswers = computed(() => {
+  // destructure away the keys you don’t want to watch
+  const { link, check, ...rest } = answers.value
+  console.log('filtered answers', rest)
+  return rest
+})
+
 watch(
-  answers,
+  filteredAnswers,
   () => {
+    console.log('we savin that bitch')
     debouncedProcessAnswers()
   },
   { deep: true },

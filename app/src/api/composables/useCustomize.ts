@@ -46,7 +46,7 @@ export default function useCustomize(loading: Ref<boolean>) {
         return e
       })
       .finally(() => {
-        loading.value = false
+        // loading.value = false
       })
   }
 
