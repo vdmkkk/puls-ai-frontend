@@ -115,16 +115,13 @@ const getFromLink = () => {
 const debouncedProcessAnswers = debounce(processAnswers, 1000)
 
 const filteredAnswers = computed(() => {
-  // destructure away the keys you don’t want to watch
   const { link, check, ...rest } = answers.value
-  console.log('filtered answers', rest)
   return rest
 })
 
 watch(
   filteredAnswers,
   () => {
-    console.log('we savin that bitch')
     debouncedProcessAnswers()
   },
   { deep: true },
