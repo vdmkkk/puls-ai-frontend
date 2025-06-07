@@ -103,7 +103,7 @@ onMounted(() => {
     margin-bottom: var(--spacing-sm);
     margin-left: 50%;
     transform: translateX(-50%);
-    color: #4e4571;
+    color: #684485;
   }
 
   .description {

@@ -22,14 +22,14 @@ const emits = defineEmits(['click'])
   color: #fff;
   width: fit-content;
   border-radius: 10px;
-  background-color: #4e4571;
+  background-color: #684485;
   font-size: var(--font-size-xs);
   font-weight: 500;
   width: var(--spacing-xl) !important;
 }
 
 .fancy-btn:hover {
-  background-color: #625985;
+  background-color: #715488;
 }
 
 @media screen and (max-width: 576px) {

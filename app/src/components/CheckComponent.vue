@@ -28,6 +28,6 @@ const emit = defineEmits<{
 
 <style lang="scss" scoped>
 .q-checkbox ::v-deep .text-teal {
-  color: #4e4571 !important;
+  color: #684485 !important;
 }
 </style>

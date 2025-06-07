@@ -22,6 +22,13 @@
           @click="navigateTo('/profile')"
         />
       </div>
+      <DefaultButton
+        v-else
+        style="margin-bottom: var(--spacing-xs); align-self: start"
+        label="Сменить аккаунт"
+        @click="handleLogout"
+      />
+
       <div>
         <p class="subtitle">Ввести промокод</p>
         <div class="row" style="gap: var(--spacing-xs); margin-top: var(--spacing-sm)">
@@ -57,6 +64,7 @@ import InputComponent from 'src/components/InputComponent.vue'
 import usePayment from 'src/api/composables/usePayment'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import SubComponent from 'src/components/SubComponent.vue'
+import Cookies from 'js-cookie'
 
 const { getMe } = useProfile()
 const router = useRouter()
@@ -118,6 +126,12 @@ const createPayment = (key: string) => {
   })
 }
 
+const handleLogout = () => {
+  Cookies.remove('refresh_token')
+  Cookies.remove('atoken')
+  navigateTo('/login')
+}
+
 const load = () => {
   getMe()
     .then((res) => {
@@ -161,7 +175,7 @@ onMounted(() => {
     margin-bottom: var(--spacing-sm);
     margin-left: 50%;
     transform: translateX(-50%);
-    color: #4e4571;
+    color: #684485;
   }
 
   .description {

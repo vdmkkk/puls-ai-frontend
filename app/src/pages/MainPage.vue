@@ -146,8 +146,8 @@ const handlerSaveDialog = (answer: string) => {
   if (dialog.value.answerKey == 'tg') {
     apiSaveAccount({
       tg_channel_url: answer,
-      vk_channel_url: '',
-      vk_token: '',
+      vk_channel_url: null,
+      vk_token: null,
     }).then((res) => {
       if (res) {
         me.value.tg_channel_url = answer
@@ -164,7 +164,7 @@ const handlerSaveDialog = (answer: string) => {
     apiSaveAccount({
       vk_channel_url: answer.answer,
       vk_token: answer.code,
-      tg_channel_url: '',
+      tg_channel_url: null,
     }).then((res) => {
       if (res) {
         me.value.vk_channel_url = answer.answer
@@ -240,7 +240,7 @@ onMounted(() => {
     margin-bottom: var(--spacing-sm);
     margin-left: 50%;
     transform: translateX(-50%);
-    color: #4e4571;
+    color: #684485;
   }
 
   .description {

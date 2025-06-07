@@ -16,7 +16,7 @@
       >
         <div class="inputs-container column justify-between no-wrap" style="width: 50%">
           <div class="inputs">
-            <p class="subtitle">Режим</p>
+            <p class="subtitle">Тип поста</p>
             <q-btn-toggle
               v-model="type"
               class="btn-group"
@@ -459,7 +459,7 @@ const createImagePrompt = () => {
       margin-bottom: var(--spacing-sm);
       margin-left: 50%;
       transform: translateX(-50%);
-      color: #4e4571;
+      color: #684485;
     }
     .download-image {
       display: flex;
@@ -474,7 +474,7 @@ const createImagePrompt = () => {
           font-size: var(--font-size-xs);
           user-select: none;
         }
-        background-color: #4e4571;
+        background-color: #684485;
         border: 1px solid transparent;
         border-right-color: rgba(255, 255, 255, 0.5);
         border-top-left-radius: 10px;
@@ -568,13 +568,13 @@ const createImagePrompt = () => {
 }
 
 .q-btn-group ::v-deep .no-outline {
-  border: 1px solid #4e4571 !important;
+  border: 1px solid #684485 !important;
   width: var(--spacing-xl) !important;
   font-size: var(--font-size-xs);
 }
 
 .q-btn-group ::v-deep .bg-primary {
-  background-color: #4e4571 !important;
+  background-color: #684485 !important;
   border: 1px solid transparent !important;
   // border-top-left-radius: 10px !important;
   // border-bottom-left-radius: 10px !important;

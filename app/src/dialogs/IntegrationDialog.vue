@@ -69,7 +69,7 @@ const onSave = () => {
 <style lang="scss" scoped>
 .dialog-container {
   width: 90vw;
-  background-color: #4e4571;
+  background-color: #684485;
   border-radius: 10px;
   padding: var(--spacing-sm);
   padding-top: 30px;

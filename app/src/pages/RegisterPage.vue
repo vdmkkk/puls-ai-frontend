@@ -32,27 +32,26 @@
           :error-message="errorStore.errors.lastName ? errorStore.errorMessage : undefined"
           :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
         />
-        <div class="row no-wrap" :style="$q.screen.xs ? { width: '100%' } : {}">
-          <q-input
-            v-model="login"
-            :label="$t('email')"
-            style="width: 436px"
-            type="email"
-            color="deep-purple-8"
-            label-color="grey-1"
-            rounded
-            outlined
-            lazy-rules
-            :error="errorStore.errors.login"
-            :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
-            :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
-          />
-          <q-btn class="check" icon="check" @click="handlerVerify" size="sm" color="grey-1" outline>
-            <q-tooltip>
-              <a>{{ $t('verify') }}</a>
-            </q-tooltip>
-          </q-btn>
-        </div>
+        <q-input
+          v-model="login"
+          :label="$t('email')"
+          style="width: 500px"
+          type="email"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+          lazy-rules
+          :error="errorStore.errors.login"
+          :error-message="errorStore.errors.login ? errorStore.errorMessage : undefined"
+          :rules="[(val) => (val && val.length > 0) || $t('errors.required')]"
+        />
+        <FancyButtonComponent
+          style="margin-top: 6px; margin-bottom: 10px"
+          class="verif-btn"
+          :label="$t('verify')"
+          @click="handlerVerify"
+        />
         <q-input
           v-model="verificationCode"
           :label="$t('verificationCode')"
@@ -153,6 +152,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import logo from 'src/assets/svg/logo.svg'
 import BlobComponent from 'src/components/BlobComponent.vue'
+import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
 
 const { t } = useI18n()
 
@@ -269,7 +269,7 @@ const handlerRedirect = () => {
       margin-right: calc(var(--spacing-xxs) / 2px);
       height: calc(var(--font-size-title) - 4px);
     }
-    margin-bottom: 50px;
+    margin-bottom: 30px;
   }
 }
 
@@ -317,9 +317,25 @@ const handlerRedirect = () => {
   margin-left: 16px !important;
 }
 
+.verif-btn {
+  width: 400px !important;
+}
+
 @media screen and (max-width: 576px) {
   .q-input {
     width: 100% !important;
+  }
+
+  .app {
+    padding-top: 40px !important;
+  }
+
+  .title-container {
+    margin-bottom: 10px !important;
+  }
+
+  .verif-btn {
+    width: 90% !important;
   }
 
   .q-gutter-md {

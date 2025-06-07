@@ -295,18 +295,18 @@ onMounted(() => {
     margin-left: auto;
     margin-right: auto;
     margin-top: var(--spacing-xl);
-    color: #4e4571;
+    color: #684485;
   }
 }
 
 .q-btn-group ::v-deep .no-outline {
-  border: 1px solid #4e4571 !important;
+  border: 1px solid #684485 !important;
   width: var(--spacing-xl) !important;
   font-size: var(--font-size-xs);
 }
 
 .q-btn-group ::v-deep .bg-primary {
-  background-color: #4e4571 !important;
+  background-color: #684485 !important;
   border: 1px solid transparent !important;
 }
 
