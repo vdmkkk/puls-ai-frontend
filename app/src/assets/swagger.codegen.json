@@ -276,6 +276,15 @@
         "required": ["email"],
         "type": "object"
       },
+      "TariffResponse": {
+        "properties": {
+          "generations": { "example": 6, "type": "integer" },
+          "name": { "example": "Тестовый", "type": "string" },
+          "price": { "example": 1, "type": "integer" },
+          "tariff_id": { "example": 1, "type": "integer" }
+        },
+        "type": "object"
+      },
       "UpdatePostRequest": {
         "properties": {
           "image_urls": {
@@ -1135,7 +1144,7 @@
     },
     "/customize/save_account": {
       "post": {
-        "description": "Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK.\nЕсли данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`.\n",
+        "description": "Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK.\nЕсли обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно.\nЕсли данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`.\n",
         "operationId": "PostCustomizeSaveAccount",
         "requestBody": {
           "content": {
@@ -1272,9 +1281,37 @@
         "tags": ["payment"]
       }
     },
+    "/payment/disable_auto_payment": {
+      "post": {
+        "description": "Роут принимает access_token и refresh_token в заголовках. \nРоут отключает автосписание средств для пользователя, сделавшего этот запрос.\n",
+        "operationId": "PostPaymentDisableAutoPayment",
+        "responses": {
+          "204": { "description": "Автоматическое списание средств уже отменено" },
+          "401": {
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
+            },
+            "description": "Неавторизованный пользователь совершил запрос"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Отключение автосписания средств",
+        "tags": ["payment"]
+      }
+    },
     "/payment/use_promo": {
       "post": {
-        "description": "Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках.\nЕсли промокод валиден, он применяется к текущему заказу пользователя.\nЕсли промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`.\n",
+        "description": "Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках.\nЕсли промокод валиден, он применяется к текущему заказу пользователя и возвращаются тарифы с измененной ценой, если промокод со скидкой, иначе ничего.\nЕсли промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`.\n",
         "operationId": "PostPaymentUsePromo",
         "requestBody": {
           "content": {
@@ -1287,19 +1324,14 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "properties": {
-                    "discount": {
-                      "description": "Размер скидки в процентах",
-                      "example": 10,
-                      "type": "integer"
-                    }
-                  },
-                  "type": "object"
+                  "items": { "$ref": "#/components/schemas/TariffResponse" },
+                  "type": "array"
                 }
               }
             },
-            "description": "Промокод успешно применен"
+            "description": "Промокод успешно применен, скидки применены"
           },
+          "204": { "description": "Промокод успешно применен" },
           "400": {
             "content": {
               "application/json": { "schema": { "$ref": "#/components/schemas/BadRequest" } }
@@ -1418,6 +1450,38 @@
         },
         "summary": "Отправить код подтверждения на email",
         "tags": ["auth"]
+      }
+    },
+    "/tariffs/available": {
+      "get": {
+        "description": "Роут принимает access_token и refresh_token в заголовках.\nРоут возвращает массив тарифов, которые доступны для юзера (если он оплатил тестовый, то тестового больше не будет)\n",
+        "operationId": "GetTariffsAvailable",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "$ref": "#/components/schemas/TariffResponse" },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Все тарифы успешно получены"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": { "error": { "description": "Описание ошибки", "type": "string" } },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервера"
+          }
+        },
+        "summary": "Получить доступные для пользователя тарифы",
+        "tags": ["tariffs"]
       }
     },
     "/webhook": {

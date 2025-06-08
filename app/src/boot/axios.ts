@@ -9,6 +9,7 @@ import {
   ProfileApi,
   PostsApi,
   FilesApi,
+  TariffsApi,
 } from 'src/api'
 import { PaymentApi } from 'src/api'
 import Cookies from 'js-cookie'
@@ -38,6 +39,7 @@ const apiInstances = {
   contentApi: new ContentApi(config),
   postsApi: new PostsApi(config),
   filesApi: new FilesApi(config),
+  tariffsApi: new TariffsApi(config),
 }
 
 apiInstances.authApi.axios.interceptors.request.use(

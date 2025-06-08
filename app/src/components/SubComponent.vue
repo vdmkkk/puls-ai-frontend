@@ -2,13 +2,13 @@
   <div class="card-container">
     <!-- Header (title + gens) -->
     <div class="card-header">
-      <p class="title">{{ subs[chosenSub]?.title }}</p>
+      <p class="title">{{ subs[chosenSub]?.name }}</p>
       <p class="gens">
-        {{ subs[chosenSub]?.gens }}
+        {{ subs[chosenSub]?.generations }}
         <img :src="boltIcon" alt="bolt icon" /> генераций
       </p>
       <ul class="feature-list">
-        <li v-for="(feature, index) in subs[chosenSub]?.desc.split(', ')" :key="index">
+        <li v-for="(feature, index) in subs[chosenSub]?.description?.split(', ')" :key="index">
           {{ feature }}
         </li>
       </ul>
@@ -21,10 +21,10 @@
     <div class="card-footer">
       <!-- Price row -->
       <div class="price-row">
-        <span class="new-price"> {{ subs[chosenSub]?.cost }} ₽/мес </span>
+        <span class="new-price"> {{ subs[chosenSub]?.price }} ₽/мес </span>
         <!-- Display oldCost only if it exists (Мастер plan, etc.) -->
-        <span v-if="subs[chosenSub]?.oldCost" class="old-price">
-          {{ subs[chosenSub]?.oldCost }} ₽/мес
+        <span v-if="subs[chosenSub]?.oldPrice" class="old-price">
+          {{ subs[chosenSub]?.oldPrice }} ₽/мес
         </span>
       </div>
 
@@ -39,46 +39,48 @@
 import usePayment from 'src/api/composables/usePayment'
 import boltIcon from 'src/assets/icons/energy.svg'
 import DefaultButton from './DefaultButton.vue'
+import { TariffResponse } from 'src/api'
 
 const { chosenSub } = defineProps<{
   chosenSub: string
+  subs: Record<string, TariffResponse>
 }>()
 
-const subs = {
-  '1': {
-    title: 'Пробный тариф',
-    days: '7',
-    gens: '6',
-    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
-    cost: '1', // No oldCost => no strike-through
-  },
-  '2': {
-    title: 'Старт',
-    days: '30',
-    gens: '14',
-    // Keep desc a comma-separated string
-    desc: 'создание фото, создание текста поста',
-    cost: '690', // No oldCost => no strike-through,
-    oldCost: '990', // Old price to display as strikethrough
-  },
-  '3': {
-    title: 'Прорыв',
-    days: '30',
-    gens: '28',
-    desc: 'создание фото, создание текста поста, контент-план',
-    cost: '1590', // No oldCost => no strike-through
-    oldCost: '2490', // Old price to display as strikethrough
-  },
-  '4': {
-    title: 'Мастер',
-    days: '30',
-    gens: '40',
-    // We’ll split these into bullet points in the template
-    desc: 'создание фото, создание текста поста, контент-план, автопостинг',
-    cost: '2490', // New discounted price
-    oldCost: '3990', // Old price to display as strikethrough
-  },
-}
+// const subs = {
+//   '1': {
+//     title: 'Пробный тариф',
+//     days: '7',
+//     gens: '6',
+//     desc: 'создание фото, создание текста поста, контент-план, автопостинг',
+//     cost: '1', // No oldCost => no strike-through
+//   },
+//   '2': {
+//     title: 'Старт',
+//     days: '30',
+//     gens: '14',
+//     // Keep desc a comma-separated string
+//     desc: 'создание фото, создание текста поста',
+//     cost: '690', // No oldCost => no strike-through,
+//     oldCost: '990', // Old price to display as strikethrough
+//   },
+//   '3': {
+//     title: 'Прорыв',
+//     days: '30',
+//     gens: '28',
+//     desc: 'создание фото, создание текста поста, контент-план',
+//     cost: '1590',
+//     oldCost: '2490',
+//   },
+//   '4': {
+//     title: 'Мастер',
+//     days: '30',
+//     gens: '40',
+//     // We’ll split these into bullet points in the template
+//     desc: 'создание фото, создание текста поста, контент-план, автопостинг',
+//     cost: '2490', // New discounted price
+//     oldCost: '3990', // Old price to display as strikethrough
+//   },
+// }
 
 const { apiCreatePayment } = usePayment()
 

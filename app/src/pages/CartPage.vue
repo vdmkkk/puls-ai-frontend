@@ -37,7 +37,7 @@
       <div>
         <p class="subtitle">Выбранная подписка</p>
         <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
-          <SubComponent :chosenSub="chosenSub" />
+          <SubComponent :chosenSub="chosenSub" :subs="subs" />
         </div>
         <DefaultButton
           style="margin-top: var(--spacing-xs)"
@@ -63,8 +63,10 @@ import usePayment from 'src/api/composables/usePayment'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import Cookies from 'js-cookie'
 import SubComponent from 'src/components/SubComponent.vue'
+import useTariffs from 'src/api/composables/useTariffs'
 
 const { getMe } = useProfile()
+const { getRates } = useTariffs()
 const router = useRouter()
 const loading = ref(false)
 const chosenSub = ref('2')
@@ -73,7 +75,7 @@ const me = ref()
 
 const promo = ref('')
 
-const subs = {
+const subs = ref({
   '1': {
     title: 'Пробный тариф',
     days: '7',
@@ -102,7 +104,7 @@ const subs = {
     desc: 'создание фото, создание текста поста, контент-план, автопостинг',
     cost: '2490',
   },
-}
+})
 
 const { apiUsePromocode, apiCreatePayment } = usePayment()
 
@@ -149,6 +151,12 @@ onMounted(() => {
   }
   loading.value = true
   load()
+  getRates().then((res) => {
+    subs.value = {}
+    res!.forEach((tariff) => {
+      subs.value[tariff.tariff_id] = { ...tariff }
+    })
+  })
 })
 </script>
 

@@ -412,19 +412,6 @@ export interface PostContentTranscribe200Response {
 /**
  * 
  * @export
- * @interface PostPaymentUsePromo200Response
- */
-export interface PostPaymentUsePromo200Response {
-    /**
-     * Размер скидки в процентах
-     * @type {number}
-     * @memberof PostPaymentUsePromo200Response
-     */
-    'discount'?: number;
-}
-/**
- * 
- * @export
  * @interface RegisterRequest
  */
 export interface RegisterRequest {
@@ -540,6 +527,37 @@ export interface SendLinkRequest {
      * @memberof SendLinkRequest
      */
     'email': string;
+}
+/**
+ * 
+ * @export
+ * @interface TariffResponse
+ */
+export interface TariffResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof TariffResponse
+     */
+    'generations'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TariffResponse
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TariffResponse
+     */
+    'price'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TariffResponse
+     */
+    'tariff_id'?: number;
 }
 /**
  * 
@@ -2047,7 +2065,7 @@ export const CustomizeApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
-         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение данных аккаунта
          * @param {SaveAccountRequest} saveAccountRequest 
          * @param {*} [options] Override http request option.
@@ -2154,7 +2172,7 @@ export const CustomizeApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение данных аккаунта
          * @param {SaveAccountRequest} saveAccountRequest 
          * @param {*} [options] Override http request option.
@@ -2209,7 +2227,7 @@ export const CustomizeApiFactory = function (configuration?: Configuration, base
             return localVarFp.postCustomizeGetProfileFromUrl(getProfileFromUrlRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение данных аккаунта
          * @param {SaveAccountRequest} saveAccountRequest 
          * @param {*} [options] Override http request option.
@@ -2262,7 +2280,7 @@ export class CustomizeApi extends BaseAPI {
     }
 
     /**
-     * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+     * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
      * @summary Сохранение данных аккаунта
      * @param {SaveAccountRequest} saveAccountRequest 
      * @param {*} [options] Override http request option.
@@ -2547,7 +2565,37 @@ export const PaymentApiAxiosParamCreator = function (configuration?: Configurati
             };
         },
         /**
-         * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает access_token и refresh_token в заголовках.  Роут отключает автосписание средств для пользователя, сделавшего этот запрос. 
+         * @summary Отключение автосписания средств
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postPaymentDisableAutoPayment: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/payment/disable_auto_payment`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя и возвращаются тарифы с измененной ценой, если промокод со скидкой, иначе ничего. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
          * @summary Использование промокода
          * @param {UsePromoRequest} usePromoRequest 
          * @param {*} [options] Override http request option.
@@ -2606,13 +2654,25 @@ export const PaymentApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает access_token и refresh_token в заголовках.  Роут отключает автосписание средств для пользователя, сделавшего этот запрос. 
+         * @summary Отключение автосписания средств
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async postPaymentDisableAutoPayment(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.postPaymentDisableAutoPayment(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PaymentApi.postPaymentDisableAutoPayment']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя и возвращаются тарифы с измененной ценой, если промокод со скидкой, иначе ничего. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
          * @summary Использование промокода
          * @param {UsePromoRequest} usePromoRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postPaymentUsePromo(usePromoRequest: UsePromoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostPaymentUsePromo200Response>> {
+        async postPaymentUsePromo(usePromoRequest: UsePromoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TariffResponse>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.postPaymentUsePromo(usePromoRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PaymentApi.postPaymentUsePromo']?.[localVarOperationServerIndex]?.url;
@@ -2639,13 +2699,22 @@ export const PaymentApiFactory = function (configuration?: Configuration, basePa
             return localVarFp.postPaymentCreatePayment(createPaymentRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает access_token и refresh_token в заголовках.  Роут отключает автосписание средств для пользователя, сделавшего этот запрос. 
+         * @summary Отключение автосписания средств
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        postPaymentDisableAutoPayment(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.postPaymentDisableAutoPayment(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя и возвращаются тарифы с измененной ценой, если промокод со скидкой, иначе ничего. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
          * @summary Использование промокода
          * @param {UsePromoRequest} usePromoRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postPaymentUsePromo(usePromoRequest: UsePromoRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostPaymentUsePromo200Response> {
+        postPaymentUsePromo(usePromoRequest: UsePromoRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<TariffResponse>> {
             return localVarFp.postPaymentUsePromo(usePromoRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -2671,7 +2740,18 @@ export class PaymentApi extends BaseAPI {
     }
 
     /**
-     * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
+     * Роут принимает access_token и refresh_token в заголовках.  Роут отключает автосписание средств для пользователя, сделавшего этот запрос. 
+     * @summary Отключение автосписания средств
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PaymentApi
+     */
+    public postPaymentDisableAutoPayment(options?: RawAxiosRequestConfig) {
+        return PaymentApiFp(this.configuration).postPaymentDisableAutoPayment(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Роут принимает промокод в теле запроса и access_token, refresh_token в заголовках. Если промокод валиден, он применяется к текущему заказу пользователя и возвращаются тарифы с измененной ценой, если промокод со скидкой, иначе ничего. Если промокод невалиден или токены недействительны, возвращается ошибка `400 Bad Request`. 
      * @summary Использование промокода
      * @param {UsePromoRequest} usePromoRequest 
      * @param {*} [options] Override http request option.
@@ -2891,6 +2971,107 @@ export class ProfileApi extends BaseAPI {
      */
     public getProfileGetAllUserInfo(options?: RawAxiosRequestConfig) {
         return ProfileApiFp(this.configuration).getProfileGetAllUserInfo(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * TariffsApi - axios parameter creator
+ * @export
+ */
+export const TariffsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках. Роут возвращает массив тарифов, которые доступны для юзера (если он оплатил тестовый, то тестового больше не будет) 
+         * @summary Получить доступные для пользователя тарифы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTariffsAvailable: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/tariffs/available`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TariffsApi - functional programming interface
+ * @export
+ */
+export const TariffsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TariffsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках. Роут возвращает массив тарифов, которые доступны для юзера (если он оплатил тестовый, то тестового больше не будет) 
+         * @summary Получить доступные для пользователя тарифы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTariffsAvailable(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TariffResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTariffsAvailable(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TariffsApi.getTariffsAvailable']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TariffsApi - factory interface
+ * @export
+ */
+export const TariffsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TariffsApiFp(configuration)
+    return {
+        /**
+         * Роут принимает access_token и refresh_token в заголовках. Роут возвращает массив тарифов, которые доступны для юзера (если он оплатил тестовый, то тестового больше не будет) 
+         * @summary Получить доступные для пользователя тарифы
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTariffsAvailable(options?: RawAxiosRequestConfig): AxiosPromise<Array<TariffResponse>> {
+            return localVarFp.getTariffsAvailable(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TariffsApi - object-oriented interface
+ * @export
+ * @class TariffsApi
+ * @extends {BaseAPI}
+ */
+export class TariffsApi extends BaseAPI {
+    /**
+     * Роут принимает access_token и refresh_token в заголовках. Роут возвращает массив тарифов, которые доступны для юзера (если он оплатил тестовый, то тестового больше не будет) 
+     * @summary Получить доступные для пользователя тарифы
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TariffsApi
+     */
+    public getTariffsAvailable(options?: RawAxiosRequestConfig) {
+        return TariffsApiFp(this.configuration).getTariffsAvailable(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

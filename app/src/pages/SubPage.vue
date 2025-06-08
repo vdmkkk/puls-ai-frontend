@@ -8,10 +8,10 @@
       <div v-if="me?.days_left > 0">
         <p class="subtitle">Текущая подписка</p>
         <div class="container">
-          <p class="title">{{ subs[me?.tariff]?.title }}</p>
+          <p class="title">{{ subs[me?.tariff]?.name }}</p>
           <p class="description">
             осталось
-            {{ me?.gen_point_amount }}/{{ subs[me?.tariff]?.gens }}
+            {{ me?.gen_point_amount }}/{{ subs[me?.tariff]?.generations }}
             <img style="vertical-align: sub" :src="boltIcon" /> генераций
           </p>
           <p class="description">осталось {{ me?.days_left }} дней подписки</p>
@@ -44,7 +44,7 @@
       <div>
         <p class="subtitle">Приобрести подписку</p>
         <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
-          <SubComponent v-for="(sub, key) in subs" :key="key" :chosenSub="key" />
+          <SubComponent v-for="(sub, key) in subs" :subs="subs" :key="key" :chosenSub="key" />
         </div>
       </div>
     </div>
@@ -65,6 +65,7 @@ import usePayment from 'src/api/composables/usePayment'
 import DefaultButton from 'src/components/DefaultButton.vue'
 import SubComponent from 'src/components/SubComponent.vue'
 import Cookies from 'js-cookie'
+import useTariffs from 'src/api/composables/useTariffs'
 
 const { getMe } = useProfile()
 const router = useRouter()
@@ -74,7 +75,9 @@ const me = ref()
 
 const promo = ref('')
 
-const subs = {
+const { getRates } = useTariffs()
+
+const subs = ref({
   '1': {
     title: 'Пробный тариф',
     days: '7',
@@ -103,7 +106,7 @@ const subs = {
     desc: 'создание фото, создание текста поста, контент-план, автопостинг',
     cost: '2490',
   },
-}
+})
 
 const { apiUsePromocode, apiCreatePayment } = usePayment()
 
@@ -149,6 +152,13 @@ const navigateTo = (path: string) => {
 onMounted(() => {
   loading.value = true
   load()
+  getRates().then((res) => {
+    subs.value = {}
+    res!.forEach((tariff) => {
+      subs.value[tariff.tariff_id] = { ...tariff }
+    })
+    console.log(subs.value)
+  })
 })
 </script>
 
