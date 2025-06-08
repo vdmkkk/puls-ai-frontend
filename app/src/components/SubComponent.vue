@@ -23,8 +23,8 @@
       <div class="price-row">
         <span class="new-price"> {{ subs[chosenSub]?.price }} ₽/мес </span>
         <!-- Display oldCost only if it exists (Мастер plan, etc.) -->
-        <span v-if="subs[chosenSub]?.oldPrice" class="old-price">
-          {{ subs[chosenSub]?.oldPrice }} ₽/мес
+        <span v-if="subs[chosenSub]?.old_price" class="old-price">
+          {{ subs[chosenSub]?.old_price }} ₽/мес
         </span>
       </div>
 
