@@ -15,6 +15,15 @@
             <img style="vertical-align: sub" :src="boltIcon" /> генераций
           </p>
           <p class="description">осталось {{ me?.days_left }} дней подписки</p>
+          <p class="description">Автосписание включается автоматически при оплате подписки</p>
+          <FancyButtonComponent
+            style="width: max-content !important"
+            label="Отключить автосписание"
+            :disabled="!me?.is_with_auto_payment"
+            @click="handleDisableAutoPayment"
+          >
+            <q-tooltip v-if="!me?.is_with_auto_payment">Автосписание отключено</q-tooltip>
+          </FancyButtonComponent>
         </div>
         <DefaultButton
           style="margin-top: var(--spacing-xs)"
@@ -106,7 +115,13 @@ const subs = ref({
   },
 })
 
-const { apiUsePromocode, apiCreatePayment } = usePayment()
+const { apiUsePromocode, apiCreatePayment, apiDisableAutoPayment } = usePayment()
+
+const handleDisableAutoPayment = () => {
+  apiDisableAutoPayment().then(() => {
+    load()
+  })
+}
 
 const applyPromo = () => {
   apiUsePromocode(promo.value).then((res) => {
