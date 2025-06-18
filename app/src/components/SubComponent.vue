@@ -30,7 +30,11 @@
 
       <!-- Button -->
       <!-- You can keep the dynamic cost label, or set a static label like "Получить" -->
-      <DefaultButton class="default-btn" label="Купить" @click="createPayment(chosenSub)" />
+      <DefaultButton
+        class="default-btn"
+        label="Купить"
+        @click="createPayment(subs[chosenSub]?.tariff_id)"
+      />
     </div>
   </div>
 </template>

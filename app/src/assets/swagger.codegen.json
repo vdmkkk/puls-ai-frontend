@@ -119,8 +119,22 @@
       },
       "GetPostByIdRequest": {
         "properties": {
-          "post_id": { "description": "id поста", "example": "1", "type": "integer" }
+          "platforms": {
+            "items": {
+              "description": "название соцсети (значения: vk, tg, instagram)",
+              "example": "tg",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "post_id": { "description": "id поста", "example": "1", "type": "integer" },
+          "time": {
+            "description": "время публикации в RFC3339 (null, если сейчас)",
+            "example": "2006-01-02T15:04:05Z07:00",
+            "type": "string"
+          }
         },
+        "required": ["post_id", "platforms"],
         "type": "object"
       },
       "GetProfileFromAnswersRequest": {
@@ -213,13 +227,31 @@
           "first_name": { "example": "Иван", "type": "string" },
           "last_name": { "example": "Иванов", "type": "string" },
           "password": { "example": "password123", "type": "string" },
+          "tg_account": { "example": "https://t.me/example_user", "type": "string" },
           "verification_code": { "example": 123456, "format": "int64", "type": "integer" }
         },
-        "required": ["first_name", "last_name", "email", "password", "verification_code"],
+        "required": [
+          "first_name",
+          "last_name",
+          "email",
+          "password",
+          "verification_code",
+          "tg_account"
+        ],
         "type": "object"
       },
       "SaveAccountRequest": {
         "properties": {
+          "inst_login": {
+            "description": "Логин для инстаграм аккаунта",
+            "example": "aboba",
+            "type": "string"
+          },
+          "inst_password": {
+            "description": "Пароль для инстаграм аккаунта",
+            "example": "aboba",
+            "type": "string"
+          },
           "tg_channel_url": {
             "description": "URL телеграм-канала",
             "example": "https://t.me/example_channel",
@@ -278,8 +310,14 @@
       },
       "TariffResponse": {
         "properties": {
+          "days": { "example": 30, "type": "integer" },
+          "description": {
+            "example": "создание фото, создание текста поста, контент-план, автопостинг",
+            "type": "string"
+          },
           "generations": { "example": 6, "type": "integer" },
-          "name": { "example": "Тестовый", "type": "string" },
+          "name": { "example": "Пробный тариф", "type": "string" },
+          "old_price": { "type": "integer" },
           "price": { "example": 1, "type": "integer" },
           "tariff_id": { "example": 1, "type": "integer" }
         },
@@ -1144,7 +1182,7 @@
     },
     "/customize/save_account": {
       "post": {
-        "description": "Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK.\nЕсли обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно.\nЕсли данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`.\n",
+        "description": "Роут принимает в теле запроса данные для сохранения аккаунта.\nЕсли обновляется телеграм, то VK-поля и Instagram-поля должны быть null, ну и наоборот соответственно.\nЕсли данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`.\n",
         "operationId": "PostCustomizeSaveAccount",
         "requestBody": {
           "content": {

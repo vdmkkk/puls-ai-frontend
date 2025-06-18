@@ -113,6 +113,12 @@ const applyPromo = () => {
     if (res) {
       load()
       promo.value = ''
+      getRates().then((res) => {
+        subs.value = {}
+        res!.forEach((tariff) => {
+          subs.value[tariff.tariff_id] = { ...tariff }
+        })
+      })
       //   navigateTo('/profile')
     }
   })

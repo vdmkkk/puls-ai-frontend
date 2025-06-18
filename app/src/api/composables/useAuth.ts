@@ -29,6 +29,7 @@ export default function useAuth() {
     email: string,
     password: string,
     verificationCode: number,
+    tg_account: string | null = null,
   ) => {
     return await apiInstances.authApi
       .postAuthRegister({
@@ -37,6 +38,7 @@ export default function useAuth() {
         email,
         password,
         verification_code: verificationCode,
+        tg_account,
       })
       .then(async (res) => {
         return await apiLogin(email, password)

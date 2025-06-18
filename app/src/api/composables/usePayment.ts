@@ -46,5 +46,27 @@ export default function usePayment() {
       })
   }
 
-  return { apiUsePromocode, apiCreatePayment }
+  const apiDisableAutoPayment = async () => {
+    return await apiInstances.paymentApi
+      .postPaymentDisableAutoPayment()
+      .then((res) => {
+        Notify.create({
+          message: 'Автосписание отключено',
+          position: 'top',
+          color: 'positive',
+        })
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+        Notify.create({
+          message: 'Произошла неизвестная ошибка',
+          position: 'top',
+          color: 'negative',
+        })
+      })
+  }
+
+  return { apiUsePromocode, apiCreatePayment, apiDisableAutoPayment }
 }

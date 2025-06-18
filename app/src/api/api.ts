@@ -212,11 +212,23 @@ export interface GetAuthGetUserId200Response {
  */
 export interface GetPostByIdRequest {
     /**
+     * 
+     * @type {Array<string>}
+     * @memberof GetPostByIdRequest
+     */
+    'platforms': Array<string>;
+    /**
      * id поста
      * @type {number}
      * @memberof GetPostByIdRequest
      */
-    'post_id'?: number;
+    'post_id': number;
+    /**
+     * время публикации в RFC3339 (null, если сейчас)
+     * @type {string}
+     * @memberof GetPostByIdRequest
+     */
+    'time'?: string;
 }
 /**
  * 
@@ -441,6 +453,12 @@ export interface RegisterRequest {
     'password': string;
     /**
      * 
+     * @type {string}
+     * @memberof RegisterRequest
+     */
+    'tg_account': string;
+    /**
+     * 
      * @type {number}
      * @memberof RegisterRequest
      */
@@ -452,6 +470,18 @@ export interface RegisterRequest {
  * @interface SaveAccountRequest
  */
 export interface SaveAccountRequest {
+    /**
+     * Логин для инстаграм аккаунта
+     * @type {string}
+     * @memberof SaveAccountRequest
+     */
+    'inst_login'?: string;
+    /**
+     * Пароль для инстаграм аккаунта
+     * @type {string}
+     * @memberof SaveAccountRequest
+     */
+    'inst_password'?: string;
     /**
      * URL телеграм-канала
      * @type {string}
@@ -539,6 +569,18 @@ export interface TariffResponse {
      * @type {number}
      * @memberof TariffResponse
      */
+    'days'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TariffResponse
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TariffResponse
+     */
     'generations'?: number;
     /**
      * 
@@ -546,6 +588,12 @@ export interface TariffResponse {
      * @memberof TariffResponse
      */
     'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TariffResponse
+     */
+    'old_price'?: number;
     /**
      * 
      * @type {number}
@@ -2065,7 +2113,7 @@ export const CustomizeApiAxiosParamCreator = function (configuration?: Configura
             };
         },
         /**
-         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает в теле запроса данные для сохранения аккаунта. Если обновляется телеграм, то VK-поля и Instagram-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение данных аккаунта
          * @param {SaveAccountRequest} saveAccountRequest 
          * @param {*} [options] Override http request option.
@@ -2172,7 +2220,7 @@ export const CustomizeApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает в теле запроса данные для сохранения аккаунта. Если обновляется телеграм, то VK-поля и Instagram-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение данных аккаунта
          * @param {SaveAccountRequest} saveAccountRequest 
          * @param {*} [options] Override http request option.
@@ -2227,7 +2275,7 @@ export const CustomizeApiFactory = function (configuration?: Configuration, base
             return localVarFp.postCustomizeGetProfileFromUrl(getProfileFromUrlRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+         * Роут принимает в теле запроса данные для сохранения аккаунта. Если обновляется телеграм, то VK-поля и Instagram-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
          * @summary Сохранение данных аккаунта
          * @param {SaveAccountRequest} saveAccountRequest 
          * @param {*} [options] Override http request option.
@@ -2280,7 +2328,7 @@ export class CustomizeApi extends BaseAPI {
     }
 
     /**
-     * Роут принимает в теле запроса данные для сохранения аккаунта, включая URL телеграм-канала, URL VK-канала и токен VK. Если обновляется телеграм, то VK-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
+     * Роут принимает в теле запроса данные для сохранения аккаунта. Если обновляется телеграм, то VK-поля и Instagram-поля должны быть null, ну и наоборот соответственно. Если данные невалидны или отсутствуют обязательные поля, возвращается ошибка `400 Bad Request`. 
      * @summary Сохранение данных аккаунта
      * @param {SaveAccountRequest} saveAccountRequest 
      * @param {*} [options] Override http request option.

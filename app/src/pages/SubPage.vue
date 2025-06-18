@@ -15,6 +15,15 @@
             <img style="vertical-align: sub" :src="boltIcon" /> генераций
           </p>
           <p class="description">осталось {{ me?.days_left }} дней подписки</p>
+          <p class="description">Автосписание включается автоматически при оплате подписки</p>
+          <FancyButtonComponent
+            style="width: max-content !important"
+            label="Отключить автосписание"
+            :disabled="!me?.is_with_auto_payment"
+            @click="handleDisableAutoPayment"
+          >
+            <q-tooltip v-if="!me?.is_with_auto_payment">Автосписание отключено</q-tooltip>
+          </FancyButtonComponent>
         </div>
         <DefaultButton
           style="margin-top: var(--spacing-xs)"
@@ -108,13 +117,19 @@ const subs = ref({
   },
 })
 
-const { apiUsePromocode, apiCreatePayment } = usePayment()
+const { apiUsePromocode, apiCreatePayment, apiDisableAutoPayment } = usePayment()
 
 const applyPromo = () => {
   apiUsePromocode(promo.value).then((res) => {
     if (res) {
       load()
       promo.value = ''
+      getRates().then((res) => {
+        subs.value = {}
+        res!.forEach((tariff) => {
+          subs.value[tariff.tariff_id] = { ...tariff }
+        })
+      })
       //   navigateTo('/profile')
     }
   })
@@ -133,6 +148,12 @@ const handleLogout = () => {
   Cookies.remove('refresh_token')
   Cookies.remove('atoken')
   navigateTo('/login')
+}
+
+const handleDisableAutoPayment = () => {
+  apiDisableAutoPayment().then(() => {
+    load()
+  })
 }
 
 const load = () => {
@@ -157,7 +178,6 @@ onMounted(() => {
     res!.forEach((tariff) => {
       subs.value[tariff.tariff_id] = { ...tariff }
     })
-    console.log(subs.value)
   })
 })
 </script>

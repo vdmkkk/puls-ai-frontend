@@ -119,6 +119,15 @@
               @click="showPasswordAgain = !showPasswordAgain"
             /> </template
         ></q-input>
+        <q-input
+          v-model="tgAccount"
+          label="Ссылка на аккаунт в Telegram"
+          style="width: 500px"
+          color="deep-purple-8"
+          label-color="grey-1"
+          rounded
+          outlined
+        />
 
         <q-btn
           :label="$t('register')"
@@ -165,6 +174,7 @@ const login = ref<string>('')
 const password = ref<string>('')
 const againPassword = ref<string>('')
 const verificationCode = ref<string>('')
+const tgAccount = ref<string>('')
 
 const errorStore = useErrorStore()
 
@@ -222,25 +232,27 @@ const handlerLogin = () => {
     Notify.create({ message: t('errors.verificationFailed'), color: 'negative', position: 'top' })
     return
   }
-  apiRegister(name.value, lastName.value, login.value, password.value, verif).then((e) => {
-    if (!e) {
-      router.push('/')
-    } else {
-      if (e.response?.data?.user_message) {
-        Notify.create({
-          message: e.response?.data?.user_message,
-          position: 'top',
-          color: 'negative',
-        })
+  apiRegister(name.value, lastName.value, login.value, password.value, verif, tgAccount.value).then(
+    (e) => {
+      if (!e) {
+        router.push('/')
       } else {
-        Notify.create({
-          message: t('errors.errorOnAuth'),
-          position: 'top',
-          color: 'negative',
-        })
+        if (e.response?.data?.user_message) {
+          Notify.create({
+            message: e.response?.data?.user_message,
+            position: 'top',
+            color: 'negative',
+          })
+        } else {
+          Notify.create({
+            message: t('errors.errorOnAuth'),
+            position: 'top',
+            color: 'negative',
+          })
+        }
       }
-    }
-  })
+    },
+  )
 }
 
 const handlerRedirect = () => {

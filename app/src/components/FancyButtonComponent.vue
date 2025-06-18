@@ -6,7 +6,9 @@
     class="fancy-btn"
     style="align-self: center"
     @click="emits('click')"
-  />
+  >
+    <slot />
+  </q-btn>
 </template>
 
 <script setup lang="ts">
