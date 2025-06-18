@@ -48,6 +48,17 @@ export default function useContent() {
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
+        if (
+          e.response?.data.Message ==
+          'Get User Answers: could not get customize answers: sql: no rows in result set'
+        ) {
+          console.log('caught')
+          Notify.create({
+            message: 'Пожалуйста, заполните данные о себе в профиле',
+            position: 'top',
+            color: 'negative',
+          })
+        }
       })
   }
 

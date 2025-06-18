@@ -37,6 +37,10 @@
               @update:model-value="prompt = $event"
             />
             <p class="subtitle">Дополнительная информация</p>
+            <p class="description">
+              Здесь вы можете написать свои пожелания к содержанию поста: раскрытие определенных
+              тем, кейсы своих клиентов
+            </p>
             <InputComponent
               :model-value="additions"
               style="font-size: var(--font-size-sm)"
@@ -434,6 +438,11 @@ const createImagePrompt = () => {
   padding-right: var(--spacing-sm);
   // background-color: #12121b;
 
+  .description {
+    font-size: var(--font-size-xs);
+    color: #b8b8b8;
+  }
+
   .header {
     margin-top: var(--spacing-sm);
     margin-bottom: var(--spacing-sm);
@@ -590,15 +599,23 @@ const createImagePrompt = () => {
   border-bottom-left-radius: 10px !important;
 }
 
+.q-select {
+  height: 38.58px !important;
+}
+
 .q-select ::v-deep .q-field__control {
   background-color: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 10px !important;
+  height: 38.58px !important;
+  min-height: 38.58px !important;
 }
 
 .q-select ::v-deep .q-field__native {
   color: white;
   font-size: var(--font-size-xs);
+  height: 38.58px !important;
+  min-height: 38.58px !important;
 }
 
 :global(.q-menu) {
@@ -611,6 +628,9 @@ const createImagePrompt = () => {
 }
 
 @media screen and (max-width: 576px) {
+  .description {
+    font-size: var(--font-size-sm) !important;
+  }
   .posts-grid {
     grid-template-columns: 1fr !important;
     gap: var(--spacing-sm) !important;
@@ -647,9 +667,20 @@ const createImagePrompt = () => {
     font-size: var(--font-size-sm);
   }
 
+  .q-select {
+    height: 33.42px !important;
+  }
+
+  .q-select ::v-deep .q-field__control {
+    height: 33.42px !important;
+    min-height: 33.42px !important;
+  }
+
   .q-select ::v-deep .q-field__native {
     color: white;
     font-size: var(--font-size-sm);
+    height: 33.42px !important;
+    min-height: 33.42px !important;
   }
 }
 </style>

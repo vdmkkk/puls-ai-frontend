@@ -48,6 +48,10 @@
               ]"
             />
             <p class="subtitle">Дополнительная информация</p>
+            <p class="description">
+              Здесь вы можете написать свои пожелания к содержанию поста: раскрытие определенных
+              тем, кейсы своих клиентов
+            </p>
             <q-spinner-puff
               style="margin: var(--spacing-sm) auto"
               color="primary"
@@ -519,6 +523,11 @@ onMounted(() => {
     // width: 60%;
   }
 
+  .description {
+    font-size: var(--font-size-xs);
+    color: #b8b8b8;
+  }
+
   .copy {
     background-color: rgba(255, 255, 255, 0.1);
     // margin-left: var(--spacing-sm);
@@ -697,15 +706,23 @@ onMounted(() => {
   border-bottom-left-radius: 10px !important;
 }
 
+.q-select {
+  height: 38.58px !important;
+}
+
 .q-select ::v-deep .q-field__control {
   background-color: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 10px !important;
+  height: 38.58px !important;
+  min-height: 38.58px !important;
 }
 
 .q-select ::v-deep .q-field__native {
   color: white;
   font-size: var(--font-size-xs);
+  height: 38.58px !important;
+  min-height: 38.58px !important;
 }
 
 :global(.q-menu) {
@@ -723,6 +740,9 @@ onMounted(() => {
 }
 
 @media screen and (max-width: 576px) {
+  .description {
+    font-size: var(--font-size-sm) !important;
+  }
   .posts-grid {
     grid-template-columns: 1fr !important;
     gap: var(--spacing-sm) !important;
@@ -763,9 +783,20 @@ onMounted(() => {
     font-size: var(--font-size-sm);
   }
 
+  .q-select {
+    height: 33.42px !important;
+  }
+
+  .q-select ::v-deep .q-field__control {
+    height: 33.42px !important;
+    min-height: 33.42px !important;
+  }
+
   .q-select ::v-deep .q-field__native {
     color: white;
     font-size: var(--font-size-sm);
+    height: 33.42px !important;
+    min-height: 33.42px !important;
   }
 
   .fancy-btn {
