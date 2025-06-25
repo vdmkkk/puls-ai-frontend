@@ -9,12 +9,18 @@
       </div>
 
       <div>
-        <p v-if="date" class="date">{{ date }}</p>
+        <p v-if="date" class="date">{{ moment(date).format('DD-MM-YYYY HH:mm') }}</p>
         <p v-else-if="!posting" class="date" style="text-decoration: underline">Перейти</p>
         <DefaultButton
           v-else
           style="align-self: flex-start; margin-top: var(--spacing-xs)"
           label="Опубликовать"
+          @click="emits('publish')"
+        />
+        <DefaultButton
+          v-if="date && posting"
+          style="align-self: flex-start; margin-top: var(--spacing-xs)"
+          label="Изменить"
           @click="emits('publish')"
         />
       </div>
@@ -26,6 +32,7 @@
 import { onMounted, ref, watch } from 'vue'
 import DefaultButton from './DefaultButton.vue'
 import { getPresignedUrl } from 'src/boot/aws'
+import moment from 'moment'
 
 const emits = defineEmits(['publish'])
 // @ts-nocheck //

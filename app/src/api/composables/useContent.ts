@@ -154,6 +154,8 @@ export default function useContent() {
         Notify.create({
           message: t('Пост готов к публикации'),
           color: 'positive',
+          position: 'top',
+          timeout: 3000,
         })
         return 200
       })
@@ -163,9 +165,9 @@ export default function useContent() {
       })
   }
 
-  const apiPublishPost = async (post: number) => {
+  const apiPublishPost = async (post: number, time: string, platforms: ['tg' | 'vk' | 'inst']) => {
     return await apiInstances.postsApi
-      .postPostsPublishPost({ post_id: post })
+      .postPostsPublishPost({ post_id: post, time, platforms })
       .then((res) => {
         return res.data
       })

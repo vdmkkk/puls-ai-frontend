@@ -277,6 +277,8 @@ const onSubmit = () => {
         in_content_plan: false,
       }).then(() => {
         loadPosts()
+        prompt.value = ''
+        additions.value = ''
       })
     })
     .finally(() => {

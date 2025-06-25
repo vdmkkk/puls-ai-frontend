@@ -27,6 +27,10 @@
       >
         <img :src="micIcon" />
       </q-btn>
+      <slot name="append" />
+    </template>
+    <template v-slot:prepend>
+      <slot name="prepend" />
     </template>
   </q-input>
 </template>

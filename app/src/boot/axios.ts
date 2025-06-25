@@ -13,6 +13,7 @@ import {
 } from 'src/api'
 import { PaymentApi } from 'src/api'
 import Cookies from 'js-cookie'
+import { Notify } from 'quasar'
 declare module 'vue' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance
@@ -73,18 +74,23 @@ Object.entries(apiInstances).forEach(([key, apiInstance]) => {
   )
 
   // Response interceptor to handle 401 errors
-  // apiInstance.axios.interceptors.response.use(
-  //   // бля метод protected но один хуй работает. Люблю TS
-  //   (response) => response,
-  //   async (error) => {
-  //     if (error.response && error.response.status === 401) {
-  //       Cookies.remove('refresh_token')
-  //       window.location.replace('/login') // через useRouter не работает :)
-  //     }
+  apiInstance.axios.interceptors.response.use(
+    // бля метод protected один хуй работает. Люблю TS
+    (response) => response,
+    async (error) => {
+      if (error.response) {
+        console.log('Response error:', error.response.data.Message)
+        Notify.create({
+          type: 'negative',
+          position: 'top',
+          timeout: 5000,
+          message: `Error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`,
+        })
+      }
 
-  //     return Promise.reject(error)
-  //   },
-  // )
+      return Promise.reject(error)
+    },
+  )
 })
 
 export default defineBoot(({ app }) => {
