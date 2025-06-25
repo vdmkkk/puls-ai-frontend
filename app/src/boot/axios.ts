@@ -73,7 +73,10 @@ Object.entries(apiInstances).forEach(([key, apiInstance]) => {
     (error) => Promise.reject(error),
   )
 
-  // Response interceptor to handle 401 errors
+  const errors = {
+    'unsupported platform': 'Выбрана платформа, которая не поддерживается',
+  }
+
   apiInstance.axios.interceptors.response.use(
     // бля метод protected один хуй работает. Люблю TS
     (response) => response,
@@ -84,7 +87,7 @@ Object.entries(apiInstances).forEach(([key, apiInstance]) => {
           type: 'negative',
           position: 'top',
           timeout: 5000,
-          message: `Error: ${error.response.status} - ${error.response.data.message || error.response.statusText}`,
+          message: errors[error.response.data.Message] || 'Что-то пошло не так',
         })
       }
 
