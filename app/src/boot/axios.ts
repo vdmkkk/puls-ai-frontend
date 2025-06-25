@@ -81,13 +81,13 @@ Object.entries(apiInstances).forEach(([key, apiInstance]) => {
     // бля метод protected один хуй работает. Люблю TS
     (response) => response,
     async (error) => {
-      if (error.response) {
+      if (error.response && error.response.status != 401) {
         console.log('Response error:', error.response.data.Message)
         Notify.create({
           type: 'negative',
           position: 'top',
           timeout: 5000,
-          message: errors[error.response.data.Message] || 'Что-то пошло не так',
+          message: error.response.data.user_message || 'Что-то пошло не так',
         })
       }
 
