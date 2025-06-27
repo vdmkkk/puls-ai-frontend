@@ -64,6 +64,9 @@ const answers = ref({
   inst: true,
   time: null,
   isNow: true,
+  tgDisabled: false,
+  vkDisabled: false,
+  instDisabled: false,
 })
 
 const defaultTg = ref(false)
@@ -93,6 +96,9 @@ const handlerOpenDialog = (postId: number): void => {
     inst: defaultInst.value,
     time: moment().format('YYYY-MM-DD[T]HH:mm:ssZ'),
     isNow: true,
+    tgDisabled: !defaultTg.value,
+    vkDisabled: !defaultVk.value,
+    instDisabled: !defaultInst.value,
   }
   dialog.value = {
     isOpen: true,
@@ -110,6 +116,9 @@ const handlerCloseDialog = () => {
     inst: defaultInst.value,
     time: null,
     isNow: true,
+    tgDisabled: !defaultTg.value,
+    vkDisabled: !defaultVk.value,
+    instDisabled: !defaultInst.value,
   }
   currentPost.value = null
 }

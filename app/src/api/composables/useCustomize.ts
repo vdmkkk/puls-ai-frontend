@@ -73,6 +73,7 @@ export default function useCustomize(loading: Ref<boolean>) {
         Notify.create({
           message: t('Аккаунт успешно привязан'),
           color: 'positive',
+          position: 'top',
         })
         return res.data
       })

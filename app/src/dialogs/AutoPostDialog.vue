@@ -15,6 +15,9 @@ const answer = defineModel<{
   inst: boolean
   time: string
   isNow: boolean
+  tgDisabled?: boolean
+  vkDisabled?: boolean
+  instDisabled?: boolean
 }>()
 const props = defineProps<{
   isOpen: boolean
@@ -136,16 +139,19 @@ const shownTime = computed(() => {
           <CheckComponent
             :model-value="answer.tg"
             label="Telegram"
+            :disable="answer.tgDisabled"
             @update:model-value="(e) => (answer.tg = e)"
           />
           <CheckComponent
             :model-value="answer.vk"
             label="VK"
+            :disable="answer.vkDisabled"
             @update:model-value="(e) => (answer.vk = e)"
           />
           <CheckComponent
             :model-value="answer.inst"
             label="Instagram"
+            :disable="answer.instDisabled"
             @update:model-value="(e) => (answer.inst = e)"
           />
           <!-- <q-checkbox v-model="answer.tg" size="xs" color="primary">

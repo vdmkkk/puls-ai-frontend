@@ -5,8 +5,15 @@
       <IntegrationDialog
         :is-open="dialog.isOpen"
         :answer-key="dialog.answerKey"
-        :model="dialog.answerKey == 'vk' ? me?.vk_channel_url : me?.tg_channel_url"
-        :code="me?.vk_channel_code"
+        :model="
+          dialog.answerKey == 'vk'
+            ? me?.vk_channel_url
+            : dialog.answerKey == 'inst'
+              ? me?.inst_login
+              : me?.tg_channel_url
+        "
+        :code="me?.vk_token"
+        :password="me?.inst_password"
         @close="handlerCloseDialog"
         @save="handlerSaveDialog"
       />
@@ -35,7 +42,7 @@
         </p>
       </div>
       <p class="name">Интеграции</p>
-      <div class="integrations row" style="gap: var(--spacing-sm); width: 50%">
+      <div class="integrations row" style="gap: var(--spacing-sm); width: 50%; row-gap: 0">
         <div class="int-container">
           <div class="icon-container-tg">
             <img class="icon" :src="tgIcon" />
@@ -60,6 +67,18 @@
             @click="handlerOpenDialog('vk')"
           />
         </div>
+        <div class="int-container">
+          <div class="icon-container-inst">
+            <img class="icon" :src="instLogo" />
+          </div>
+          <p v-if="me?.inst_login" class="description">{{ me?.inst_login }}</p>
+          <p v-else class="description">Не подключен</p>
+          <DefaultButton
+            :label="me?.inst_login ? 'Изменить' : 'Подключить'"
+            style="align-self: flex-start; margin-top: var(--spacing-xs)"
+            @click="handlerOpenDialog('inst')"
+          />
+        </div>
       </div>
     </div>
   </q-page>
@@ -78,6 +97,7 @@ import arrowRight from 'src/assets/icons/arrow_right_blue.svg'
 import boltIcon from 'src/assets/icons/energy.svg'
 import tgIcon from 'src/assets/icons/telegram.svg'
 import vkIcon from 'src/assets/icons/vk.svg'
+import instLogo from 'src/assets/icons/inst-logo-small.svg'
 import IntegrationDialog from 'src/dialogs/IntegrationDialog.vue'
 import useCustomize from 'src/api/composables/useCustomize'
 import { Notify } from 'quasar'
@@ -120,7 +140,7 @@ const subs = {
 
 const dialog = ref<{
   isOpen: boolean
-  answerKey: 'vk' | 'tg'
+  answerKey: 'vk' | 'tg' | 'inst'
 }>({
   isOpen: false,
   answerKey: null,
@@ -148,6 +168,8 @@ const handlerSaveDialog = (answer: string) => {
       tg_channel_url: answer,
       vk_channel_url: null,
       vk_token: null,
+      inst_login: null,
+      inst_password: null,
     }).then((res) => {
       if (res) {
         me.value.tg_channel_url = answer
@@ -160,15 +182,37 @@ const handlerSaveDialog = (answer: string) => {
         })
       }
     })
-  } else {
+  } else if (dialog.value.answerKey == 'vk') {
     apiSaveAccount({
       vk_channel_url: answer.answer,
       vk_token: answer.code,
       tg_channel_url: null,
+      inst_login: null,
+      inst_password: null,
     }).then((res) => {
       if (res) {
         me.value.vk_channel_url = answer.answer
         me.value.vk_channel_code = answer.code
+      } else {
+        Notify.create({
+          message:
+            'Произошла ошибка при привязке аккаунта. Пожалуйста, убедитесь, что вы выполнили все шаги инструкции, и попробуйте еще раз',
+          position: 'top',
+          color: 'negative',
+        })
+      }
+    })
+  } else {
+    apiSaveAccount({
+      vk_channel_url: null,
+      vk_token: null,
+      tg_channel_url: null,
+      inst_login: answer.answer,
+      inst_password: answer.password,
+    }).then((res) => {
+      if (res) {
+        me.value.inst_login = answer.answer
+        me.value.inst_password = answer.password
       } else {
         Notify.create({
           message:
@@ -315,6 +359,21 @@ onMounted(() => {
       padding-right: 2px;
     }
 
+    .icon-container-inst {
+      border-radius: 16px;
+      background-color: transparent;
+      width: calc(var(--spacing-sm) + var(--spacing-xs));
+      height: calc(var(--spacing-sm) + var(--spacing-xs));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .icon {
+        padding-right: 0px !important;
+        height: 100%;
+        width: 100%;
+      }
+    }
+
     .link {
       display: flex;
       align-items: center;
@@ -370,6 +429,10 @@ onMounted(() => {
         height: var(--line-height-sm);
       }
     }
+  }
+
+  .integrations {
+    margin-bottom: var(--spacing-md);
   }
 }
 
