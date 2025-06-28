@@ -5,9 +5,10 @@
       <div class="column header">
         <p class="title">Авторские темы</p>
         <p class="description">
-          На этой странице вы можете создать нужный вам текст для поста. Для этого выберите нужный
-          режим: фоновый пост или продающий, и подробно сформулируйте тему и дополнительную
-          информацию.
+          На этой странице вы можете создать пост на свою тему. Для этого напишите заголовок поста и
+          для более качественого результата заполните поле
+          <span style="font-weight: 600">Дополнительная информация</span>, как в примере или
+          оставьте поле пустым
         </p>
       </div>
       <div
@@ -16,7 +17,7 @@
       >
         <div class="inputs-container column justify-between no-wrap" style="width: 50%">
           <div class="inputs">
-            <p class="subtitle">Тип поста</p>
+            <!-- <p class="subtitle">Тип поста</p>
             <q-btn-toggle
               v-model="type"
               class="btn-group"
@@ -27,7 +28,7 @@
                 { label: 'Фоновый', value: true },
                 { label: 'Продающий', value: false },
               ]"
-            />
+            /> -->
             <p class="subtitle">Тема поста</p>
             <InputComponent
               class="prompt"
@@ -45,6 +46,7 @@
               :model-value="additions"
               style="font-size: var(--font-size-sm)"
               has-voice
+              placeholder="Например: Какие основные причины приводят к гипотиреозу. Как влияет работа печени и кишечника на работу щитовидки.  Какие оптимальные нормы гормонов, на которые важно ориентироваться."
               @update:model-value="additions = $event"
             />
           </div>

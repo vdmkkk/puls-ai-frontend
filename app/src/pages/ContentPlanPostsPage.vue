@@ -8,9 +8,8 @@
           <p>Назад</p>
         </div>
         <p class="title">Неделя {{ params.id }}</p>
-        <p class="description">
-          Редактируйте посты, создавайте к ним изображения и отправляйте в очередь на публикацию
-          всего за пару кликов!
+        <p class="description" style="font-weight: 600; color: #fff">
+          Нажмите на карточку чтобы создать пост
         </p>
       </div>
       <!-- <p class="title">Контент-план</p>

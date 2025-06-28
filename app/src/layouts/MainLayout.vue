@@ -74,15 +74,20 @@ import projects from 'src/assets/icons/projects.svg'
 import logo from 'src/assets/svg/logo.svg'
 import useProfile from 'src/api/composables/useProfile'
 import { useErrorStore } from 'src/stores/error-store'
+import useCustomize from 'src/api/composables/useCustomize'
 
 const router = useRouter()
 const store = useErrorStore()
+const loading = ref(false)
+
+const { apiGetUserAnswers } = useCustomize(loading)
 
 const navigateTo = (path: string) => {
   router.push(path)
 }
 
 const me = ref()
+const allowed = ref(false)
 const leftDrawerOpen = ref(false)
 
 const links = computed(() => [
@@ -96,13 +101,14 @@ const links = computed(() => [
     name: 'Контент-план',
     to: '/content-plan',
     icon: plan,
-    disabled: me.value?.tariff != 4 && me.value?.tariff != 3 && me.value?.tariff != 1,
+    disabled:
+      (me.value?.tariff != 4 && me.value?.tariff != 3 && me.value?.tariff != 1) || !allowed.value,
   },
   {
     name: 'Авторские темы',
     to: '/texts',
     icon: text,
-    disabled: false,
+    disabled: !allowed.value,
   },
   // {
   //   name: 'Изображения',
@@ -113,7 +119,7 @@ const links = computed(() => [
     name: 'Автопостинг',
     to: '/posting',
     icon: autoposting,
-    disabled: me.value?.tariff != 4 && me.value?.tariff != 1,
+    disabled: (me.value?.tariff != 4 && me.value?.tariff != 1) || !allowed.value,
   },
   {
     name: 'Профиль',
@@ -136,7 +142,6 @@ const isActive = (to: string) => {
 }
 
 const { getMe } = useProfile()
-const loading = ref(false)
 
 const load = () => {
   getMe()
@@ -154,6 +159,16 @@ const load = () => {
 onMounted(() => {
   loading.value = true
   load()
+  setInterval(() => {
+    apiGetUserAnswers().then((res) => {
+      if (!(res.q1 && res.q2 && res.q3 && res.q4 && res.q5 && res.q6)) {
+        allowed.value = false
+      } else {
+        allowed.value = true
+      }
+      console.log('allowed', allowed.value)
+    })
+  }, 1000)
 })
 
 watch(

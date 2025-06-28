@@ -6,7 +6,7 @@
     standout="standout-class"
     :autogrow="false"
     color="primary"
-    :class="{ 'q-input': true, high: isHigh, 'disabled-style': isDisabled }"
+    :class="{ 'q-input': true, high: isHigh, 'disabled-style': isDisabled, 'has-voice': hasVoice }"
     :disable="isDisabled"
     @update:model-value="emit('update:modelValue', $event as string)"
   >
@@ -93,6 +93,10 @@ onMounted(() => {
 .q-input ::v-deep .q-field__native {
   resize: none !important;
   color: white !important;
+}
+
+.has-voice ::v-deep .q-field__native {
+  padding-right: 30px;
 }
 
 .q-input ::v-deep .standout-class {

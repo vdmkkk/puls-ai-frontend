@@ -16,11 +16,14 @@
         </div>
         <div class="row no-wrap items-center" style="gap: var(--spacing-sm)">
           <p class="title">{{ postTopic }}</p>
-          <q-btn class="edit" flat round size="md" @click="handlerOpenDialog">
+          <q-btn class="edit" flat round size="lg" @click="handlerOpenDialog">
             <img :src="edit" />
           </q-btn>
         </div>
-        <div class="main-grid row items-start no-wrap">
+        <div
+          class="main-grid row items-start no-wrap"
+          style="position: relative; align-items: stretch"
+        >
           <div class="inputs-container column left-side" v-if="postText.length != 0">
             <p class="subtitle">Текст</p>
             <EditorComponent
@@ -29,13 +32,17 @@
               @update:model-value="postText = $event"
             />
             <FancyButtonComponent
-              label="Переписать текст"
-              style="align-self: flex-start; margin-top: var(--spacing-sm)"
+              label="👎 Не понравился, хочу переписать"
+              style="
+                align-self: flex-start;
+                margin-top: var(--spacing-sm);
+                width: fit-content !important;
+              "
               @click="clearText"
             />
           </div>
-          <div class="inputs-container column left-side" v-else>
-            <p class="subtitle">Тип поста</p>
+          <div class="inputs-container column justify-between no-wrap left-side" v-else>
+            <!-- <p class="subtitle">Тип поста</p>
             <q-btn-toggle
               v-model="type"
               class="btn-group"
@@ -46,7 +53,7 @@
                 { label: 'Фоновый', value: true },
                 { label: 'Продающий', value: false },
               ]"
-            />
+            /> -->
             <p class="subtitle">Дополнительная информация</p>
             <p class="description">
               Здесь вы можете написать свои пожелания к содержанию поста: раскрытие определенных
@@ -63,6 +70,7 @@
               :model-value="additions"
               style="font-size: var(--font-size-sm)"
               has-voice
+              placeholder="Например: Какие основные причины приводят к гипотиреозу. Как влияет работа печени и кишечника на работу щитовидки.  Какие оптимальные нормы гормонов, на которые важно ориентироваться."
               @update:model-value="additions = $event"
             />
             <div class="row justify-between buttons">
@@ -78,7 +86,12 @@
                   'Лонгрид — 2200 символов',
                 ]"
               />
-              <FancyButtonComponent label="Создать" style="margin: auto 0" @click="createText" />
+              <FancyButtonComponent
+                :disabled="prompt == '' || (!check && !base64Image)"
+                label="Создать"
+                style="margin: auto 0"
+                @click="createText"
+              />
             </div>
           </div>
           <div
@@ -195,18 +208,24 @@
             </div>
           </div>
         </div>
-        <DefaultButton
+        <FancyButtonComponent
           v-if="!ready"
-          style="align-self: flex-start; margin-top: var(--spacing-sm)"
-          label="Отправить в очередь на публикацию"
-          :icon="arrowRight"
+          style="
+            align-self: flex-start;
+            margin-top: var(--spacing-sm);
+            width: fit-content !important;
+          "
+          label="👍 Понравился, отправить в Автопостинг"
           @click="readyToPublish"
         />
-        <DefaultButton
+        <FancyButtonComponent
           v-else
-          style="align-self: flex-start; margin-top: var(--spacing-sm)"
-          label="В очереди на публикацию"
-          :icon="checkIcon"
+          style="
+            align-self: flex-start;
+            margin-top: var(--spacing-sm);
+            width: fit-content !important;
+          "
+          label="Пост в очереди на публикацию"
           disabled
         />
       </div>
@@ -521,6 +540,13 @@ onMounted(() => {
   }
   .editor {
     // width: 60%;
+  }
+
+  .edit {
+    img {
+      height: 30px;
+      width: 30px;
+    }
   }
 
   .description {

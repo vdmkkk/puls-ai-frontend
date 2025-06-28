@@ -10,7 +10,10 @@
 
       <div>
         <p v-if="date" class="date">{{ moment(date).format('DD-MM-YYYY HH:mm') }}</p>
-        <p v-else-if="!posting" class="date" style="text-decoration: underline">Перейти</p>
+        <div v-else-if="!posting" class="row justify-between">
+          <p class="date" style="text-decoration: underline">Перейти</p>
+          <p v-if="!text" class="date q-pr-sm" style="color: #fff">🔴 Не создан</p>
+        </div>
         <DefaultButton
           v-else
           style="align-self: flex-start; margin-top: var(--spacing-xs)"

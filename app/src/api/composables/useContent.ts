@@ -152,7 +152,9 @@ export default function useContent() {
       .postContentMarkReadyToPublish({ post_id: id })
       .then((res) => {
         Notify.create({
-          message: t('Пост готов к публикации'),
+          message: t(
+            'Пост готов к публикации. Вы можете настроить время и место публикации в разделе Автопостинг',
+          ),
           color: 'positive',
           position: 'top',
           timeout: 3000,

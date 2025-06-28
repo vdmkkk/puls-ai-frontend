@@ -41,7 +41,7 @@
           Управлять подпиской <img :src="arrowRight" />
         </p>
       </div>
-      <p class="name">Интеграции</p>
+      <p class="name">Интеграции для автопостинга</p>
       <div class="integrations row" style="gap: var(--spacing-sm); width: 50%; row-gap: 0">
         <div class="int-container">
           <div class="icon-container-tg">

@@ -18,6 +18,9 @@
           "
           @click="create"
         />
+        <p class="description" style="font-weight: 600; color: #fff">
+          Нажмите на карточку, чтобы посмотреть контент-план на неделю
+        </p>
       </div>
       <!-- <p class="title">Контент-план</p>
       <p class="subtitle">
@@ -35,7 +38,9 @@
           :text="`Неделя ${plan.week_id}`"
           @click="navigateTo(`/content-plan/${plan.week_id}`)"
         >
-          <p class="date description">Дата создания: {{ plan.created_at }}</p>
+          <p class="date description">
+            Дата создания: {{ moment(plan.created_at).format('DD-MM-YYYY HH:mm') }}
+          </p>
         </ContainerComponent>
       </div>
     </div>
@@ -43,6 +48,7 @@
 </template>
 
 <script setup lang="ts">
+import moment from 'moment'
 import useContent from 'src/api/composables/useContent'
 import BlobComponent from 'src/components/BlobComponent.vue'
 import ContainerComponent from 'src/components/ContainerComponent.vue'
