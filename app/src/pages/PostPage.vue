@@ -54,25 +54,27 @@
                 { label: 'Продающий', value: false },
               ]"
             /> -->
-            <p class="subtitle">Дополнительная информация</p>
-            <p class="description">
-              Здесь вы можете написать свои пожелания к содержанию поста: раскрытие определенных
-              тем, кейсы своих клиентов
-            </p>
-            <q-spinner-puff
-              style="margin: var(--spacing-sm) auto"
-              color="primary"
-              size="50px"
-              v-if="loadingCreation"
-            />
-            <InputComponent
-              v-else
-              :model-value="additions"
-              style="font-size: var(--font-size-sm)"
-              has-voice
-              placeholder="Например: Какие основные причины приводят к гипотиреозу. Как влияет работа печени и кишечника на работу щитовидки.  Какие оптимальные нормы гормонов, на которые важно ориентироваться."
-              @update:model-value="additions = $event"
-            />
+            <div class="column">
+              <p class="subtitle">Дополнительная информация</p>
+              <p class="description">
+                Здесь вы можете написать свои пожелания к содержанию поста: раскрытие определенных
+                тем, кейсы своих клиентов
+              </p>
+              <q-spinner-puff
+                style="margin: var(--spacing-sm) auto"
+                color="primary"
+                size="50px"
+                v-if="loadingCreation"
+              />
+              <InputComponent
+                v-else
+                :model-value="additions"
+                style="font-size: var(--font-size-sm)"
+                has-voice
+                placeholder="Например: Какие основные причины приводят к гипотиреозу. Как влияет работа печени и кишечника на работу щитовидки.  Какие оптимальные нормы гормонов, на которые важно ориентироваться."
+                @update:model-value="additions = $event"
+              />
+            </div>
             <div class="row justify-between buttons">
               <q-select
                 class="q-select"
@@ -129,7 +131,11 @@
               />
               <div
                 class="image-content full-height"
-                :style="imageType != 'download' ? { marginBottom: 'var(--spacing-sm)' } : {}"
+                :style="
+                  imageType != 'download'
+                    ? { marginBottom: 'var(--spacing-sm)' }
+                    : { marginBottom: '0' }
+                "
               >
                 <div v-if="loadingImage">
                   <q-spinner-puff class="loading" size="50px" />
@@ -209,7 +215,7 @@
           </div>
         </div>
         <FancyButtonComponent
-          v-if="!ready"
+          v-if="!ready && postText.length != 0"
           style="
             align-self: flex-start;
             margin-top: var(--spacing-sm);
@@ -219,7 +225,7 @@
           @click="readyToPublish"
         />
         <FancyButtonComponent
-          v-else
+          v-else-if="ready && postText.length != 0"
           style="
             align-self: flex-start;
             margin-top: var(--spacing-sm);

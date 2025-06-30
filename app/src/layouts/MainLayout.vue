@@ -177,6 +177,14 @@ const handleUpdateAnswers = (answers: any) => {
 onMounted(() => {
   loading.value = true
   load()
+  apiGetUserAnswers().then((res) => {
+    if (!(res.q1 && res.q2 && res.q3 && res.q4 && res.q5 && res.q6)) {
+      allowed.value = false
+    } else {
+      allowed.value = true
+    }
+    console.log('allowed', allowed.value)
+  })
 })
 
 watch(

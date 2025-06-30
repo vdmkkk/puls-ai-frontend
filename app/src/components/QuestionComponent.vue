@@ -6,7 +6,7 @@
       (isDisabled ? ' disabled' : '')
     "
   >
-    <p>{{ question }}</p>
+    <p>{{ question }}<span>*</span></p>
     <slot name="default" />
     <div v-if="!$slots.default">
       <q-separator />
@@ -47,6 +47,14 @@ const answer = defineModel<string>()
     line-clamp: 3;
     -webkit-box-orient: vertical;
     // color: #684485;
+  }
+
+  span {
+    color: red;
+    font-size: var(--font-size-xs);
+    margin-left: 3px;
+    position: absolute;
+    transform: translateY(-2px);
   }
 
   .answer {

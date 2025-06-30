@@ -13,6 +13,7 @@
         <div v-else-if="!posting" class="row justify-between">
           <p class="date" style="text-decoration: underline">Перейти</p>
           <p v-if="!text" class="date q-pr-sm" style="color: #fff">🔴 Не создан</p>
+          <p v-else class="date q-pr-sm" style="color: #fff">🟢 Пост создан</p>
         </div>
         <DefaultButton
           v-else
