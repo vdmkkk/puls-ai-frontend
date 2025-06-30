@@ -2,6 +2,9 @@
   <BlobComponent />
   <q-page style="color: white" class="column justify-between">
     <div class="app">
+      <q-inner-loading dark :showing="loadingCreation" text-color="white" text="Создание поста">
+        <q-spinner-puff color="primary" size="xl" />
+      </q-inner-loading>
       <div class="column header">
         <p class="title">Авторские темы</p>
         <p class="description">
@@ -184,9 +187,6 @@
             />
           </div>
         </div>
-        <q-inner-loading dark :showing="loadingCreation" text-color="white" text="Создание поста">
-          <q-spinner-puff color="primary" size="xl" />
-        </q-inner-loading>
       </div>
       <div class="posts">
         <p class="title">Все текстовые посты</p>

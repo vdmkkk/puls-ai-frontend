@@ -35,6 +35,10 @@ const dialog = ref<{
   isHigh: false,
 })
 
+const emits = defineEmits<{
+  (e: 'update:answers'): void
+}>()
+
 const isAuto = ref(true)
 const loading = ref(false)
 
@@ -89,6 +93,7 @@ const handlerSaveDialog = (answer: string) => {
 
 const processAnswers = () => {
   apiSaveAnswers(answers.value)
+  emits('update:answers', answers.value)
 }
 
 const getFromLink = () => {

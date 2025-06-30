@@ -203,6 +203,18 @@ export default function useContent() {
       })
   }
 
+  const apiTranscribe = async (file: File) => {
+    return await apiInstances.contentApi
+      .postContentTranscribe(file)
+      .then((res) => {
+        return res.data
+      })
+      .catch((e: AxiosError) => {
+        console.error('Something went wrong:', e)
+        setError(e?.response?.data?.error, e?.response?.data?.user_message)
+      })
+  }
+
   return {
     apiCreateImagePost,
     apiCreateImagePrompt,
@@ -218,5 +230,6 @@ export default function useContent() {
     apiPublishPost,
     apiUploadImage,
     apiGetAllPosts,
+    apiTranscribe,
   }
 }

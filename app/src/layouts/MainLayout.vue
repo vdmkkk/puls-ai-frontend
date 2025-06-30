@@ -54,7 +54,7 @@
     </q-drawer>
 
     <q-page-container class="app">
-      <router-view />
+      <router-view @update:answers="handleUpdateAnswers" />
     </q-page-container>
   </q-layout>
 </template>
@@ -156,19 +156,27 @@ const load = () => {
     })
 }
 
+const handleUpdateAnswers = (answers: any) => {
+  console.log('Answers updated:', answers)
+  if (
+    !(
+      answers.answer1 &&
+      answers.answer2 &&
+      answers.answer3 &&
+      answers.answer4 &&
+      answers.answer5 &&
+      answers.answer6
+    )
+  ) {
+    allowed.value = false
+  } else {
+    allowed.value = true
+  }
+}
+
 onMounted(() => {
   loading.value = true
   load()
-  setInterval(() => {
-    apiGetUserAnswers().then((res) => {
-      if (!(res.q1 && res.q2 && res.q3 && res.q4 && res.q5 && res.q6)) {
-        allowed.value = false
-      } else {
-        allowed.value = true
-      }
-      console.log('allowed', allowed.value)
-    })
-  }, 1000)
 })
 
 watch(

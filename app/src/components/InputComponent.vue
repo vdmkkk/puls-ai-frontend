@@ -23,9 +23,13 @@
         "
         round
         flat
+        :disable="loading"
         class="q-mr-sm q-mb-md"
+        @click.stop="toggleRecording"
       >
-        <img :src="micIcon" />
+        <q-spinner v-if="loading" color="white" size="20px" />
+        <img v-else-if="!isRecording" :src="micIcon" />
+        <q-icon v-else name="stop_circle" />
       </q-btn>
       <slot name="append" />
     </template>
@@ -36,8 +40,19 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, toRefs } from 'vue'
+import { onMounted, ref, toRefs } from 'vue'
 import micIcon from '../assets/icons/micro.svg'
+import AudioRecorder from 'audio-recorder-polyfill' // ← polyfill
+import mpegEncoder from 'audio-recorder-polyfill/mpeg-encoder'
+import useContent from 'src/api/composables/useContent'
+
+AudioRecorder.encoder = mpegEncoder // comment out for WAV
+AudioRecorder.prototype.mimeType = 'audio/mpeg'
+/* Safari / Edge need the polyfill, but you can force-enable it everywhere
+   to always get MP3 blobs. */
+window.MediaRecorder = AudioRecorder as any
+
+const { apiTranscribe } = useContent()
 
 const props = withDefaults(
   defineProps<{
@@ -56,6 +71,68 @@ const { modelValue } = toRefs(props)
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
 }>()
+
+/* ---------- recorder state ---------- */
+const isRecording = ref(false)
+const loading = ref(false)
+let mediaStream: MediaStream | null = null
+let mediaChunks: BlobPart[] = []
+let recorder: MediaRecorder | null = null
+
+/* ---------- toggle mic ---------- */
+async function toggleRecording() {
+  try {
+    if (!isRecording.value) {
+      // ── start ──
+      if (!mediaStream) {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      }
+      recorder = new MediaRecorder(mediaStream!)
+      mediaChunks = []
+
+      recorder.addEventListener('dataavailable', (e) => mediaChunks.push(e.data))
+      recorder.addEventListener('stop', onStop)
+
+      recorder.start() // you can pass a timeslice if you want chunks
+      isRecording.value = true
+    } else {
+      // ── stop ──
+      recorder?.stop()
+    }
+  } catch (err) {
+    console.error('Mic error:', err)
+    isRecording.value = false
+  }
+}
+
+/* ---------- blob handler ---------- */
+function onStop() {
+  const blob = new Blob(mediaChunks, { type: recorder?.mimeType })
+  handleRecordedAudio(blob) // ← PUT your backend call here
+  isRecording.value = false
+
+  // free HW if you don’t plan to keep recording again
+  mediaStream?.getTracks().forEach((t) => t.stop())
+  mediaStream = null
+}
+
+/* You work here */
+function handleRecordedAudio(blob: Blob) {
+  const file = new File([blob], 'voice.mp3', { type: blob.type })
+  loading.value = true
+  apiTranscribe(file)
+    .then((response) => {
+      console.log('Transcription response:', response)
+      const text = response.text
+      emit('update:modelValue', text)
+    })
+    .catch((error) => {
+      console.error('Transcription error:', error)
+    })
+    .finally(() => {
+      loading.value = false
+    })
+}
 
 onMounted(() => {
   const ua = navigator.userAgent
