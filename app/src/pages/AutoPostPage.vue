@@ -168,6 +168,9 @@ onMounted(() => {
     if (res.vk_token && res.vk_channel_url) {
       defaultVk.value = true
     }
+    if (res.inst_login) {
+      defaultInst.value = true
+    }
     // if (res.is_auto_posting) {
     //   answers.value.tg = res.auto_post_tg
     //   answers.value.vk = res.auto_post_vk

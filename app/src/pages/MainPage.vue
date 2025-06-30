@@ -9,7 +9,7 @@
           dialog.answerKey == 'vk'
             ? me?.vk_channel_url
             : dialog.answerKey == 'inst'
-              ? me?.inst_login
+              ? null
               : me?.tg_channel_url
         "
         :code="me?.vk_token"
@@ -71,7 +71,7 @@
           <div class="icon-container-inst">
             <img class="icon" :src="instLogo" />
           </div>
-          <p v-if="me?.inst_login" class="description">{{ me?.inst_login }}</p>
+          <p v-if="me?.inst_login" class="description">Подключен</p>
           <p v-else class="description">Не подключен</p>
           <DefaultButton
             :label="me?.inst_login ? 'Изменить' : 'Подключить'"

@@ -54,22 +54,27 @@
             />
           </div>
           <div class="buttons row q-mt-xl justify-between" style="align-items: stretch">
-            <q-select
-              class="q-select"
-              outlined
-              v-model="length"
-              color="white"
-              hide-dropdown-icon
-              :options="[
-                'Короткий — 500 символов',
-                'Средний — 1500 символов',
-                'Лонгрид — 2200 символов',
-              ]"
-            />
+            <div class="column">
+              <p class="description">Длина поста</p>
+              <q-select
+                class="q-select"
+                outlined
+                v-model="length"
+                color="white"
+                hide-dropdown-icon
+                :options="[
+                  'Короткий — 500 символов',
+                  'Средний — 1500 символов',
+                  'Лонгрид — 2200 символов',
+                ]"
+              />
+            </div>
+
             <FancyButtonComponent
               :disabled="prompt == '' || (!check && !base64Image)"
               class="submit-btn"
               label="Создать"
+              style="align-self: flex-end !important"
               @click="onSubmit"
             />
           </div>
@@ -166,15 +171,18 @@
             </div>
           </div>
           <div class="controls row justify-between" v-if="imageType != 'download'">
-            <q-select
-              :disable="check"
-              class="q-select image-dimensions"
-              outlined
-              v-model="imageDimensions"
-              color="white"
-              hide-dropdown-icon
-              :options="['9x16', '16x9', '1x1']"
-            />
+            <div class="column">
+              <p class="description">Размер фото</p>
+              <q-select
+                :disable="check"
+                class="q-select image-dimensions"
+                outlined
+                v-model="imageDimensions"
+                color="white"
+                hide-dropdown-icon
+                :options="['9x16', '16x9', '1x1']"
+              />
+            </div>
             <FancyButtonComponent
               :disabled="
                 check ||
@@ -183,6 +191,7 @@
               "
               class="submit-btn"
               label="Создать"
+              style="align-self: flex-end !important"
               @click="() => (imageType == 'prompt' ? createImagePrompt() : createImagePost())"
             />
           </div>
