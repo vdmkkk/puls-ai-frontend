@@ -6,7 +6,9 @@
     color="teal"
     keep-color
     @update:model-value="emit('update:modelValue', $event as string)"
-  />
+  >
+    <slot />
+  </q-checkbox>
 </template>
 <script setup lang="ts">
 import { toRefs } from 'vue'

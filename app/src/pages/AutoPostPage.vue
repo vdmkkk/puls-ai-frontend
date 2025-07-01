@@ -133,7 +133,9 @@ const publishPost = (id: number) => {
   apiPublishPost(
     id,
     answers.value.time,
-    Object.keys(answers.value).filter((k) => answers.value[k] && k !== 'time' && k !== 'isNow'),
+    Object.keys(answers.value)
+      .filter((k) => answers.value[k] && k !== 'time' && k !== 'isNow')
+      .map((k) => (k === 'inst' ? 'instagram' : k)),
   ).then((res) => {
     if (res) {
       Notify.create({

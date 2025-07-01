@@ -128,7 +128,20 @@
           rounded
           outlined
         />
-
+        <div class="row no-wrap check-policy" style="width: 500px">
+          <CheckComponent
+            v-model="check"
+            lazy-rules
+            :error="errorStore.errors.check"
+            :error-message="errorStore.errors.check ? errorStore.errorMessage : undefined"
+            :rules="[(val) => (val && val == true) || $t('errors.required')]"
+          />
+          <p class="description" style="margin-bottom: auto; margin-top: auto">
+            Я согласен(-на) с
+            <a href="https://pulsai.tech/privacy" target="_blank">политикой конфеденциальности</a> и
+            подтверждаю согласие на обработку персональных данных
+          </p>
+        </div>
         <q-btn
           :label="$t('register')"
           class="login"
@@ -162,6 +175,7 @@ import { useRouter } from 'vue-router'
 import logo from 'src/assets/svg/logo.svg'
 import BlobComponent from 'src/components/BlobComponent.vue'
 import FancyButtonComponent from 'src/components/FancyButtonComponent.vue'
+import CheckComponent from 'src/components/CheckComponent.vue'
 
 const { t } = useI18n()
 
@@ -175,6 +189,7 @@ const password = ref<string>('')
 const againPassword = ref<string>('')
 const verificationCode = ref<string>('')
 const tgAccount = ref<string>('')
+const check = ref<boolean>(false)
 
 const errorStore = useErrorStore()
 
@@ -195,19 +210,19 @@ const handlerVerify = () => {
         position: 'top',
       })
     } else {
-      if (e.response?.data?.user_message) {
-        Notify.create({
-          message: e.response?.data?.user_message,
-          position: 'top',
-          color: 'negative',
-        })
-      } else {
-        Notify.create({
-          message: t('errors.unknown'),
-          position: 'top',
-          color: 'negative',
-        })
-      }
+      // if (e.response?.data?.user_message) {
+      //   Notify.create({
+      //     message: e.response?.data?.user_message,
+      //     position: 'top',
+      //     color: 'negative',
+      //   })
+      // } else {
+      //   Notify.create({
+      //     message: t('errors.unknown'),
+      //     position: 'top',
+      //     color: 'negative',
+      //   })
+      // }
     }
   })
 }
@@ -333,8 +348,24 @@ const handlerRedirect = () => {
   width: 400px !important;
 }
 
+.description {
+  font-size: var(--font-size-xxs);
+  color: #ccc;
+  a {
+    color: #ccc;
+    text-decoration: underline;
+  }
+  a:visited {
+    color: #ccc;
+  }
+}
+
 @media screen and (max-width: 576px) {
   .q-input {
+    width: 100% !important;
+  }
+
+  .check-policy {
     width: 100% !important;
   }
 
