@@ -134,7 +134,7 @@
             lazy-rules
             :error="errorStore.errors.check"
             :error-message="errorStore.errors.check ? errorStore.errorMessage : undefined"
-            :rules="[(val) => (val && val == true) || $t('errors.required')]"
+            :rules="[(val) => val == true || $t('errors.required')]"
           />
           <p class="description" style="margin-bottom: auto; margin-top: auto">
             Я согласен(-на) с
@@ -149,6 +149,7 @@
           flat
           text-color="grey-1"
           no-caps
+          :disable="!check"
         />
 
         <q-btn

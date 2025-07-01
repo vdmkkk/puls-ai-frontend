@@ -87,6 +87,7 @@ Object.entries(apiInstances).forEach(([key, apiInstance]) => {
           type: 'negative',
           position: 'top',
           timeout: 5000,
+          badgeStyle: { display: 'none' },
           message: error.response.data.user_message || 'Что-то пошло не так',
         })
       }
