@@ -134,7 +134,15 @@ const publishPost = (id: number) => {
     id,
     answers.value.time,
     Object.keys(answers.value)
-      .filter((k) => answers.value[k] && k !== 'time' && k !== 'isNow')
+      .filter(
+        (k) =>
+          answers.value[k] &&
+          k !== 'time' &&
+          k !== 'isNow' &&
+          k != 'tgDisabled' &&
+          k != 'vkDisabled' &&
+          k != 'instDisabled',
+      )
       .map((k) => (k === 'inst' ? 'instagram' : k)),
   ).then((res) => {
     if (res) {
