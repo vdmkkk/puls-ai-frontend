@@ -153,7 +153,14 @@ const shownTime = computed(() => {
             label="Instagram"
             :disable="answer.instDisabled"
             @update:model-value="(e) => (answer.inst = e)"
-          />
+          >
+            <q-tooltip v-if="answer?.instDisabled"
+              ><a
+                >Для публикации в Instagram нужно подключить аккаунт. Поддерживаются только
+                публикации, содержащие изображение</a
+              ></q-tooltip
+            >
+          </CheckComponent>
           <!-- <q-checkbox v-model="answer.tg" size="xs" color="primary">
             <div class="row no-wrap items-center" style="gap: 12px; margin-left: 6px">
               <img :src="wbIcon" alt="wb" />

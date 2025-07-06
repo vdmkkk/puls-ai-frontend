@@ -328,7 +328,7 @@ const base64Image = ref<string | null>()
 
 const fileName = ref<string | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
-const check = ref(false)
+const check = ref(true)
 const imageType = ref('download')
 const imageDimensions = ref<keyof typeof aspectOptions>('9x16')
 const imagePrompt = ref<string>('')

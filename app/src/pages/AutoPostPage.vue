@@ -31,7 +31,7 @@
           :posting="moment(post.published_at).isAfter(currentTime) || post.published_at == ''"
           :date="post.published_at"
           :darken="moment(post.published_at).isBefore(currentTime)"
-          @publish="handlerOpenDialog(post.post_id)"
+          @publish="handlerOpenDialog(post)"
           @click="navigateTo(`/posting/posts/${post.post_id}`)"
         />
       </div>
@@ -86,18 +86,19 @@ const dialog = ref<{
 
 const posts = ref([])
 
-const handlerOpenDialog = (postId: number): void => {
+const handlerOpenDialog = (post: any): void => {
   // if (!isAuto.value) {
-  currentPost.value = postId
+  currentPost.value = post.post_id
+  console.log(!defaultInst.value, post.image_urls)
   answers.value = {
     tg: defaultTg.value,
     vk: defaultVk.value,
-    inst: defaultInst.value,
+    inst: defaultInst.value && post.image_urls?.[0] != 'NULL',
     time: moment().format('YYYY-MM-DD[T]HH:mm:ssZ'),
     isNow: true,
     tgDisabled: !defaultTg.value,
     vkDisabled: !defaultVk.value,
-    instDisabled: !defaultInst.value,
+    instDisabled: !defaultInst.value || post.image_urls?.[0] == 'NULL',
   }
   dialog.value = {
     isOpen: true,

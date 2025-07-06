@@ -110,11 +110,6 @@ const links = computed(() => [
     icon: text,
     disabled: !allowed.value,
   },
-  // {
-  //   name: 'Изображения',
-  //   to: 'images',
-  //   icon: image2,
-  // },
   {
     name: 'Автопостинг',
     to: '/posting',
