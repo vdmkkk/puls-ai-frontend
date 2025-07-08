@@ -40,7 +40,7 @@
             v-ripple
             :class="{ 'menu-item': true, active: isActive(menuItem.to) }"
             :disable="menuItem.disabled"
-            @click="navigateTo(menuItem.to)"
+            @click="navigateTo(menuItem.to, menuItem.name == 'Служба заботы')"
           >
             <q-item-section avatar>
               <img :src="menuItem.icon" />
@@ -71,6 +71,7 @@ import image2 from 'src/assets/icons/image2.svg'
 import autoposting from 'src/assets/icons/autoposting.svg'
 import profile from 'src/assets/icons/profile.svg'
 import projects from 'src/assets/icons/projects.svg'
+import support from 'src/assets/icons/support.svg'
 import logo from 'src/assets/svg/logo.svg'
 import useProfile from 'src/api/composables/useProfile'
 import { useErrorStore } from 'src/stores/error-store'
@@ -82,8 +83,13 @@ const loading = ref(false)
 
 const { apiGetUserAnswers } = useCustomize(loading)
 
-const navigateTo = (path: string) => {
-  router.push(path)
+const navigateTo = (path: string, isSupport = false) => {
+  if (isSupport) {
+    window.open(path, '_blank')
+    return
+  } else {
+    router.push(path)
+  }
 }
 
 const me = ref()
@@ -122,6 +128,12 @@ const links = computed(() => [
     icon: profile,
     disabled: false,
   },
+  {
+    name: 'Служба заботы',
+    to: 'https://t.me/puls_smm_support',
+    icon: support,
+    disabled: false,
+  },
 ])
 
 function toggleLeftDrawer() {
@@ -138,11 +150,12 @@ const isActive = (to: string) => {
 
 const { getMe } = useProfile()
 
-const load = () => {
-  getMe()
+const load = async () => {
+  await getMe()
     .then((res) => {
       me.value = res
       if (res?.days_left == 0) {
+        console.log('allo')
         router.push('/subscription')
       }
     })
@@ -171,14 +184,17 @@ const handleUpdateAnswers = (answers: any) => {
 
 onMounted(() => {
   loading.value = true
-  load()
-  apiGetUserAnswers().then((res) => {
-    if (!(res.q1 && res.q2 && res.q3 && res.q4 && res.q5 && res.q6)) {
-      allowed.value = false
-    } else {
-      allowed.value = true
+  load().then(() => {
+    if (me.value?.days_left != 0) {
+      apiGetUserAnswers().then((res) => {
+        if (!(res.q1 && res.q2 && res.q3 && res.q4 && res.q5 && res.q6)) {
+          allowed.value = false
+        } else {
+          allowed.value = true
+        }
+        console.log('allowed', allowed.value)
+      })
     }
-    console.log('allowed', allowed.value)
   })
 })
 

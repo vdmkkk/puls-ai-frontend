@@ -21,16 +21,16 @@ export default function usePayment() {
           position: 'top',
           color: 'positive',
         })
-        return res.data
+        return true
       })
       .catch((e: AxiosError) => {
         console.error('Something went wrong:', e)
         setError(e?.response?.data?.error, e?.response?.data?.user_message)
-        Notify.create({
-          message: 'Промокода не существет или он уже был использован',
-          position: 'top',
-          color: 'negative',
-        })
+        // Notify.create({
+        //   message: 'Промокода не существет или он уже был использован',
+        //   position: 'top',
+        //   color: 'negative',
+        // })
       })
   }
 

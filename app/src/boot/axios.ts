@@ -81,8 +81,11 @@ Object.entries(apiInstances).forEach(([key, apiInstance]) => {
     // бля метод protected один хуй работает. Люблю TS
     (response) => response,
     async (error) => {
-      if (error.response && error.response.status != 401) {
-        console.log('Response error:', error.response.data.Message)
+      if (
+        error.response &&
+        error.response.status != 401 &&
+        error.response.data.Message != 'sql: no rows in result set'
+      ) {
         Notify.create({
           type: 'negative',
           position: 'top',
