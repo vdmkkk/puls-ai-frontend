@@ -30,11 +30,11 @@
             <q-tooltip v-if="!me?.is_with_auto_payment">Автосписание отключено</q-tooltip>
           </FancyButtonComponent> -->
         </div>
-        <DefaultButton
+        <!-- <DefaultButton
           style="margin-top: var(--spacing-xs)"
           label="Перейти в профиль"
           @click="navigateTo('/')"
-        />
+        /> -->
       </div>
       <DefaultButton
         v-else
@@ -89,7 +89,7 @@ const { getMe } = useProfile()
 const router = useRouter()
 const loading = ref(false)
 
-const open = ref(true)
+const open = ref(false)
 
 const me = ref()
 
@@ -171,9 +171,12 @@ const load = () => {
   getMe()
     .then((res) => {
       me.value = res
-      if (me.value.tarrif !== 0) {
+      if (me.value.tariff) {
         open.value = false
+      } else {
+        open.value = true
       }
+      console.log(me.value.tariff, open.value)
     })
     .finally(() => {
       loading.value = false
