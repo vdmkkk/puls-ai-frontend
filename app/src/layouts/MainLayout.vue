@@ -42,6 +42,12 @@
             :disable="menuItem.disabled"
             @click="navigateTo(menuItem.to, menuItem.name == 'Служба заботы')"
           >
+            <q-tooltip v-if="menuItem.disabled"
+              ><p style="max-width: 200px; font-size: var(--font-size-xs)">
+                Чтобы получить доступ к разделу, вы должны ответить на все вопросы на Главной и
+                иметь соотвествующий уровень подписки
+              </p></q-tooltip
+            >
             <q-item-section avatar>
               <img :src="menuItem.icon" />
             </q-item-section>

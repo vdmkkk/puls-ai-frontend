@@ -222,7 +222,10 @@ onMounted(() => {
           @click="handlerOpenDialog(question, answerKey)"
         />
       </div>
-      <q-spinner-puff v-else class="loading" size="50px" />
+      <q-spinner-puff v-else class="loading" size="70px" />
+      <FancyButtonComponent label="Перейти  к созданию контента" @click="navigateTo('/texts')">
+        <q-tooltip>Сначала заполниье анкету</q-tooltip>
+      </FancyButtonComponent>
     </div>
   </q-page>
 </template>
@@ -254,6 +257,8 @@ onMounted(() => {
       font-size: var(--font-size-title);
       font-weight: 600;
       margin: 0;
+      line-height: calc(var(--font-size-title) + 5px);
+      margin-bottom: var(--spacing-xs);
     }
     .description {
       font-size: var(--font-size-sm);

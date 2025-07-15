@@ -3,7 +3,7 @@
   <q-page style="color: white" class="column justify-between">
     <div class="app">
       <q-inner-loading dark :showing="loadingCreation" text-color="white" text="Создание поста">
-        <q-spinner-puff color="primary" size="xl" />
+        <q-spinner-puff color="primary" size="70px" />
       </q-inner-loading>
       <div class="column header">
         <p class="title">Авторские темы</p>
@@ -38,6 +38,7 @@
               autogrow
               :model-value="prompt"
               style="font-size: var(--font-size-sm)"
+              :is-disabled="loadingCreation"
               @update:model-value="prompt = $event"
             />
             <p class="subtitle">Дополнительная информация</p>
@@ -49,6 +50,7 @@
               :model-value="additions"
               style="font-size: var(--font-size-sm)"
               has-voice
+              :is-disabled="loadingCreation"
               placeholder="Например: Какие основные причины приводят к гипотиреозу. Как влияет работа печени и кишечника на работу щитовидки.  Какие оптимальные нормы гормонов, на которые важно ориентироваться."
               @update:model-value="additions = $event"
             />
@@ -67,11 +69,12 @@
                   'Средний — 1500 символов',
                   'Лонгрид — 2200 символов',
                 ]"
+                :disabled="loadingCreation"
               />
             </div>
 
             <FancyButtonComponent
-              :disabled="prompt == '' || (!check && !base64Image)"
+              :disabled="prompt == '' || (!check && !base64Image) || loadingCreation"
               class="submit-btn"
               label="Создать"
               style="align-self: flex-end !important"
@@ -89,7 +92,7 @@
                 :modelValue="check"
                 style="user-select: none"
                 label="Пост без фото"
-                :is-disabled="loadingImage"
+                :is-disabled="loadingImage || loadingCreation"
                 @update:modelValue="check = $event"
               />
               <q-btn class="download" round :disable="!computedImageSrc" @click="downloadImage">
@@ -102,7 +105,7 @@
             <q-btn-toggle
               v-model="imageType"
               class="btn-group"
-              :disable="check || loadingImage"
+              :disable="check || loadingImage || loadingCreation"
               no-caps
               rounded
               unelevated
@@ -117,13 +120,13 @@
               :style="imageType != 'download' ? { marginBottom: 'var(--spacing-sm)' } : {}"
             >
               <div v-if="loadingImage">
-                <q-spinner-puff class="loading" size="50px" />
+                <q-spinner-puff class="loading" size="70px" />
               </div>
               <div v-else-if="imageType == 'prompt'">
                 <p class="subtitle">Промпт</p>
                 <InputComponent
                   :model-value="imagePrompt"
-                  :is-disabled="check"
+                  :is-disabled="check || loadingCreation"
                   style="font-size: var(--font-size-sm)"
                   @update:model-value="imagePrompt = $event"
                 />
@@ -174,7 +177,7 @@
             <div class="column">
               <p class="description">Размер фото</p>
               <q-select
-                :disable="check"
+                :disable="check || loadingCreation"
                 class="q-select image-dimensions"
                 outlined
                 v-model="imageDimensions"
@@ -187,7 +190,8 @@
               :disabled="
                 check ||
                 (imageType == 'prompt' && imagePrompt == '') ||
-                (imageType == 'from_post' && prompt == '')
+                (imageType == 'from_post' && prompt == '') ||
+                loadingCreation
               "
               class="submit-btn"
               label="Создать"

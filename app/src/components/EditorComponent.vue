@@ -34,6 +34,7 @@ import { ref, toRefs, onMounted, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
 import TurndownService from 'turndown'
 import copy from 'src/assets/icons/copy.svg'
+import { Notify } from 'quasar'
 
 // Define props and defaults
 const props = withDefaults(
@@ -84,19 +85,21 @@ watch(editorContent, (newVal) => {
   }, 300)
 })
 
-// Optionally, if QEditor emits an update event, synchronize our editorContent
 function handleUpdate(updatedHtml: string) {
   editorContent.value = updatedHtml
 }
 
-// Copying: get the current HTML, convert to markdown, then write it to the clipboard
 const handleCopy = () => {
   const currentHtml = editorContent.value
   const markdownText = turndownService.turndown(currentHtml)
   navigator.clipboard
     .writeText(markdownText)
     .then(() => {
-      console.log('Markdown copied to clipboard')
+      Notify.create({
+        message: 'Текст скопирован в буфер обмена',
+        color: 'positive',
+        position: 'top',
+      })
     })
     .catch((err) => {
       console.error('Copy failed', err)

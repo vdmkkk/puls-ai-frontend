@@ -28,7 +28,7 @@
         <DefaultButton
           style="margin-top: var(--spacing-xs)"
           label="Перейти в профиль"
-          @click="navigateTo('/profile')"
+          @click="navigateTo('/')"
         />
       </div>
       <DefaultButton

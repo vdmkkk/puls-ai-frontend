@@ -29,17 +29,25 @@
             <EditorComponent
               class="editor"
               :model-value="postText"
+              :is-disabled="loadingCreation"
               @update:model-value="postText = $event"
             />
-            <FancyButtonComponent
-              label="👎 Не понравился, хочу переписать"
-              style="
-                align-self: flex-start;
-                margin-top: var(--spacing-sm);
-                width: fit-content !important;
-              "
-              @click="clearText"
-            />
+            <div class="row">
+              <FancyButtonComponent
+                label="👎 Не понравился, хочу переписать"
+                style="
+                  align-self: flex-start;
+                  margin-top: var(--spacing-sm);
+                  width: fit-content !important;
+                "
+                @click="clearText"
+              />
+              <FancyButtonComponent
+                label="Скопировать текст"
+                style="margin-left: var(--spacing-sm); margin-top: var(--spacing-sm)"
+                @click="handleCopy"
+              />
+            </div>
           </div>
           <div class="inputs-container column justify-between no-wrap left-side" v-else>
             <!-- <p class="subtitle">Тип поста</p>
@@ -63,13 +71,14 @@
               <q-spinner-puff
                 style="margin: var(--spacing-sm) auto"
                 color="primary"
-                size="50px"
+                size="70px"
                 v-if="loadingCreation"
               />
               <InputComponent
                 v-else
                 :model-value="additions"
                 style="font-size: var(--font-size-sm)"
+                :is-disabled="loadingCreation"
                 has-voice
                 placeholder="Например: Какие основные причины приводят к гипотиреозу. Как влияет работа печени и кишечника на работу щитовидки.  Какие оптимальные нормы гормонов, на которые важно ориентироваться."
                 @update:model-value="additions = $event"
@@ -141,7 +150,7 @@
                 "
               >
                 <div v-if="loadingImage">
-                  <q-spinner-puff class="loading" size="50px" />
+                  <q-spinner-puff class="loading" size="70px" />
                 </div>
                 <div v-else-if="imageType == 'prompt'">
                   <p class="subtitle">Промпт</p>
@@ -229,9 +238,16 @@
             margin-top: var(--spacing-sm);
             width: fit-content !important;
           "
+          :disabled="!(me?.tariff == 4 || me?.tariff == 1)"
           label="👍 Понравился, отправить в Автопостинг"
           @click="readyToPublish"
-        />
+        >
+          <q-tooltip v-if="!(me?.tariff == 4 || me?.tariff == 1)">
+            <p style="margin-bottom: 0; font-size: var(--font-size-xs)">
+              Не соответствует уровень подписки
+            </p>
+          </q-tooltip>
+        </FancyButtonComponent>
         <FancyButtonComponent
           v-else-if="ready && postText.length != 0"
           style="
@@ -260,7 +276,7 @@ import pin from 'src/assets/icons/pin.svg'
 import close from 'src/assets/icons/close.svg'
 import templateImage from 'src/assets/icons/image.svg'
 import { useRoute } from 'vue-router'
-import { debounce } from 'quasar'
+import { debounce, Notify } from 'quasar'
 import { getPresignedUrl } from 'src/boot/aws'
 import backIcon from 'src/assets/icons/arrow_left.svg'
 import { useRouter } from 'vue-router'
@@ -270,6 +286,7 @@ import arrowRight from 'src/assets/icons/arrow_right.svg'
 import checkIcon from 'src/assets/icons/check.svg'
 import { SavePostRequest } from 'src/api'
 import downloadIcon from 'src/assets/icons/download.svg'
+import useProfile from 'src/api/composables/useProfile'
 
 const dialog = ref<{
   isOpen: boolean
@@ -339,6 +356,8 @@ const type = ref(true)
 const ready = ref(false)
 
 const computedImageSrc = ref<string | null>(null)
+
+const { getMe } = useProfile()
 
 const readyToPublish = () => {
   apiReadyToPublish(post.value.post_id).then((res) => {
@@ -431,6 +450,31 @@ const goBack = (path: string) => {
 
 const clearText = () => {
   postText.value = ''
+}
+
+const handleCopy = () => {
+  const text = postText.value
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      Notify.create({
+        message: 'Текст скопирован в буфер обмена',
+        color: 'positive',
+        position: 'top',
+      })
+    })
+    .catch((err) => {
+      console.error('Copy failed', err)
+    })
+}
+
+const me = ref()
+
+const load = async () => {
+  await getMe().then((res) => {
+    me.value = res
+    console.log(res)
+  })
 }
 
 const createText = () => {
@@ -528,10 +572,12 @@ onMounted(() => {
     ready.value = res.ready_to_publish
     if (res.image_urls[0] != 'NULL') {
       base64Image.value = res.image_urls[0]
+      check.value = false
     } else {
       check.value = true
     }
   })
+  load()
 })
 </script>
 
