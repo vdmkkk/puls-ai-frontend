@@ -20,10 +20,11 @@
             <img :src="edit" />
           </q-btn>
         </div>
-        <div
+        <!-- <div
           class="main-grid row items-start no-wrap"
-          style="position: relative; align-items: stretch"
-        >
+          style="position: relative; align-items: stretch" restore this later
+        > -->
+        <div class="main-grid row items-start no-wrap" style="position: relative">
           <div class="inputs-container column left-side" v-if="postText.length != 0">
             <p class="subtitle">Текст</p>
             <EditorComponent
@@ -570,7 +571,7 @@ onMounted(() => {
     postText.value = res.post_text
     postType.value = res.type
     ready.value = res.ready_to_publish
-    if (res.image_urls[0] != 'NULL') {
+    if (res.image_urls[0] != 'NULL' && res.image_urls[0] != '') {
       base64Image.value = res.image_urls[0]
       check.value = false
     } else {

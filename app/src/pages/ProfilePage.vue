@@ -13,6 +13,7 @@ import useContent from 'src/api/composables/useContent'
 import InputComponent from 'src/components/InputComponent.vue'
 import CheckComponent from 'src/components/CheckComponent.vue'
 import arrow_down from 'src/assets/icons/arrow_down.svg'
+import { useRouter } from 'vue-router'
 
 const questions = ref({
   'Как вас зовут?': 'answer1',
@@ -149,6 +150,13 @@ const loadData = () => {
     }
   })
 }
+
+const router = useRouter()
+
+const navigateTo = (path: string) => {
+  router.push(path)
+}
+
 onMounted(() => {
   loadData()
 })
@@ -223,8 +231,30 @@ onMounted(() => {
         />
       </div>
       <q-spinner-puff v-else class="loading" size="70px" />
-      <FancyButtonComponent label="Перейти  к созданию контента" @click="navigateTo('/texts')">
-        <q-tooltip>Сначала заполниье анкету</q-tooltip>
+      <FancyButtonComponent
+        :disabled="
+          answers.answer1 == '' ||
+          answers.answer2 == '' ||
+          answers.answer3 == '' ||
+          answers.answer4 == '' ||
+          answers.answer5 == '' ||
+          answers.answer6 == ''
+        "
+        label="Перейти  к созданию контента"
+        style="width: max-content !important; align-self: flex-start"
+        @click="navigateTo('/texts')"
+      >
+        <q-tooltip
+          v-if="
+            answers.answer1 == '' ||
+            answers.answer2 == '' ||
+            answers.answer3 == '' ||
+            answers.answer4 == '' ||
+            answers.answer5 == '' ||
+            answers.answer6 == ''
+          "
+          ><a style="font-size: var(--font-size-xs)">Сначала заполните анкету</a></q-tooltip
+        >
       </FancyButtonComponent>
     </div>
   </q-page>

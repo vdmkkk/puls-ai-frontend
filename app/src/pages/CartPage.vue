@@ -6,6 +6,11 @@
         <p class="title">Приобрести подписку</p>
       </div>
       <div v-if="me?.days_left > 0">
+        <FancyButtonComponent
+          label="Перейти в профиль"
+          @click="navigateTo('/profile')"
+          style="width: max-content !important; margin-bottom: var(--spacing-xs)"
+        />
         <p class="subtitle">Текущая подписка</p>
         <div class="container">
           <p class="title">{{ subs[me?.tariff]?.title }}</p>
@@ -16,20 +21,15 @@
           </p>
           <p class="description">осталось {{ me?.days_left }} дней подписки</p>
           <p class="description">Автосписание включается автоматически при оплате подписки</p>
-          <FancyButtonComponent
+          <!-- <FancyButtonComponent
             style="width: max-content !important"
             label="Отключить автосписание"
             :disabled="!me?.is_with_auto_payment"
             @click="handleDisableAutoPayment"
           >
             <q-tooltip v-if="!me?.is_with_auto_payment">Автосписание отключено</q-tooltip>
-          </FancyButtonComponent>
+          </FancyButtonComponent> -->
         </div>
-        <DefaultButton
-          style="margin-top: var(--spacing-xs)"
-          label="Перейти в профиль"
-          @click="navigateTo('/profile')"
-        />
       </div>
       <div>
         <p class="subtitle">Ввести промокод</p>
