@@ -6,6 +6,11 @@
         <p class="title">Управление подпиской</p>
       </div>
       <div v-if="me?.days_left > 0">
+        <FancyButtonComponent
+          label="Перейти в профиль"
+          @click="navigateTo('/profile')"
+          style="width: max-content !important; margin-bottom: var(--spacing-xs)"
+        />
         <p class="subtitle">Текущая подписка</p>
         <div class="container">
           <p class="title">{{ subs[me?.tariff]?.name }}</p>
@@ -16,20 +21,15 @@
           </p>
           <p class="description">осталось {{ me?.days_left }} дней подписки</p>
           <p class="description">Автосписание включается автоматически при оплате подписки</p>
-          <FancyButtonComponent
+          <!-- <FancyButtonComponent
             style="width: max-content !important"
             label="Отключить автосписание"
             :disabled="!me?.is_with_auto_payment"
             @click="handleDisableAutoPayment"
           >
             <q-tooltip v-if="!me?.is_with_auto_payment">Автосписание отключено</q-tooltip>
-          </FancyButtonComponent>
+          </FancyButtonComponent> -->
         </div>
-        <DefaultButton
-          style="margin-top: var(--spacing-xs)"
-          label="Перейти в профиль"
-          @click="navigateTo('/profile')"
-        />
       </div>
       <DefaultButton
         v-else
@@ -39,7 +39,7 @@
       />
 
       <div>
-        <p class="subtitle">Ввести промокод</p>
+        <p class="subtitle" style="margin-top: var(--spacing-xs)">Ввести промокод</p>
         <div class="row" style="gap: var(--spacing-xs); margin-top: var(--spacing-sm)">
           <InputComponent
             :modelValue="promo"
@@ -51,10 +51,14 @@
         </div>
       </div>
       <div>
-        <p class="subtitle">Приобрести подписку</p>
-        <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
-          <SubComponent v-for="(sub, key) in subs" :subs="subs" :key="key" :chosenSub="key" />
-        </div>
+        <q-expansion-item v-model="open" style="margin-top: var(--spacing-xs)">
+          <template v-slot:header>
+            <p class="subtitle">Приобрести подписку</p>
+          </template>
+          <div class="containers row no-wrap" style="gap: var(--spacing-xs)">
+            <SubComponent v-for="(sub, key) in subs" :subs="subs" :key="key" :chosenSub="key" />
+          </div>
+        </q-expansion-item>
       </div>
     </div>
   </q-page>
@@ -79,6 +83,8 @@ import useTariffs from 'src/api/composables/useTariffs'
 const { getMe } = useProfile()
 const router = useRouter()
 const loading = ref(false)
+
+const open = ref(true)
 
 const me = ref()
 
@@ -160,6 +166,9 @@ const load = () => {
   getMe()
     .then((res) => {
       me.value = res
+      if (me.value.tarrif !== 0) {
+        open.value = false
+      }
     })
     .finally(() => {
       loading.value = false
@@ -183,6 +192,15 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.q-expansion-item ::v-deep .q-item {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  width: fit-content;
+}
+
+.q-expansion-item ::v-deep .q-item:hover {
+  background-color: transparent !important; // doesnt work damn
+}
 .app {
   display: flex;
   flex-direction: column;
@@ -193,11 +211,10 @@ onMounted(() => {
 
   .subtitle {
     margin-bottom: 0;
-    margin-top: var(--spacing-xs);
+    margin-top: 2px;
     // padding-left: var(--spacing-xxs);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    margin-bottom: 6px;
   }
 
   .loading {
@@ -378,6 +395,9 @@ onMounted(() => {
         height: var(--spacing-md);
         padding-right: 2px;
       }
+    }
+    .subtitle {
+      margin-top: 6px;
     }
   }
 }

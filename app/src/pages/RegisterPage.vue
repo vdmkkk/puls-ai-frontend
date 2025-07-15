@@ -74,14 +74,6 @@
           label-color="grey-1"
           rounded
           outlined
-          lazy-rules
-          :error="errorStore.errors.password"
-          :error-message="errorStore.errors.password ? errorStore.errorMessage : undefined"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('errors.required'),
-            (val) => isValidPassword(val) || $t('errors.passwordNotValid'),
-            (val) => val === againPassword || $t('errors.passwordsNotSame'),
-          ]"
         >
           <template v-slot:append>
             <q-icon
@@ -102,13 +94,6 @@
           label-color="grey-1"
           rounded
           outlined
-          lazy-rules
-          :error="errorStore.errors.againPassword"
-          :error-message="errorStore.errors.againPassword ? errorStore.errorMessage : undefined"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('errors.required'),
-            (val) => val === password || $t('errors.passwordsNotSame'),
-          ]"
         >
           <template v-slot:append>
             <q-icon
@@ -167,10 +152,10 @@
 
 <script setup lang="ts">
 // @ts-nocheck //
-import { Notify } from 'quasar'
+import { debounce, Notify } from 'quasar'
 import useAuth from 'src/api/composables/useAuth'
 import { useErrorStore } from 'src/stores/error-store'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import logo from 'src/assets/svg/logo.svg'
@@ -201,6 +186,23 @@ const isValidPassword = (password: string): boolean => {
   const passwordRegex = /^[A-Za-z0-9.,\-/_\\|()~!?&%$#@*]{8,}$/
   return passwordRegex.test(password)
 }
+
+const verificationMessage = () => {
+  if (verificationCode.value.length == 6) {
+    Notify.create({
+      message: 'Вы ввели код подтверждения. Для его проверки, завершите процесс регистрации',
+      color: 'positive',
+      position: 'top',
+      timeout: 6000,
+    })
+  }
+}
+
+const debouncedVerification = debounce(verificationMessage, 1000)
+
+watch(verificationCode, () => {
+  debouncedVerification()
+})
 
 const handlerVerify = () => {
   apiEmailCode(login.value).then((e) => {

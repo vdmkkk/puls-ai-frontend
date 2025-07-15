@@ -218,7 +218,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .app {
   background-color: #12121b;
-  height: 100%;
+  padding-bottom: 20px;
 }
 
 .active {
