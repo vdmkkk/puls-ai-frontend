@@ -8,7 +8,7 @@
       <div v-if="me?.days_left > 0">
         <FancyButtonComponent
           label="Перейти в профиль"
-          @click="navigateTo('/profile')"
+          @click="goToProfile ? navigateTo('/profile') : navigateTo('/')"
           style="width: max-content !important; margin-bottom: var(--spacing-xs)"
         />
         <p class="subtitle">Текущая подписка</p>
@@ -84,6 +84,7 @@ import DefaultButton from 'src/components/DefaultButton.vue'
 import SubComponent from 'src/components/SubComponent.vue'
 import Cookies from 'js-cookie'
 import useTariffs from 'src/api/composables/useTariffs'
+import useCustomize from 'src/api/composables/useCustomize'
 
 const { getMe } = useProfile()
 const router = useRouter()
@@ -129,6 +130,7 @@ const subs = ref({
 })
 
 const { apiUsePromocode, apiCreatePayment, apiDisableAutoPayment } = usePayment()
+const { apiGetUserAnswers } = useCustomize(loading)
 
 const applyPromo = () => {
   apiUsePromocode(promo.value).then((res) => {
@@ -167,6 +169,8 @@ const handleDisableAutoPayment = () => {
   })
 }
 
+const goToProfile = ref(false)
+
 const load = () => {
   getMe()
     .then((res) => {
@@ -181,6 +185,11 @@ const load = () => {
     .finally(() => {
       loading.value = false
     })
+  apiGetUserAnswers().then((res) => {
+    if (res.q1 && res.q2 && res.q3 && res.q4 && res.q5 && res.q6) {
+      goToProfile.value = true
+    }
+  })
 }
 
 const navigateTo = (path: string) => {

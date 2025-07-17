@@ -42,11 +42,17 @@
             :disable="menuItem.disabled"
             @click="navigateTo(menuItem.to, menuItem.name == 'Служба заботы')"
           >
-            <q-tooltip v-if="menuItem.disabled"
-              ><p style="max-width: 200px; font-size: var(--font-size-xs)">
+            <q-tooltip v-if="menuItem.disabled" style="width: 200px"
+              ><a
+                :style="
+                  $q.screen.xs
+                    ? { 'font-size': 'var(--font-size-sm)' }
+                    : { 'font-size': 'var(--font-size-xs)' }
+                "
+              >
                 Чтобы получить доступ к разделу, вы должны ответить на все вопросы на Главной и
                 иметь соотвествующий уровень подписки
-              </p></q-tooltip
+              </a></q-tooltip
             >
             <q-item-section avatar>
               <img :src="menuItem.icon" />
@@ -224,7 +230,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .app {
   background-color: #12121b;
-  padding-bottom: 20px;
+  padding-bottom: 150px;
 }
 
 .active {

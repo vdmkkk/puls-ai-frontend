@@ -156,6 +156,11 @@ const shownTime = computed(() => {
           >
             <q-tooltip v-if="answer?.instDisabled"
               ><a
+                :style="
+                  $q.screen.xs
+                    ? { 'font-size': 'var(--font-size-sm)' }
+                    : { 'font-size': 'var(--font-size-xs)' }
+                "
                 >Для публикации в Instagram нужно подключить аккаунт. Поддерживаются только
                 публикации, содержащие изображение</a
               ></q-tooltip

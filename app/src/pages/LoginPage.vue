@@ -55,7 +55,14 @@
             outline
           >
             <q-tooltip>
-              <a>{{ $t('forgotPassword') }}</a>
+              <a
+                :style="
+                  $q.screen.xs
+                    ? { 'font-size': 'var(--font-size-sm)' }
+                    : { 'font-size': 'var(--font-size-xs)' }
+                "
+                >{{ $t('forgotPassword') }}</a
+              >
             </q-tooltip>
           </q-btn>
         </div>

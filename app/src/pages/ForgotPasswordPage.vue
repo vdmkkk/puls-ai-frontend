@@ -3,7 +3,14 @@
   <q-page style="color: white" class="column justify-between">
     <q-btn class="check" icon="chevron_left" @click="handlerBack" size="md" color="grey-1" outline>
       <q-tooltip>
-        <a>{{ $t('back') }}</a>
+        <a
+          :style="
+            $q.screen.xs
+              ? { 'font-size': 'var(--font-size-sm)' }
+              : { 'font-size': 'var(--font-size-xs)' }
+          "
+          >{{ $t('back') }}</a
+        >
       </q-tooltip>
     </q-btn>
     <div class="column app items-center">

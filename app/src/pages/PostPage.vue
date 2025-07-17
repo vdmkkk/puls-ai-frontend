@@ -33,22 +33,72 @@
               :is-disabled="loadingCreation"
               @update:model-value="postText = $event"
             />
-            <div class="row">
+            <div class="row" style="gap: var(--spacing-sm); margin-top: var(--spacing-sm)">
               <FancyButtonComponent
                 label="👎 Не понравился, хочу переписать"
+                style="align-self: flex-start; width: fit-content !important"
+                @click="clearText"
+              />
+              <FancyButtonComponent label="Скопировать текст" @click="handleCopy" />
+            </div>
+            <div class="column" v-if="!ready && postText.length != 0">
+              <FancyButtonComponent
                 style="
                   align-self: flex-start;
                   margin-top: var(--spacing-sm);
                   width: fit-content !important;
                 "
-                @click="clearText"
-              />
-              <FancyButtonComponent
-                label="Скопировать текст"
-                style="margin-left: var(--spacing-sm); margin-top: var(--spacing-sm)"
-                @click="handleCopy"
-              />
+                :disabled="!(me?.tariff == 4 || me?.tariff == 1)"
+                label="👍 Понравился, отправить в Автопостинг"
+                @click="readyToPublish"
+              >
+                <q-tooltip v-if="!(me?.tariff == 4 || me?.tariff == 1)">
+                  <a
+                    :style="
+                      $q.screen.xs
+                        ? { 'font-size': 'var(--font-size-sm)' }
+                        : { 'font-size': 'var(--font-size-xs)' }
+                    "
+                  >
+                    Не соответствует уровень подписки
+                  </a>
+                </q-tooltip>
+              </FancyButtonComponent>
             </div>
+
+            <FancyButtonComponent
+              v-else-if="ready && postText.length != 0"
+              style="
+                align-self: flex-start;
+                margin-top: var(--spacing-sm);
+                width: fit-content !important;
+              "
+              label="Пост в очереди на публикацию"
+              disabled
+            />
+            <q-btn
+              icon="help"
+              flat
+              round
+              style="width: fit-content; margin-top: var(--spacing-xs)"
+              size="lg"
+              color="primary"
+            >
+              <q-tooltip style="width: 350px !important">
+                <a
+                  :style="
+                    $q.screen.xs
+                      ? { 'font-size': 'var(--font-size-sm)' }
+                      : { 'font-size': 'var(--font-size-xs)' }
+                  "
+                  >Как опубликовать пост без автопостинга? Нажмите кнопку Скопировать текст. Если
+                  создавали фото в puls, то в правом верхнем углу найдите иконку скачивания фото на
+                  Ваше устройство. Нажмите ее. Далее перейдите в соцсеть, куда хотели бы
+                  опубликовать пост - прикрепите фото и вставьте скопированный ранее текст. Вы
+                  опубликовали пост!</a
+                >
+              </q-tooltip>
+            </q-btn>
           </div>
           <div class="inputs-container column justify-between no-wrap left-side" v-else>
             <!-- <p class="subtitle">Тип поста</p>
@@ -124,7 +174,14 @@
                 />
                 <q-btn class="download" round :disable="!computedImageSrc" @click="downloadImage">
                   <q-tooltip>
-                    <p style="margin-bottom: 0">Скачать изображение</p>
+                    <a
+                      :style="
+                        $q.screen.xs
+                          ? { 'font-size': 'var(--font-size-sm)' }
+                          : { 'font-size': 'var(--font-size-xs)' }
+                      "
+                      >Скачать изображение</a
+                    >
                   </q-tooltip>
                   <img :src="downloadIcon" />
                 </q-btn>
@@ -142,6 +199,20 @@
                   { label: 'Промпт', value: 'prompt' },
                 ]"
               />
+              <p
+                v-if="imageType == 'from_post'"
+                class="description1"
+                style="margin-top: var(--spacing-sm); margin-bottom: 0"
+              >
+                Наша нейросеть автоматически создаст изображение под тематику поста
+              </p>
+              <p
+                v-if="imageType == 'prompt'"
+                class="description1"
+                style="margin-top: var(--spacing-sm); margin-bottom: 0"
+              >
+                Подробно напишите, что вы хотели бы видеть на изображении
+              </p>
               <div
                 class="image-content full-height"
                 :style="
@@ -154,7 +225,12 @@
                   <q-spinner-puff class="loading" size="70px" />
                 </div>
                 <div v-else-if="imageType == 'prompt'">
-                  <p class="subtitle">Промпт</p>
+                  <p
+                    class="subtitle"
+                    :style="imageType == 'prompt' ? { 'margin-top': '0 !important' } : {}"
+                  >
+                    Промпт
+                  </p>
                   <InputComponent
                     :model-value="imagePrompt"
                     :is-disabled="check"
@@ -191,7 +267,12 @@
                     </q-btn>
                   </div>
                 </div>
-                <p :class="{ subtitle: true, grey: check }">Изображение к посту</p>
+                <p
+                  :class="{ subtitle: true, grey: check }"
+                  :style="imageType == 'from_post' ? { 'margin-top': '0 !important' } : {}"
+                >
+                  Изображение к посту
+                </p>
                 <div v-if="!base64Image || check" :class="{ 'template-image': true, grey: check }">
                   <img class="icon" :src="templateImage" />
                 </div>
@@ -232,33 +313,6 @@
             </div>
           </div>
         </div>
-        <FancyButtonComponent
-          v-if="!ready && postText.length != 0"
-          style="
-            align-self: flex-start;
-            margin-top: var(--spacing-sm);
-            width: fit-content !important;
-          "
-          :disabled="!(me?.tariff == 4 || me?.tariff == 1)"
-          label="👍 Понравился, отправить в Автопостинг"
-          @click="readyToPublish"
-        >
-          <q-tooltip v-if="!(me?.tariff == 4 || me?.tariff == 1)">
-            <p style="margin-bottom: 0; font-size: var(--font-size-xs)">
-              Не соответствует уровень подписки
-            </p>
-          </q-tooltip>
-        </FancyButtonComponent>
-        <FancyButtonComponent
-          v-else-if="ready && postText.length != 0"
-          style="
-            align-self: flex-start;
-            margin-top: var(--spacing-sm);
-            width: fit-content !important;
-          "
-          label="Пост в очереди на публикацию"
-          disabled
-        />
       </div>
     </div>
   </q-page>
@@ -611,6 +665,10 @@ onMounted(() => {
   }
 
   .description {
+    font-size: var(--font-size-xs);
+    color: #b8b8b8;
+  }
+  .description1 {
     font-size: var(--font-size-xs);
     color: #b8b8b8;
   }

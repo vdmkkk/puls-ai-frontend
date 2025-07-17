@@ -39,6 +39,7 @@
               :model-value="prompt"
               style="font-size: var(--font-size-sm)"
               :is-disabled="loadingCreation"
+              placeholder="Например: 5 неожиданных продуктов, которые изменят твою жизнь"
               @update:model-value="prompt = $event"
             />
             <p class="subtitle">Дополнительная информация</p>
@@ -97,7 +98,15 @@
               />
               <q-btn class="download" round :disable="!computedImageSrc" @click="downloadImage">
                 <q-tooltip>
-                  <p style="margin-bottom: 0">Скачать изображение</p>
+                  <a
+                    :style="
+                      $q.screen.xs
+                        ? { 'font-size': 'var(--font-size-sm)' }
+                        : { 'font-size': 'var(--font-size-xs)' }
+                    "
+                  >
+                    Скачать изображение
+                  </a>
                 </q-tooltip>
                 <img :src="downloadIcon" />
               </q-btn>
@@ -115,6 +124,21 @@
                 { label: 'Промпт', value: 'prompt' },
               ]"
             />
+            <p
+              v-if="imageType == 'from_post'"
+              class="description"
+              style="margin-top: var(--spacing-sm); margin-bottom: 0"
+            >
+              Наша нейросеть автоматически создаст изображение под тематику поста
+            </p>
+            <p
+              v-if="imageType == 'prompt'"
+              class="description"
+              style="margin-top: var(--spacing-sm); margin-bottom: 0"
+            >
+              Подробно напишите, что вы хотели бы видеть на изображении
+            </p>
+
             <div
               class="image-content full-height"
               :style="imageType != 'download' ? { marginBottom: 'var(--spacing-sm)' } : {}"
@@ -123,7 +147,12 @@
                 <q-spinner-puff class="loading" size="70px" />
               </div>
               <div v-else-if="imageType == 'prompt'">
-                <p class="subtitle">Промпт</p>
+                <p
+                  class="subtitle"
+                  :style="imageType == 'prompt' ? { 'margin-top': '0 !important' } : {}"
+                >
+                  Промпт
+                </p>
                 <InputComponent
                   :model-value="imagePrompt"
                   :is-disabled="check || loadingCreation"
@@ -160,7 +189,12 @@
                   </q-btn>
                 </div>
               </div>
-              <p :class="{ subtitle: true, grey: check }">Изображение к посту</p>
+              <p
+                :class="{ subtitle: true, grey: check }"
+                :style="imageType == 'from_post' ? { 'margin-top': '0 !important' } : {}"
+              >
+                Изображение к посту
+              </p>
               <div v-if="!base64Image || check" :class="{ 'template-image': true, grey: check }">
                 <img class="icon" :src="templateImage" />
               </div>

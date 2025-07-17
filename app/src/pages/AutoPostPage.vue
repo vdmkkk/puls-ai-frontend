@@ -12,7 +12,12 @@
         <p class="title">Автопостинг</p>
         <p class="description">
           Перед началом использования автопостинга подключите ваши соцсети к платформе puls в
-          разделе <span style="font-weight: 600">Профиль</span>
+          разделе <span style="font-weight: 600">Профиль</span>. Создайте пост на платформе в
+          разделе <span style="font-weight: 600">Контент-план</span> или
+          <span style="font-weight: 600">Авторские темы</span>, затем нажмите
+          <span style="font-weight: 600">Понравился</span>, отправить в Автопостинг. Ваш пост
+          отобразится в этом разделе. Нажмите <span style="font-weight: 600">Опубликовать</span>,
+          чтобы настроить время и платформу для публикации
         </p>
       </div>
       <!-- <div ref="buttonRef">

@@ -175,7 +175,7 @@ onMounted(() => {
         @save="handlerSaveDialog"
       />
       <div class="column header">
-        <p class="title">Создание контента станет доступно только после заполнения анкеты</p>
+        <p class="title">Заполните анкету, чтобы начать создавать контент</p>
         <p class="description">
           Выберите удобный способ: мы можем проанализировать ваш аккаунт по ссылке и
           <span style="font-weight: 600">автоматически</span>
@@ -253,7 +253,14 @@ onMounted(() => {
             answers.answer5 == '' ||
             answers.answer6 == ''
           "
-          ><a style="font-size: var(--font-size-xs)">Сначала заполните анкету</a></q-tooltip
+          ><a
+            :style="
+              $q.screen.xs
+                ? { 'font-size': 'var(--font-size-sm)' }
+                : { 'font-size': 'var(--font-size-xs)' }
+            "
+            >Сначала заполните анкету</a
+          ></q-tooltip
         >
       </FancyButtonComponent>
     </div>
